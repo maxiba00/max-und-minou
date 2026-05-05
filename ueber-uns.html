@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Über uns — Max & Minou</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --max:         #b85c42;
+      --max-light:   #e8896e;
+      --max-bg:      #fdf2ef;
+      --minou:       #5d8f6a;
+      --minou-light: #8bbf94;
+      --minou-bg:    #eef5ef;
+      --ink:         #1a1a1a;
+      --mid:         #8a8a8a;
+      --light:       #e8e8e8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    /* ── Header ── */
+    header {
+      background: #f2ece3;
+      border-bottom: 1px solid #e5dbd0;
+      text-align: center;
+      padding: 2.2rem 1rem 1.8rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+      text-decoration: none;
+    }
+
+    .logo-max   { font-size: 2rem; font-weight: 700; color: var(--max); letter-spacing: -0.02em; }
+    .logo-amp   { font-size: 1.1rem; color: #bbb0a4; font-style: italic; }
+    .logo-minou { font-size: 2rem; font-weight: 700; color: var(--minou); letter-spacing: -0.02em; }
+
+    header p {
+      font-size: 0.8rem;
+      color: #a09488;
+      font-family: 'Arial', sans-serif;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Content ── */
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 3.5rem 1.5rem 5rem;
+    }
+
+    .section-label {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 2rem;
+      color: var(--ink);
+    }
+
+    .text-block {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: #3a3a3a;
+      margin-bottom: 1.4rem;
+    }
+
+    /* ── Photo placeholder ── */
+    .photo-placeholder {
+      margin: 2.5rem 0;
+      background: #f4f0eb;
+      border-radius: 1rem;
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--mid);
+      font-family: 'Arial', sans-serif;
+      font-size: 0.85rem;
+      border: 1.5px dashed #d8d0c8;
+    }
+
+    .photo-placeholder span { font-size: 2rem; }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 2.5rem;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.85rem;
+      color: var(--max);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ── Footer ── */
+    footer {
+      background: #1a1a1a;
+      text-align: center;
+      padding: 2.2rem 1rem;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.78rem;
+      color: #888;
+    }
+
+    footer strong { color: #fff; }
+    footer span   { color: var(--max-light); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">
+    <span class="logo-max">Max</span>
+    <span class="logo-amp">&</span>
+    <span class="logo-minou">Minou</span>
+  </a>
+  <p>Vegane Rezepte — gemeinsam kochen, jede:r mit eigenem Teil</p>
+</header>
+
+<div class="container">
+
+  <div class="section-label">Über uns</div>
+  <h1>Wir sind Max & Minou</h1>
+
+  <div class="photo-placeholder">
+    <span>📷</span>
+    Foto folgt bald
+  </div>
+
+  <p class="text-block">
+    Wir kochen vegane Gerichte — und haben irgendwann festgestellt, dass dabei immer eine:r kocht und die andere:r daneben steht. Das wollten wir ändern. Also haben wir angefangen, Rezepte so aufzuteilen, dass beide gleichzeitig einen eigenen Part haben und am Ende alles zusammenkommt.
+  </p>
+
+  <p class="text-block">
+    Alle Rezepte sind vegan, saisonal und für zwei Personen gedacht.
+  </p>
+
+  <a class="back-link" href="index.html">← Zurück zu den Rezepten</a>
+
+</div>
+
+<footer>
+  <strong>Max & Minou</strong> — Vegane Rezepte für zwei, die beide kochen.<br>
+  Jedes Rezept. Jede Person. <span>Gemeinsam am Tisch.</span>
+</footer>
+
+</body>
+</html>

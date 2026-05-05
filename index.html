@@ -98,6 +98,15 @@
     .pill.minou-pill { border-color: var(--minou); color: var(--minou); background: var(--minou-bg); }
     .pill.neutral    { border-color: var(--light);  color: var(--mid);   background: #fafafa; }
 
+    .concept-note {
+      margin-top: 1.2rem;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.8rem;
+      color: var(--mid);
+      line-height: 1.6;
+      text-align: center;
+    }
+
     /* ── Divider ── */
     hr { border: none; border-top: 1px solid var(--light); }
 
@@ -236,12 +245,12 @@
 
 <div class="hero">
   <h2>Kochen war noch nie so fair aufgeteilt.</h2>
-  <p>Kein Danebenstehen mehr. Jedes Rezept ist in zwei Teile aufgeteilt — ihr kocht parallel und kommt am Ende zusammen an den Tisch.</p>
   <div class="concept-pills">
     <span class="pill max-pill">🥔 Max kocht</span>
     <span class="pill minou-pill">🌿 Minou kocht</span>
     <span class="pill neutral">🍽 gemeinsam anrichten</span>
   </div>
+  <p class="concept-note">Jede:r öffnet das Rezept auf dem eigenen Gerät und wählt seine Rolle.<br>Ihr kocht parallel — und kommt am Ende gemeinsam an den Tisch.</p>
 </div>
 
 <hr />
@@ -290,12 +299,26 @@
       <div class="card-arrow">Zum Rezept <span>→</span></div>
     </a>
 
+    <a class="recipe-card" href="rezepte/blumenkohl-tacos.html">
+      <div class="card-visual warm">🌮</div>
+      <div class="card-body">
+        <div class="card-tags"><span class="card-tag">🌿 Vegan · Ganzjährig</span></div>
+        <div class="card-title">Blumenkohl Tacos mit Tahini-Sauce</div>
+        <div class="card-meta">
+          <span>⏱ 35 Min.</span>
+          <span>🔥 Ofengericht</span>
+        </div>
+      </div>
+      <div class="card-arrow">Zum Rezept <span>→</span></div>
+    </a>
+
   </div>
 </div>
 
 <footer>
   <strong>Max & Minou</strong> — Vegane Rezepte für zwei, die beide kochen.<br>
-  Jedes Rezept. Jede Person. <span>Gemeinsam am Tisch.</span>
+  Jedes Rezept. Jede Person. <span>Gemeinsam am Tisch.</span><br><br>
+  <a href="ueber-uns.html" style="color:#888; text-decoration:underline; text-underline-offset:3px;">Über uns</a>
 </footer>
 
 </body>
