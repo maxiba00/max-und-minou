@@ -31,28 +31,38 @@
     header {
       background: #f2ece3;
       border-bottom: 1px solid #e5dbd0;
-      text-align: center;
-      padding: 2.2rem 1rem 1.8rem;
+      padding: 1.4rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .logo {
       display: flex;
       align-items: baseline;
-      justify-content: center;
       gap: 0.5rem;
-      margin-bottom: 0.4rem;
+      text-decoration: none;
     }
 
-    .logo-max   { font-size: 2rem; font-weight: 700; color: var(--max); letter-spacing: -0.02em; }
-    .logo-amp   { font-size: 1.1rem; color: #bbb0a4; font-style: italic; }
-    .logo-minou { font-size: 2rem; font-weight: 700; color: var(--minou); letter-spacing: -0.02em; }
+    .logo-max   { font-size: 1.6rem; font-weight: 700; color: var(--max); letter-spacing: -0.02em; }
+    .logo-amp   { font-size: 1rem; color: #bbb0a4; font-style: italic; }
+    .logo-minou { font-size: 1.6rem; font-weight: 700; color: var(--minou); letter-spacing: -0.02em; }
 
-    header p {
-      font-size: 0.8rem;
-      color: #a09488;
-      font-family: 'Arial', sans-serif;
-      letter-spacing: 0.06em;
+    header p { display: none; }
+
+    nav { display: flex; align-items: center; gap: 0.6rem; }
+    .nav-link {
+      font-family: 'Arial', sans-serif; font-size: 0.82rem;
+      color: var(--mid); text-decoration: none;
+      padding: 0.4rem 0.9rem; border-radius: 2rem;
+      transition: background 0.15s, color 0.15s;
     }
+    .nav-link:hover { background: #e8dfd4; color: var(--ink); }
+    .nav-link.highlight {
+      background: var(--max); color: white;
+      font-weight: 700;
+    }
+    .nav-link.highlight:hover { background: var(--max-light); }
 
     /* ── Hero ── */
     .hero {
@@ -235,12 +245,17 @@
 <body>
 
 <header>
-  <div class="logo">
+  <nav class="nav-left">
+    <a class="nav-link highlight" href="tinder.html">🍽 Was kochen wir?</a>
+  </nav>
+  <a class="logo" href="index.html">
     <span class="logo-max">Max</span>
     <span class="logo-amp">&</span>
     <span class="logo-minou">Minou</span>
-  </div>
-  <p>Vegane Rezepte — gemeinsam kochen, jede:r mit eigenem Teil</p>
+  </a>
+  <nav class="nav-right">
+    <a class="nav-link" href="ueber-uns.html">Über uns</a>
+  </nav>
 </header>
 
 <div class="hero">
