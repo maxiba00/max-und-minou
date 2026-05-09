@@ -410,14 +410,26 @@ async function init() {
 }
 
 // ── Profile ────────────────────────────────────────────────────────────────
-async function loadProfile() {
+async function loadProfile(retries = 5) {
   const { data, error } = await sb
     .from('profiles').select('*').eq('id', currentUser.id).single();
 
-  if (error || !data) {
-    // Trigger könnte minimal verzögert sein
+  if (!data) {
+    if (retries <= 0) {
+      // Profil existiert nicht (User vor Trigger angelegt) → jetzt selbst anlegen
+      const displayName = currentUser.user_metadata?.display_name
+        || currentUser.email.split('@')[0];
+      const { error: insertError } = await sb
+        .from('profiles').insert({ id: currentUser.id, display_name: displayName });
+      if (insertError) {
+        document.getElementById('authError').textContent = 'Profil konnte nicht erstellt werden: ' + insertError.message;
+        showScreen('screenAuth');
+        return;
+      }
+      return loadProfile(3);
+    }
     await sleep(900);
-    return loadProfile();
+    return loadProfile(retries - 1);
   }
 
   profile = data;
