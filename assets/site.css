@@ -292,7 +292,7 @@ h1.hero-title .minou-w { color: var(--minou); font-style: italic; }
       ".      logo   .     "
       "burger pulse  search";
     row-gap: 12px; column-gap: 12px;
-    padding: 22px 20px 18px;
+    padding: max(48px, calc(env(safe-area-inset-top) + 22px)) 20px 18px;
     text-align: left;
     align-items: center;
     border-bottom: 1px solid var(--rule);
