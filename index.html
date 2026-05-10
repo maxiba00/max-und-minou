@@ -1,340 +1,404 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Max & Minou — Vegane Rezepte für Zwei</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --max:       #b85c42;
-      --max-light: #e8896e;
-      --max-bg:    #fdf2ef;
-      --minou:     #5d8f6a;
-      --minou-light: #8bbf94;
-      --minou-bg:  #eef5ef;
-      --ink:       #1a1a1a;
-      --mid:       #8a8a8a;
-      --light:     #e8e8e8;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Georgia', serif;
-      background: #fff;
-      color: var(--ink);
-    }
-
-    /* ── Header ── */
-    header {
-      background: #f2ece3;
-      border-bottom: 1px solid #e5dbd0;
-      padding: 1.4rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-      text-decoration: none;
-    }
-
-    .logo-max   { font-size: 1.6rem; font-weight: 700; color: var(--max); letter-spacing: -0.02em; }
-    .logo-amp   { font-size: 1rem; color: #bbb0a4; font-style: italic; }
-    .logo-minou { font-size: 1.6rem; font-weight: 700; color: var(--minou); letter-spacing: -0.02em; }
-
-    header p { display: none; }
-
-    nav { display: flex; align-items: center; gap: 0.6rem; }
-    .nav-link {
-      font-family: 'Arial', sans-serif; font-size: 0.82rem;
-      color: var(--mid); text-decoration: none;
-      padding: 0.4rem 0.9rem; border-radius: 2rem;
-      transition: background 0.15s, color 0.15s;
-    }
-    .nav-link:hover { background: #e8dfd4; color: var(--ink); }
-    .nav-link.highlight {
-      background: var(--max); color: white;
-      font-weight: 700;
-    }
-    .nav-link.highlight:hover { background: var(--max-light); }
-
-    /* ── Hero ── */
-    .hero {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 3.5rem 1.5rem 3rem;
-      text-align: center;
-    }
-
-    .hero h2 {
-      font-size: clamp(1.5rem, 4vw, 2rem);
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 1rem;
-      color: var(--ink);
-    }
-
-    .hero p {
-      font-size: 0.95rem;
-      color: var(--mid);
-      font-family: 'Arial', sans-serif;
-      line-height: 1.7;
-      margin-bottom: 1.8rem;
-    }
-
-    .concept-pills {
-      display: flex;
-      gap: 0.6rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      font-family: 'Arial', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 0.35rem 0.9rem;
-      border-radius: 2rem;
-      border: 1.5px solid;
-    }
-
-    .pill.max-pill   { border-color: var(--max);   color: var(--max);   background: var(--max-bg); }
-    .pill.minou-pill { border-color: var(--minou); color: var(--minou); background: var(--minou-bg); }
-    .pill.neutral    { border-color: var(--light);  color: var(--mid);   background: #fafafa; }
-
-    .concept-note {
-      margin-top: 1.2rem;
-      font-family: 'Arial', sans-serif;
-      font-size: 0.8rem;
-      color: var(--mid);
-      line-height: 1.6;
-      text-align: center;
-    }
-
-    /* ── Divider ── */
-    hr { border: none; border-top: 1px solid var(--light); }
-
-    /* ── Recipes section ── */
-    .recipes-section {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 0 1.5rem 5rem;
-    }
-
-    .section-label {
-      font-family: 'Arial', sans-serif;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--mid);
-      margin-top: 2.8rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .recipe-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.2rem;
-    }
-
-    .recipe-card {
-      border: 1px solid var(--light);
-      border-radius: 1rem;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-      transition: box-shadow 0.2s, transform 0.15s;
-    }
-
-    .recipe-card:hover {
-      box-shadow: 0 8px 28px rgba(0,0,0,0.09);
-      transform: translateY(-2px);
-    }
-
-    .card-visual {
-      height: 130px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.5rem;
-    }
-
-    .card-visual.warm  { background: #fdf2ef; }
-    .card-visual.green { background: #eef5ef; }
-    .card-visual.gold  { background: #fdf8ee; }
-
-    .card-body {
-      padding: 1.1rem 1.2rem 1.3rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .card-tags {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-
-    .card-tag {
-      font-family: 'Arial', sans-serif;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--minou);
-    }
-
-    .card-title {
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.35;
-      color: var(--ink);
-    }
-
-    .card-meta {
-      font-family: 'Arial', sans-serif;
-      font-size: 0.8rem;
-      color: var(--mid);
-      margin-top: auto;
-      padding-top: 0.4rem;
-      display: flex;
-      gap: 1rem;
-    }
-
-    .card-arrow {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1.2rem;
-      border-top: 1px solid var(--light);
-      font-family: 'Arial', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--max);
-    }
-
-    /* ── Footer ── */
-    footer {
-      background: #1a1a1a;
-      text-align: center;
-      padding: 2.2rem 1rem;
-      font-family: 'Arial', sans-serif;
-      font-size: 0.78rem;
-      color: #888;
-    }
-
-    footer strong { color: #fff; }
-    footer span   { color: var(--max-light); }
-
-    @media (max-width: 520px) {
-      .recipe-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Max &amp; Minou — Vegan kochen, zu zweit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/site.css" />
+<style>
+  .featured {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 48px; align-items: center; margin-bottom: 80px;
+  }
+  .featured .info { padding-right: 12px; }
+  .feat-date {
+    font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--mid);
+    display: flex; gap: 14px; align-items: center; margin-bottom: 16px;
+  }
+  .featured h3 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(36px, 4.5vw, 56px);
+    line-height: 1; letter-spacing: -0.025em; margin-bottom: 22px;
+  }
+  .featured h3 em { font-style: italic; }
+  .featured h3 a { color: inherit; text-decoration: none; }
+  .featured h3 a:hover { color: var(--max); }
+  .featured p {
+    color: var(--mid); font-size: 15px; line-height: 1.75;
+    max-width: 460px; margin-bottom: 28px;
+  }
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding-bottom: 28px; margin-bottom: 28px;
+    border-bottom: 1px solid var(--rule); align-items: center;
+  }
+  .filter-bar .label {
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--mid); margin-right: 8px;
+  }
+  .chip {
+    padding: 7px 14px; border: 1px solid var(--rule);
+    border-radius: 999px; font-size: 12px;
+    color: var(--mid); text-decoration: none; cursor: pointer;
+    background: transparent; font-family: inherit;
+  }
+  .chip.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .chip:hover { color: var(--ink); }
+  .chip.on:hover { color: var(--paper); }
+  .grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 56px 36px; margin-bottom: 64px;
+  }
+  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } .featured { grid-template-columns: 1fr; } }
+  .card { display: flex; flex-direction: column; gap: 14px; text-decoration: none; color: inherit; }
+  .card .photo { aspect-ratio: 4 / 5; }
+  .card-date {
+    display: flex; justify-content: space-between;
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--soft);
+  }
+  .card-date .tag { color: var(--minou); }
+  .card-date .tag.warm { color: var(--max); }
+  .card h3 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 24px; line-height: 1.15; letter-spacing: -0.015em;
+  }
+  .card h3 em { font-style: italic; }
+  .card-meta {
+    display: flex; gap: 14px; font-size: 12px;
+    color: var(--mid); padding-top: 8px;
+    border-top: 1px solid var(--rule);
+  }
+  .card:hover h3 { color: var(--max); }
+  .load-more { text-align: center; padding: 12px 40px 64px; }
+  .load-more .archive { font-size: 12px; color: var(--mid); margin-top: 14px; }
+  .load-more .archive a { color: var(--mid); }
+  .pipeline {
+    margin: 0 40px 64px; padding: 32px 36px;
+    background: var(--paper-2); border-radius: 14px;
+    display: grid; grid-template-columns: 1fr 2fr;
+    gap: 48px; align-items: center;
+  }
+  @media (max-width: 820px) { .pipeline { grid-template-columns: 1fr; } }
+  .pipeline h3 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 30px; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 8px;
+  }
+  .pipeline h3 em { font-style: italic; }
+  .pipeline p { font-size: 13px; color: var(--mid); line-height: 1.6; }
+  .pipeline-list { display: flex; flex-direction: column; gap: 10px; }
+  .pipeline-item {
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 14px; align-items: baseline;
+    padding: 10px 14px; background: rgba(255,255,255,0.5);
+    border-radius: 8px; font-size: 13px;
+  }
+  .pipeline-item .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .pipeline-item .dot.minou { background: var(--minou); }
+  .pipeline-item .dot.max   { background: var(--max); }
+  .pipeline-item .dot.both  { background: var(--ink); }
+  .pipeline-item em { font-family: 'Fraunces', serif; font-style: italic; }
+  .pipeline-item .when {
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--mid);
+  }
+  .cta {
+    margin: 0 40px 80px;
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    padding: 48px 0;
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 40px;
+  }
+  @media (max-width: 720px) { .cta { grid-template-columns: 1fr; } }
+  .cta h4 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 32px; line-height: 1.15;
+    letter-spacing: -0.02em; max-width: 560px;
+  }
+  .cta h4 em { font-style: italic; }
+  .newsletter {
+    margin: 0 40px 80px; padding: 56px;
+    background: var(--ink); color: var(--paper); border-radius: 14px;
+    display: grid; grid-template-columns: 1.2fr 1fr;
+    gap: 48px; align-items: center;
+  }
+  @media (max-width: 820px) { .newsletter { grid-template-columns: 1fr; padding: 36px; } }
+  .newsletter h3 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.05; letter-spacing: -0.025em; margin-bottom: 14px;
+  }
+  .newsletter h3 em { font-style: italic; }
+  .newsletter h3 .max-c   { color: #ffaa8c; }
+  .newsletter h3 .minou-c { color: #b9d6a4; }
+  .newsletter p { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 460px; }
+  .newsletter form { display: flex; gap: 8px; flex-direction: column; }
+  .newsletter .row {
+    display: flex; gap: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 999px; padding: 6px;
+    background: rgba(255,255,255,0.05);
+  }
+  .newsletter input {
+    flex: 1; background: transparent; border: none;
+    padding: 10px 14px; color: var(--paper);
+    font-family: inherit; font-size: 14px; outline: none;
+  }
+  .newsletter input::placeholder { color: rgba(255,255,255,0.4); }
+  .newsletter button {
+    background: var(--paper); color: var(--ink); border: none;
+    padding: 10px 20px; font-family: inherit;
+    font-size: 13px; border-radius: 999px;
+    cursor: pointer; font-weight: 500;
+  }
+  .newsletter .fineprint {
+    font-size: 11px; color: rgba(255,255,255,0.4);
+    margin-top: 12px; letter-spacing: 0.04em;
+  }
+  .newsletter .cadence {
+    display: flex; gap: 18px; margin-top: 20px;
+    font-size: 11px; color: rgba(255,255,255,0.55);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    flex-wrap: wrap;
+  }
+  .newsletter .cadence b { color: var(--paper); font-weight: 500; }
+</style>
 </head>
 <body>
 
-<header>
-  <nav class="nav-left">
-    <a class="nav-link highlight" href="tinder.html">🍽 Was kochen wir?</a>
+<div class="util">
+  <div class="search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input placeholder="Suchen — z.B. Spargel, Pasta, 30 Min." />
+  </div>
+  <div class="pulse"><span class="dot"></span>Zuletzt aktualisiert <b>vor 3 Tagen</b> · neuestes Rezept: <b>Spaghetti Carbonara</b></div>
+  <div class="right">
+    <a href="#">Folgen</a>
+    <a href="#">RSS</a>
+    <a class="login" href="#">Anmelden</a>
+  </div>
+</div>
+
+<header class="site-header">
+  <nav class="nav-primary">
+    <a class="on" href="index.html">Rezepte</a>
+    <a href="#saison">Saison</a>
+    <a href="tinder.html">Was kochen wir?</a>
+    <a href="ueber-uns.html">Über uns</a>
   </nav>
-  <a class="logo" href="index.html">
-    <span class="logo-max">Max</span>
-    <span class="logo-amp">&</span>
-    <span class="logo-minou">Minou</span>
-  </a>
-  <nav class="nav-right">
-    <a class="nav-link" href="ueber-uns.html">Über uns</a>
+  <a class="logo" href="index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
+  <nav class="nav-secondary">
+    <a href="#">Frühling</a>
+    <a href="#">Sommer</a>
+    <a href="#">Ganzjährig</a>
+    <a href="#">≤ 30 Min.</a>
   </nav>
 </header>
 
-<div class="hero">
-  <h2>Kochen war noch nie so fair aufgeteilt.</h2>
-  <div class="concept-pills">
-    <span class="pill max-pill">🥔 Max kocht</span>
-    <span class="pill minou-pill">🌿 Minou kocht</span>
-    <span class="pill neutral">🍽 gemeinsam anrichten</span>
+<section class="hero">
+  <div class="kicker">Vegan · für zwei · <span class="max-c">Max kocht</span> · <span class="minou-c">Minou kocht</span> · gemeinsam am Tisch</div>
+  <h1 class="hero-title">Du kochst <span class="max-w">deins</span>,<br />ich koche <span class="minou-w">meins</span>,<br />wir essen <em>zusammen.</em></h1>
+  <p class="lede">Jedes Rezept ist in zwei parallele Teile aufgeteilt. Jede Person öffnet das Rezept auf ihrem Gerät, wählt eine Rolle — und sieht nur ihre eigenen Schritte. Am Ende richtet ihr gemeinsam an.</p>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Frisch aus der <em>Küche</em></h2>
+    <a class="meta-link" href="#sammlung"><em>Alle 5 Rezepte ansehen</em> →</a>
   </div>
-  <p class="concept-note">Jede:r öffnet das Rezept auf dem eigenen Gerät und wählt seine Rolle.<br>Ihr kocht parallel — und kommt am Ende gemeinsam an den Tisch.</p>
-</div>
 
-<hr />
-
-<div class="recipes-section">
-  <div class="section-label">Alle Rezepte</div>
-
-  <div class="recipe-grid">
-
-    <a class="recipe-card" href="rezepte/kartoffelsalat-spargel.html">
-      <div class="card-visual warm">🥔</div>
-      <div class="card-body">
-        <div class="card-tags"><span class="card-tag">🌿 Vegan · Frühling</span></div>
-        <div class="card-title">Knuspriger Kartoffelsalat mit Spargel & Honig-Senf-Dressing</div>
-        <div class="card-meta">
-          <span>⏱ 50 Min.</span>
-          <span>🔥 Ofengericht</span>
+  <article class="featured">
+    <div class="photo">
+      <div class="stripes"></div>
+      <div class="badge-new">Neu · 7. Mai 2026</div>
+      <div class="label">— food shot — twirled spaghetti, schwarzer teller</div>
+    </div>
+    <div class="info">
+      <div class="feat-date">
+        <span>Veröffentlicht 7. Mai 2026</span>
+        <span>·</span>
+        <span>Schnell · 20 Min.</span>
+      </div>
+      <h3><a href="rezepte/carbonara.html">Vegane Spaghetti <em>Carbonara</em> mit Räuchertofu.</a></h3>
+      <p>Cremig, rauchig, in 20 Minuten auf dem Tisch — unser bisher schnellstes Rezept. Max kümmert sich um Tofu und Pasta, Minou rührt eine seidige Carbonara-Sauce aus Cashews und Hefeflocken. Kein Ei, keine Sahne, kein Kompromiss.</p>
+      <div class="role-split">
+        <div class="role-cell max">
+          <div class="who">Max</div>
+          <div class="what"><em>Räuchertofu</em> &amp; Pasta</div>
+        </div>
+        <div class="role-cell minou">
+          <div class="who">Minou</div>
+          <div class="what">Cremige <em>Carbonara-Sauce</em></div>
         </div>
       </div>
-      <div class="card-arrow">Zum Rezept <span>→</span></div>
-    </a>
+      <a class="btn-pill" href="rezepte/carbonara.html">Rezept lesen <em>→</em></a>
+    </div>
+  </article>
+</section>
 
-    <a class="recipe-card" href="rezepte/pasta-primavera.html">
-      <div class="card-visual green">🍝</div>
-      <div class="card-body">
-        <div class="card-tags"><span class="card-tag">🌿 Vegan · Sommer</span></div>
-        <div class="card-title">Cremige Pasta Primavera mit Zitronen-Cashew-Sauce</div>
-        <div class="card-meta">
-          <span>⏱ 30 Min.</span>
-          <span>🍳 Pfannengericht</span>
-        </div>
-      </div>
-      <div class="card-arrow">Zum Rezept <span>→</span></div>
-    </a>
-
-    <a class="recipe-card" href="rezepte/buddha-bowl.html">
-      <div class="card-visual gold">🥗</div>
-      <div class="card-body">
-        <div class="card-tags"><span class="card-tag">🌿 Vegan · Ganzjährig</span></div>
-        <div class="card-title">Buddha Bowl mit Süßkartoffel & Tahini-Dressing</div>
-        <div class="card-meta">
-          <span>⏱ 40 Min.</span>
-          <span>🔥 Ofengericht</span>
-        </div>
-      </div>
-      <div class="card-arrow">Zum Rezept <span>→</span></div>
-    </a>
-
-    <a class="recipe-card" href="rezepte/blumenkohl-tacos.html">
-      <div class="card-visual warm">🌮</div>
-      <div class="card-body">
-        <div class="card-tags"><span class="card-tag">🌿 Vegan · Ganzjährig</span></div>
-        <div class="card-title">Blumenkohl Tacos mit Tahini-Sauce</div>
-        <div class="card-meta">
-          <span>⏱ 35 Min.</span>
-          <span>🔥 Ofengericht</span>
-        </div>
-      </div>
-      <div class="card-arrow">Zum Rezept <span>→</span></div>
-    </a>
-
+<section class="section" id="sammlung">
+  <div class="section-head">
+    <h2>Aus der <em>Sammlung</em></h2>
+    <a class="meta-link" href="#"><em>Sortieren · Neu zuerst</em> ↓</a>
   </div>
-</div>
 
-<footer>
-  <strong>Max & Minou</strong> — Vegane Rezepte für zwei, die beide kochen.<br>
-  Jedes Rezept. Jede Person. <span>Gemeinsam am Tisch.</span><br><br>
-  <a href="ueber-uns.html" style="color:#888; text-decoration:underline; text-underline-offset:3px;">Über uns</a>
+  <div class="filter-bar" id="saison">
+    <span class="label">Saison</span>
+    <button class="chip on">Alle</button>
+    <button class="chip">Frühling</button>
+    <button class="chip">Sommer</button>
+    <button class="chip">Herbst</button>
+    <button class="chip">Winter</button>
+    <button class="chip">Ganzjährig</button>
+    <span class="label" style="margin-left:24px">Zeit</span>
+    <button class="chip">≤ 20 Min.</button>
+    <button class="chip">≤ 40 Min.</button>
+    <button class="chip">≤ 60 Min.</button>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="rezepte/kartoffelsalat.html">
+      <div class="photo"><div class="stripes"></div><div class="label">— smashed potatoes &amp; spargel —</div></div>
+      <div class="card-date"><span>3. Mai 2026</span><span class="tag warm">Frühling</span></div>
+      <h3>Knuspriger <em>Kartoffelsalat</em> mit grünem Spargel.</h3>
+      <div class="card-meta"><span>50 Min.</span><span>Max · Ofen</span><span>Minou · Sauce</span></div>
+    </a>
+    <a class="card" href="rezepte/primavera.html">
+      <div class="photo"><div class="stripes"></div><div class="label">— pasta primavera, side angle —</div></div>
+      <div class="card-date"><span>24. April 2026</span><span class="tag">Sommer</span></div>
+      <h3>Cremige <em>Pasta Primavera</em> mit Zitronen-Cashew-Sauce.</h3>
+      <div class="card-meta"><span>30 Min.</span><span>Max · Pasta</span><span>Minou · Sauce</span></div>
+    </a>
+    <a class="card" href="rezepte/buddha-bowl.html">
+      <div class="photo"><div class="stripes"></div><div class="label">— buddha bowl, overhead —</div></div>
+      <div class="card-date"><span>11. April 2026</span><span class="tag">Ganzjährig</span></div>
+      <h3>Buddha Bowl <em>mit Süßkartoffel</em> &amp; Tahini.</h3>
+      <div class="card-meta"><span>40 Min.</span><span>Max · Süßkartoffel</span><span>Minou · Bowl</span></div>
+    </a>
+    <a class="card" href="rezepte/tacos.html">
+      <div class="photo"><div class="stripes"></div><div class="label">— blumenkohl tacos, hand reaching —</div></div>
+      <div class="card-date"><span>28. März 2026</span><span class="tag">Ganzjährig</span></div>
+      <h3>Blumenkohl-<em>Tacos</em> mit Tahini-Sauce.</h3>
+      <div class="card-meta"><span>35 Min.</span><span>Max · Blumenkohl</span><span>Minou · Tacos</span></div>
+    </a>
+    <a class="card" href="rezepte/carbonara.html">
+      <div class="photo"><div class="stripes"></div><div class="label">— spaghetti carbonara —</div></div>
+      <div class="card-date"><span>7. Mai 2026</span><span class="tag warm">Frühling</span></div>
+      <h3>Vegane Spaghetti <em>Carbonara</em> mit Räuchertofu.</h3>
+      <div class="card-meta"><span>20 Min.</span><span>Max · Tofu &amp; Pasta</span><span>Minou · Sauce</span></div>
+    </a>
+    <div class="card" style="display:flex;align-items:center;justify-content:center;background:var(--paper-2);border-radius:8px;padding:32px;text-align:center;color:var(--mid);font-family:'Fraunces',serif;font-style:italic;font-size:18px;line-height:1.4;">
+      Bald mehr —<br />4 Rezepte in der <em>Testküche</em>.
+    </div>
+  </div>
+
+  <div class="load-more">
+    <button class="btn-pill ghost">Weitere Rezepte laden <em>↓</em></button>
+    <div class="archive">oder <a href="#">ins komplette Archiv</a> springen — sortiert nach Datum, Saison, Zeit.</div>
+  </div>
+</section>
+
+<section class="pipeline">
+  <div>
+    <h3>In der <em>Testküche</em></h3>
+    <p>Was wir gerade entwickeln, kochen, fotografieren — und bald veröffentlichen. Der Blog wächst weiter.</p>
+  </div>
+  <div class="pipeline-list">
+    <div class="pipeline-item">
+      <span class="dot both"></span>
+      <span><em>Cremiges Pilz-Risotto</em> mit Trüffelöl</span>
+      <span class="when">Woche 20</span>
+    </div>
+    <div class="pipeline-item">
+      <span class="dot minou"></span>
+      <span><em>Sommerrollen</em> mit Erdnusssauce</span>
+      <span class="when">Woche 21</span>
+    </div>
+    <div class="pipeline-item">
+      <span class="dot max"></span>
+      <span>Geschmorte <em>Aubergine</em> mit Bulgur</span>
+      <span class="when">Woche 22</span>
+    </div>
+    <div class="pipeline-item">
+      <span class="dot both"></span>
+      <span><em>Erdbeer-Tarte</em> mit Cashew-Vanille</span>
+      <span class="when">Sommerstart</span>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h4>Unentschieden? <em>Lasst die App entscheiden</em> — wischt unabhängig durch und seht, wo ihr beide ja sagt.</h4>
+  <a class="btn-pill" href="tinder.html">Was kochen wir? <em>→</em></a>
+</section>
+
+<section class="newsletter">
+  <div>
+    <h3>Bekomm jedes neue<br /><span class="max-c">Max</span><em>-und-</em><span class="minou-c">Minou</span>-Rezept in deine Mailbox.</h3>
+    <p>Ein Rezept pro Veröffentlichung. Keine Werbung, keine Rezept-Roundups, kein 800-Wörter-Vorwort.</p>
+    <div class="cadence">
+      <span><b>~1 Mail</b> alle 2 Wochen</span>
+      <span><b>vegan</b> · saisonal</span>
+      <span>jederzeit <b>abbestellbar</b></span>
+    </div>
+  </div>
+  <form onsubmit="event.preventDefault(); this.querySelector('input').value=''; this.querySelector('.fineprint').textContent='Danke — Bestätigungs-Mail unterwegs.';">
+    <div class="row">
+      <input type="email" placeholder="du@beispiel.de" required />
+      <button type="submit">Abonnieren</button>
+    </div>
+    <div class="fineprint">Wir nutzen deine Adresse nur, um dir neue Rezepte zu schicken.</div>
+  </form>
+</section>
+
+<footer class="site-footer">
+  <div>
+    <h5>Max <em>&amp;</em> Minou</h5>
+    <p>Vegane Rezepte für zwei,<br />die beide kochen.<br /><br />Jedes Rezept. Jede Person.<br />Gemeinsam am Tisch.</p>
+  </div>
+  <div>
+    <h5>Lesen</h5>
+    <a href="index.html">Alle Rezepte</a>
+    <a href="#">Saison Frühling</a>
+    <a href="#">Saison Sommer</a>
+    <a href="#">Archiv</a>
+    <a href="#">RSS-Feed</a>
+  </div>
+  <div>
+    <h5>Kochen</h5>
+    <a href="tinder.html">Was kochen wir?</a>
+    <a href="tinder.html">Mit Partner verbinden</a>
+    <a href="#">Anmelden</a>
+  </div>
+  <div>
+    <h5>Folgen</h5>
+    <a href="#">Newsletter</a>
+    <a href="#">Instagram</a>
+    <a href="ueber-uns.html">Über uns</a>
+    <a href="#">Kontakt</a>
+  </div>
+  <div class="colophon">
+    <span>© 2026 Max &amp; Minou</span>
+    <span>Gesetzt in Fraunces &amp; Inter</span>
+    <span>Lebt seit 2025 · wächst weiter</span>
+  </div>
 </footer>
+
+<script>
+  document.querySelectorAll('.filter-bar .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const group = chip.parentElement.querySelectorAll('.chip');
+      // simple: toggle within section blocks separated by labels
+      group.forEach(c => c.classList.remove('on'));
+      chip.classList.add('on');
+    });
+  });
+</script>
 
 </body>
 </html>

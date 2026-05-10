@@ -1,723 +1,495 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>Was kochen wir? — Max & Minou</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --max: #b85c42; --max-light: #e8896e; --max-bg: #fdf2ef;
-      --minou: #5d8f6a; --minou-light: #8bbf94; --minou-bg: #eef5ef;
-      --ink: #1a1a1a; --mid: #8a8a8a; --light: #e8e8e8;
-    }
-    html { height: 100%; }
-    body {
-      font-family: 'Georgia', serif;
-      background: #f9f5f1;
-      color: var(--ink);
-      min-height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ── Header ── */
-    header {
-      background: #f2ece3;
-      border-bottom: 1px solid #e5dbd0;
-      padding: 1.1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-    }
-    .back-link { font-family:'Arial',sans-serif; font-size:0.82rem; color:var(--mid); text-decoration:none; }
-    .back-link:hover { color:var(--ink); }
-    .logo { display:flex; align-items:baseline; gap:0.4rem; text-decoration:none; }
-    .logo-max   { font-size:1.4rem; font-weight:700; color:var(--max); }
-    .logo-amp   { font-size:0.9rem; color:#bbb0a4; font-style:italic; }
-    .logo-minou { font-size:1.4rem; font-weight:700; color:var(--minou); }
-    .user-chip {
-      font-family:'Arial',sans-serif; font-size:0.78rem; color:var(--mid);
-      display:flex; align-items:center; gap:0.5rem;
-    }
-    .sign-out-btn {
-      background:none; border:none; color:var(--mid); cursor:pointer;
-      font-size:0.78rem; font-family:'Arial',sans-serif;
-      text-decoration:underline; text-underline-offset:2px;
-    }
-    .sign-out-btn:hover { color:var(--ink); }
-
-    /* ── Screens ── */
-    main { flex:1; display:flex; flex-direction:column; align-items:center; padding:2rem 1.5rem 3rem; }
-    .screen { display:none; width:100%; max-width:420px; flex-direction:column; align-items:center; }
-    .screen.active { display:flex; }
-
-    /* ── Spinner ── */
-    .spinner {
-      width:2.2rem; height:2.2rem;
-      border:3px solid var(--light); border-top-color:var(--max);
-      border-radius:50%; animation:spin 0.75s linear infinite;
-      margin:5rem auto;
-    }
-    @keyframes spin { to { transform:rotate(360deg); } }
-
-    /* ── Forms ── */
-    .card {
-      background:white; border-radius:1.4rem;
-      padding:2rem 1.8rem;
-      box-shadow:0 4px 28px rgba(0,0,0,0.09);
-      width:100%;
-    }
-    .card-title { font-size:1.5rem; font-weight:700; text-align:center; margin-bottom:0.3rem; }
-    .card-sub { font-family:'Arial',sans-serif; font-size:0.83rem; color:var(--mid); text-align:center; margin-bottom:1.8rem; line-height:1.5; }
-    .field { margin-bottom:1rem; }
-    .field label {
-      font-family:'Arial',sans-serif; font-size:0.7rem; font-weight:700;
-      letter-spacing:0.12em; text-transform:uppercase; color:var(--mid);
-      display:block; margin-bottom:0.4rem;
-    }
-    .field input {
-      width:100%; padding:0.78rem 1rem;
-      border:1.5px solid var(--light); border-radius:0.65rem;
-      font-family:'Arial',sans-serif; font-size:0.93rem; color:var(--ink);
-      outline:none; transition:border-color 0.15s;
-      background:white;
-    }
-    .field input:focus { border-color:var(--max); }
-    .btn {
-      width:100%; border:none; border-radius:0.75rem; padding:0.88rem;
-      font-family:'Georgia',serif; font-size:1rem; font-weight:700;
-      cursor:pointer; transition:opacity 0.15s, transform 0.1s;
-      color:white; margin-top:0.4rem;
-    }
-    .btn:hover { opacity:0.9; transform:translateY(-1px); }
-    .btn:active { transform:translateY(0); opacity:1; }
-    .btn-max   { background:var(--max); }
-    .btn-minou { background:var(--minou); }
-    .btn-ghost {
-      background:none; border:none; width:100%;
-      font-family:'Arial',sans-serif; font-size:0.82rem; color:var(--mid);
-      cursor:pointer; text-decoration:underline; text-underline-offset:3px;
-      margin-top:0.8rem; text-align:center;
-    }
-    .btn-ghost:hover { color:var(--ink); }
-    .msg-error   { font-family:'Arial',sans-serif; font-size:0.82rem; color:#c0392b; text-align:center; margin-top:0.5rem; min-height:1.1rem; }
-    .msg-success { font-family:'Arial',sans-serif; font-size:0.82rem; color:var(--minou); text-align:center; margin-top:0.5rem; }
-
-    /* ── Partner screen ── */
-    .code-box {
-      background:var(--max-bg); border-radius:1rem;
-      padding:1.4rem 1.5rem; text-align:center; margin-bottom:1.4rem;
-    }
-    .code-label {
-      font-family:'Arial',sans-serif; font-size:0.68rem; font-weight:700;
-      letter-spacing:0.14em; text-transform:uppercase; color:var(--max);
-      margin-bottom:0.5rem;
-    }
-    .code-value {
-      font-size:2.6rem; font-weight:700; letter-spacing:0.3em;
-      color:var(--max); font-family:'Arial',sans-serif;
-    }
-    .btn-copy {
-      margin-top:0.8rem; background:none;
-      border:1.5px solid var(--max); color:var(--max);
-      border-radius:0.5rem; padding:0.35rem 1rem;
-      font-family:'Arial',sans-serif; font-size:0.8rem; cursor:pointer;
-      transition:background 0.15s;
-    }
-    .btn-copy:hover { background:var(--max-bg); }
-    .divider {
-      display:flex; align-items:center; gap:0.8rem;
-      font-family:'Arial',sans-serif; font-size:0.78rem; color:var(--mid);
-      margin:1.2rem 0;
-    }
-    .divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--light); }
-    .code-input {
-      text-transform:uppercase !important;
-      letter-spacing:0.25em !important;
-      font-size:1.3rem !important;
-      text-align:center !important;
-    }
-
-    /* ── Swipe screen ── */
-    .swipe-header { text-align:center; margin-bottom:1.8rem; }
-    .swipe-header h2 { font-size:1.25rem; font-weight:700; margin-bottom:0.25rem; }
-    .swipe-header p { font-family:'Arial',sans-serif; font-size:0.83rem; color:var(--mid); }
-
-    .card-stack { position:relative; width:320px; height:460px; }
-
-    .recipe-card {
-      position:absolute; inset:0;
-      background:white; border-radius:1.5rem;
-      box-shadow:0 8px 36px rgba(0,0,0,0.13);
-      display:flex; flex-direction:column;
-      overflow:hidden;
-      cursor:grab; user-select:none; touch-action:none;
-    }
-    .recipe-card:active { cursor:grabbing; }
-    .recipe-card:nth-child(1) { z-index:3; }
-    .recipe-card:nth-child(2) { transform:scale(0.95) translateY(14px); z-index:2; }
-    .recipe-card:nth-child(3) { transform:scale(0.90) translateY(28px); z-index:1; }
-
-    .card-visual {
-      flex:1; display:flex; align-items:center; justify-content:center;
-      font-size:5.5rem;
-      background:linear-gradient(145deg, #fdf8f3 0%, #f3e8d8 100%);
-      position:relative;
-    }
-    .card-overlay {
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      font-size:4rem; opacity:0; pointer-events:none;
-      transition:opacity 0.05s;
-      border-radius:1.5rem 1.5rem 0 0;
-    }
-    .overlay-like { background:rgba(93,143,106,0.28); }
-    .overlay-skip { background:rgba(184,92,66,0.22); }
-
-    .card-info { padding:1.3rem 1.6rem 1.6rem; border-top:1px solid var(--light); }
-    .card-tag {
-      font-family:'Arial',sans-serif; font-size:0.68rem; font-weight:700;
-      letter-spacing:0.14em; text-transform:uppercase; color:var(--minou);
-      margin-bottom:0.4rem;
-    }
-    .card-title { font-size:1.08rem; font-weight:700; line-height:1.3; margin-bottom:0.5rem; }
-    .card-meta { font-family:'Arial',sans-serif; font-size:0.8rem; color:var(--mid); }
-
-    .swipe-btns {
-      display:flex; gap:2.2rem; justify-content:center;
-      margin-top:1.8rem;
-    }
-    .swipe-btn {
-      width:4.2rem; height:4.2rem; border-radius:50%; border:none;
-      font-size:1.55rem; cursor:pointer;
-      transition:transform 0.12s, box-shadow 0.15s;
-      box-shadow:0 3px 12px rgba(0,0,0,0.1);
-    }
-    .swipe-btn:hover { transform:scale(1.12); box-shadow:0 6px 20px rgba(0,0,0,0.16); }
-    .swipe-btn:active { transform:scale(0.94); }
-    .btn-skip { background:var(--max-bg); }
-    .btn-like { background:var(--minou-bg); }
-
-    .progress { font-family:'Arial',sans-serif; font-size:0.78rem; color:var(--mid); text-align:center; margin-top:1rem; }
-    .match-teaser {
-      margin-top:2rem; padding:1rem 1.5rem;
-      background:white; border-radius:1rem;
-      box-shadow:0 2px 12px rgba(0,0,0,0.07);
-      text-align:center; width:100%;
-      font-family:'Arial',sans-serif; font-size:0.85rem; color:var(--mid);
-      cursor:pointer; border:none;
-      transition:box-shadow 0.15s, transform 0.1s;
-    }
-    .match-teaser:hover { box-shadow:0 4px 18px rgba(0,0,0,0.12); transform:translateY(-1px); }
-    .match-teaser strong { display:block; font-family:'Georgia',serif; font-size:1rem; color:var(--ink); margin-bottom:0.2rem; }
-
-    /* ── Done screen ── */
-    .done-card { text-align:center; }
-    .done-emoji { font-size:4rem; margin-bottom:1rem; display:block; }
-    .done-title { font-size:1.5rem; font-weight:700; margin-bottom:0.5rem; }
-    .done-sub { font-family:'Arial',sans-serif; font-size:0.87rem; color:var(--mid); margin-bottom:2rem; line-height:1.6; }
-
-    /* ── Matches screen ── */
-    .matches-header { text-align:center; margin-bottom:2rem; width:100%; }
-    .matches-header h2 { font-size:1.4rem; font-weight:700; margin-bottom:0.3rem; }
-    .matches-header p { font-family:'Arial',sans-serif; font-size:0.83rem; color:var(--mid); }
-    .match-list { display:flex; flex-direction:column; gap:0.8rem; width:100%; }
-    .match-item {
-      background:white; border-radius:1rem;
-      padding:1.1rem 1.4rem;
-      display:flex; align-items:center; gap:1rem;
-      text-decoration:none; color:var(--ink);
-      box-shadow:0 2px 12px rgba(0,0,0,0.07);
-      transition:transform 0.1s, box-shadow 0.15s;
-    }
-    .match-item:hover { transform:translateY(-2px); box-shadow:0 5px 20px rgba(0,0,0,0.11); }
-    .match-emoji-big { font-size:2.1rem; flex-shrink:0; }
-    .match-info { flex:1; }
-    .match-name { font-weight:700; font-size:0.95rem; line-height:1.3; margin-bottom:0.2rem; }
-    .match-detail { font-family:'Arial',sans-serif; font-size:0.75rem; color:var(--mid); }
-    .match-arrow { color:var(--light); font-size:1.1rem; }
-    .no-matches {
-      text-align:center; font-family:'Arial',sans-serif;
-      font-size:0.88rem; color:var(--mid); padding:2.5rem 1rem; line-height:1.7;
-    }
-    .no-matches span { font-size:2.5rem; display:block; margin-bottom:0.8rem; }
-
-    footer {
-      background:#1a1a1a; text-align:center;
-      padding:1.5rem 1rem;
-      font-family:'Arial',sans-serif; font-size:0.78rem; color:#888;
-      flex-shrink:0; margin-top:auto;
-    }
-    footer strong { color:#fff; }
-    footer span { color:var(--max-light); }
-
-    @media(max-width:380px) {
-      .card-stack { width:290px; height:420px; }
-      .code-value { font-size:2rem; }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Was kochen wir? — Max &amp; Minou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/site.css" />
+<style>
+  .swipe-hero { padding: 56px 40px 24px; text-align: center; }
+  .swipe-hero h1 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 1; letter-spacing: -0.03em; margin-bottom: 18px;
+  }
+  .swipe-hero h1 em { font-style: italic; }
+  .swipe-hero p { color: var(--mid); max-width: 560px; margin: 0 auto; font-size: 15px; line-height: 1.7; }
+  /* Role picker */
+  .who-pick {
+    display: flex; gap: 12px; justify-content: center;
+    padding: 8px 40px 24px;
+  }
+  .who-pick button {
+    font-family: inherit; font-size: 13px;
+    padding: 10px 22px; border-radius: 999px;
+    border: 1px solid var(--rule); background: transparent;
+    cursor: pointer; color: var(--mid);
+    letter-spacing: 0.04em;
+  }
+  .who-pick button.on.max   { background: var(--max);   color: var(--paper); border-color: var(--max); }
+  .who-pick button.on.minou { background: var(--minou); color: var(--paper); border-color: var(--minou); }
+  /* Deck */
+  .deck-wrap {
+    position: relative;
+    height: 560px;
+    margin: 0 auto 24px;
+    max-width: 420px;
+    padding: 0 20px;
+  }
+  .card-swipe {
+    position: absolute; inset: 0 20px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--paper-2);
+    box-shadow: 0 12px 32px rgba(29,26,20,0.12);
+    cursor: grab;
+    transition: transform 0.3s cubic-bezier(.2,.7,.2,1), opacity 0.3s;
+    user-select: none;
+    display: flex; flex-direction: column;
+  }
+  .card-swipe.dragging { transition: none; cursor: grabbing; }
+  .card-swipe .photo-block {
+    flex: 1; background: var(--paper-2);
+    position: relative; min-height: 280px;
+  }
+  .card-swipe .photo-block .stripes {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(135deg, transparent 0 16px, rgba(0,0,0,0.04) 16px 17px);
+  }
+  .card-swipe .photo-block .label {
+    position: absolute; bottom: 14px; right: 14px;
+    background: var(--paper); padding: 4px 8px;
+    border-radius: 2px; font-size: 10px; color: var(--mid);
+    font-family: ui-monospace, 'SF Mono', monospace;
+  }
+  .card-swipe .meta-row {
+    position: absolute; top: 14px; left: 14px; right: 14px;
+    display: flex; justify-content: space-between;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid);
+  }
+  .card-swipe .meta-row .pill {
+    background: var(--paper); padding: 5px 10px; border-radius: 999px;
+  }
+  .card-swipe .info-block {
+    padding: 22px 24px 24px;
+    background: var(--paper);
+    border-top: 1px solid var(--rule);
+  }
+  .card-swipe h3 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 26px; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 12px;
+  }
+  .card-swipe h3 em { font-style: italic; }
+  .card-swipe .roles-line {
+    display: flex; gap: 14px; font-size: 12px; color: var(--mid);
+  }
+  .card-swipe .roles-line b { color: var(--ink); font-weight: 500; }
+  .card-swipe .roles-line .max-c   { color: var(--max); }
+  .card-swipe .roles-line .minou-c { color: var(--minou); }
+  /* Stamp overlays */
+  .stamp {
+    position: absolute; top: 28px;
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 44px; padding: 10px 24px;
+    border: 3px solid currentColor; border-radius: 8px;
+    opacity: 0; transform: rotate(-8deg);
+    pointer-events: none; letter-spacing: -0.01em;
+  }
+  .stamp.yes { right: 24px; color: var(--minou); }
+  .stamp.no  { left: 24px;  color: var(--max); transform: rotate(8deg); }
+  /* Action buttons */
+  .actions {
+    display: flex; gap: 18px; justify-content: center;
+    padding: 0 40px 32px;
+  }
+  .action-btn {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 1px solid var(--rule); background: var(--paper);
+    cursor: pointer; font-size: 24px; display: grid; place-items: center;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .action-btn:hover { transform: translateY(-2px); }
+  .action-btn.no  { color: var(--max); border-color: var(--max); }
+  .action-btn.yes { color: var(--minou); border-color: var(--minou); }
+  .action-btn.undo { font-size: 18px; color: var(--mid); }
+  /* Matches strip */
+  .matches {
+    margin: 24px 40px 40px;
+    padding: 28px 32px;
+    background: var(--paper-2); border-radius: 14px;
+  }
+  .matches-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 18px;
+  }
+  .matches-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 24px; letter-spacing: -0.02em;
+  }
+  .matches-head h2 em { font-style: italic; color: var(--mid); }
+  .matches-head .reset {
+    font-size: 12px; color: var(--mid); background: none; border: none;
+    cursor: pointer; font-family: inherit; text-decoration: underline;
+  }
+  .match-list { display: flex; flex-direction: column; gap: 8px; }
+  .match-row {
+    display: grid; grid-template-columns: auto 1fr auto auto;
+    gap: 16px; align-items: center;
+    padding: 12px 16px; background: var(--paper);
+    border-radius: 8px;
+  }
+  .match-row .heart {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--ink); color: var(--paper);
+    display: grid; place-items: center; font-size: 14px;
+  }
+  .match-row .title {
+    font-family: 'Fraunces', serif; font-size: 16px;
+  }
+  .match-row .title em { font-style: italic; }
+  .match-row .stats { font-size: 11px; color: var(--mid); letter-spacing: 0.08em; }
+  .match-row a {
+    color: var(--ink); text-decoration: none;
+    font-size: 12px; padding: 6px 12px;
+    border: 1px solid var(--ink); border-radius: 999px;
+  }
+  .match-row a:hover { background: var(--ink); color: var(--paper); }
+  .empty {
+    text-align: center; color: var(--mid);
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 18px; padding: 24px 0;
+  }
+  /* End-of-deck state */
+  .deck-done {
+    text-align: center; padding: 80px 24px;
+    color: var(--mid);
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 22px;
+    line-height: 1.4;
+  }
+  .deck-done b { color: var(--ink); font-style: normal; font-weight: 500; }
+  /* Status bar */
+  .status-bar {
+    display: flex; justify-content: space-between;
+    max-width: 420px; margin: 0 auto 12px;
+    padding: 0 28px;
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--mid);
+  }
+  .status-bar b { color: var(--ink); font-weight: 600; }
+</style>
 </head>
 <body>
 
-<header>
-  <a class="back-link" href="index.html">← Alle Rezepte</a>
-  <a class="logo" href="index.html">
-    <span class="logo-max">Max</span><span class="logo-amp">&</span><span class="logo-minou">Minou</span>
-  </a>
-  <div class="user-chip" id="userChip" style="display:none">
-    <span id="userName"></span>
-    <button class="sign-out-btn" onclick="signOut()">Abmelden</button>
+<div class="util">
+  <div class="search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input placeholder="Suchen — z.B. Spargel, Pasta, 30 Min." />
   </div>
-  <div style="width:80px" id="headerSpacer"></div>
+  <div class="pulse"><span class="dot"></span>Lokaler Modus · ihr swipt unabhängig auf demselben Gerät</div>
+  <div class="right">
+    <a href="#">Folgen</a>
+    <a href="#">RSS</a>
+    <a class="login" href="#">Anmelden</a>
+  </div>
+</div>
+
+<header class="site-header">
+  <nav class="nav-primary">
+    <a href="index.html">Rezepte</a>
+    <a href="index.html#saison">Saison</a>
+    <a class="on" href="tinder.html">Was kochen wir?</a>
+    <a href="ueber-uns.html">Über uns</a>
+  </nav>
+  <a class="logo" href="index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
+  <nav class="nav-secondary">
+    <a href="#">Frühling</a>
+    <a href="#">Sommer</a>
+    <a href="#">Ganzjährig</a>
+    <a href="#">≤ 30 Min.</a>
+  </nav>
 </header>
 
-<main>
+<section class="swipe-hero">
+  <div class="kicker">Unentschieden? · wischt einzeln · seht, wo ihr beide <em>ja</em> sagt</div>
+  <h1>Was kochen wir <em>heute?</em></h1>
+  <p>Beide swipen unabhängig durch dieselben Rezepte. Sobald ihr beide auf dasselbe Rezept ja sagt, taucht es unten als <em>Match</em> auf.</p>
+</section>
 
-  <!-- Loading -->
-  <div class="screen active" id="screenLoading">
-    <div class="spinner"></div>
+<div class="who-pick" id="whoPick">
+  <button class="role-btn max"   data-role="max">Ich bin Max</button>
+  <button class="role-btn minou" data-role="minou">Ich bin Minou</button>
+</div>
+
+<div class="status-bar">
+  <span>Rolle: <b id="curRole">—</b></span>
+  <span><b id="remaining">5</b> übrig</span>
+</div>
+
+<div class="deck-wrap" id="deck"></div>
+
+<div class="actions" id="actions">
+  <button class="action-btn no"  id="btnNo"  title="Nein">✕</button>
+  <button class="action-btn undo" id="btnUndo" title="Zurück">↶</button>
+  <button class="action-btn yes" id="btnYes" title="Ja">♥</button>
+</div>
+
+<section class="matches">
+  <div class="matches-head">
+    <h2>Eure <em>Matches</em></h2>
+    <button class="reset" id="resetAll">Alles zurücksetzen</button>
   </div>
-
-  <!-- Auth -->
-  <div class="screen" id="screenAuth">
-    <div class="card">
-      <div class="card-title">👋 Hallo!</div>
-      <div class="card-sub" id="authSub">Meld dich an und finde heraus, was ihr heute kochen wollt.</div>
-      <div class="field">
-        <label>E-Mail</label>
-        <input type="email" id="authEmail" placeholder="du@beispiel.de" />
-      </div>
-      <div class="field" id="authNameField" style="display:none">
-        <label>Dein Name</label>
-        <input type="text" id="authName" placeholder="z.B. Max oder Minou" />
-      </div>
-      <div class="field">
-        <label>Passwort</label>
-        <input type="password" id="authPassword" placeholder="••••••••" />
-      </div>
-      <div class="msg-error" id="authError"></div>
-      <button class="btn btn-max" id="authSubmit" onclick="handleAuth()">Anmelden</button>
-      <button class="btn-ghost" id="authToggle" onclick="toggleAuth()">Noch kein Konto? Registrieren →</button>
-    </div>
+  <div class="match-list" id="matchList">
+    <div class="empty" id="emptyState">Noch keine Matches — beide müssen ja sagen.</div>
   </div>
+</section>
 
-  <!-- Partner verbinden -->
-  <div class="screen" id="screenPartner">
-    <div class="card">
-      <div class="card-title">🔗 Partner verbinden</div>
-      <div class="card-sub">Teile deinen Code mit deinem Partner oder gib seinen Code ein.</div>
-
-      <div class="code-box">
-        <div class="code-label">Dein persönlicher Code</div>
-        <div class="code-value" id="myCode">——</div>
-        <button class="btn-copy" onclick="copyCode()">Kopieren</button>
-      </div>
-
-      <div class="divider">oder Code deines Partners eingeben</div>
-
-      <div class="field">
-        <label>Partner-Code</label>
-        <input type="text" id="partnerCodeInput" class="code-input" placeholder="ABC123" maxlength="6" />
-      </div>
-      <div class="msg-error"   id="partnerError"></div>
-      <div class="msg-success" id="partnerSuccess"></div>
-      <button class="btn btn-minou" onclick="connectPartner()">Verbinden</button>
-    </div>
+<footer class="site-footer">
+  <div>
+    <h5>Max <em>&amp;</em> Minou</h5>
+    <p>Vegane Rezepte für zwei,<br />die beide kochen.<br /><br />Jedes Rezept. Jede Person.<br />Gemeinsam am Tisch.</p>
   </div>
-
-  <!-- Swipen -->
-  <div class="screen" id="screenSwipe">
-    <div class="swipe-header">
-      <h2>Was kochen wir? 🍽</h2>
-      <p>Verbunden mit <strong id="partnerName"></strong></p>
-    </div>
-
-    <div class="card-stack" id="cardStack"></div>
-
-    <div class="swipe-btns">
-      <button class="swipe-btn btn-skip" onclick="doSwipe('skip')" title="Nein danke">✕</button>
-      <button class="swipe-btn btn-like" onclick="doSwipe('like')" title="Ja, kochen wir!">♥</button>
-    </div>
-    <div class="progress" id="progress"></div>
-
-    <button class="match-teaser" onclick="showMatches()">
-      <strong>🎯 Was kochen wir heute?</strong>
-      Zeigt eure gemeinsamen Favoriten
-    </button>
+  <div>
+    <h5>Lesen</h5>
+    <a href="index.html">Alle Rezepte</a>
+    <a href="#">Archiv</a>
+    <a href="#">RSS-Feed</a>
   </div>
-
-  <!-- Alle geswiped -->
-  <div class="screen" id="screenDone">
-    <div class="card done-card">
-      <span class="done-emoji">🎉</span>
-      <div class="done-title">Alle Rezepte bewertet!</div>
-      <div class="done-sub">Ihr habt alle Rezepte durch — jetzt schauen, was ihr gemeinsam kochen wollt.</div>
-      <button class="btn btn-minou" onclick="showMatches()">🎯 Unsere Matches anzeigen</button>
-      <button class="btn-ghost" onclick="resetSwipes()">Nochmal von vorne</button>
-    </div>
+  <div>
+    <h5>Kochen</h5>
+    <a href="tinder.html">Was kochen wir?</a>
+    <a href="#">Mit Partner verbinden</a>
   </div>
-
-  <!-- Matches -->
-  <div class="screen" id="screenMatches">
-    <div class="matches-header">
-      <h2>🎯 Eure Matches</h2>
-      <p>Rezepte, die ihr beide kochen wollt.</p>
-    </div>
-    <div class="match-list" id="matchList"></div>
-    <button class="btn-ghost" style="margin-top:1.5rem" onclick="showScreen('screenSwipe')">← Zurück zum Swipen</button>
+  <div>
+    <h5>Folgen</h5>
+    <a href="#">Newsletter</a>
+    <a href="ueber-uns.html">Über uns</a>
   </div>
-
-</main>
-
-<footer>
-  <strong>Max & Minou</strong> — Vegane Rezepte für zwei, die beide kochen.<br>
-  Jedes Rezept. Jede Person. <span>Gemeinsam am Tisch.</span>
+  <div class="colophon">
+    <span>© 2026 Max &amp; Minou</span>
+    <span>Gesetzt in Fraunces &amp; Inter</span>
+    <span>Lebt seit 2025 · wächst weiter</span>
+  </div>
 </footer>
 
 <script>
-const SUPABASE_URL = 'https://cojxukugaorbqxqhbyfy.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvanh1a3VnYW9yYnF4cWhieWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTIzMDcsImV4cCI6MjA5MzkyODMwN30.YR43iaqO2gOMmduJgdVVr7bmvd08fgHi-wZ9AiPpipI';
-
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
-
 const RECIPES = [
-  { slug:'pasta-primavera',           title:'Cremige Pasta Primavera',                  emoji:'🍝', tag:'Vegan · Sommer',    time:'30 Min.' },
-  { slug:'vegane-spaghetti-carbonara',title:'Vegane Spaghetti Carbonara',               emoji:'🍜', tag:'Vegan · Pasta',     time:'20 Min.' },
-  { slug:'buddha-bowl',               title:'Buddha Bowl mit Süßkartoffel & Tahini',    emoji:'🥗', tag:'Vegan · Ganzjährig',time:'40 Min.' },
-  { slug:'blumenkohl-tacos',          title:'Blumenkohl Tacos mit Tahini-Sauce',        emoji:'🌮', tag:'Vegan · Ganzjährig',time:'35 Min.' },
-  { slug:'kartoffelsalat-spargel',    title:'Kartoffelsalat mit Spargel',               emoji:'🥔', tag:'Vegan · Frühling',  time:'50 Min.' },
+  { id:'carbonara',     title:'Vegane Spaghetti <em>Carbonara</em>',    href:'rezepte/carbonara.html',     time:'20 Min.', season:'Frühling', max:'Tofu &amp; Pasta',  minou:'Cremige Sauce', label:'— spaghetti, schwarzer teller —' },
+  { id:'kartoffelsalat',title:'Knuspriger <em>Kartoffelsalat</em>',     href:'rezepte/kartoffelsalat.html', time:'50 Min.', season:'Frühling', max:'Ofen-Kartoffeln',  minou:'Senf-Dressing', label:'— smashed potatoes &amp; spargel —' },
+  { id:'primavera',     title:'Pasta <em>Primavera</em>',               href:'rezepte/primavera.html',     time:'30 Min.', season:'Sommer',   max:'Pasta &amp; Gemüse',minou:'Zitronen-Cashew',label:'— pasta primavera —' },
+  { id:'buddha-bowl',   title:'Buddha Bowl <em>mit Süßkartoffel</em>',  href:'rezepte/buddha-bowl.html',   time:'40 Min.', season:'Ganzjährig',max:'Süßkartoffel',     minou:'Bowl &amp; Tahini', label:'— buddha bowl, overhead —' },
+  { id:'tacos',         title:'Blumenkohl-<em>Tacos</em>',              href:'rezepte/tacos.html',         time:'35 Min.', season:'Ganzjährig',max:'Blumenkohl',       minou:'Tortillas &amp; Toppings', label:'— blumenkohl tacos —' }
 ];
 
-// ── State ──────────────────────────────────────────────────────────────────
-let currentUser = null;
-let profile     = null;
-let queue       = [];         // noch nicht geswiped
-let isSignup    = false;
-let partnerPollTimer = null;
-
-// ── Boot ───────────────────────────────────────────────────────────────────
-async function init() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session?.user) {
-    currentUser = session.user;
-    await loadProfile();
-  } else {
-    showScreen('screenAuth');
-  }
+const K = {
+  votes: 'mm_tinder_votes_v2', // {max:{id:'yes'|'no'}, minou:{...}}
+  role:  'mm_tinder_role_v2',
+  history:'mm_tinder_history_v2' // [{role,id,vote}]
+};
+const state = {
+  votes: JSON.parse(localStorage.getItem(K.votes) || '{"max":{},"minou":{}}'),
+  role:  localStorage.getItem(K.role) || null,
+  history: JSON.parse(localStorage.getItem(K.history) || '[]'),
+  currentIdx: 0
+};
+function save() {
+  localStorage.setItem(K.votes, JSON.stringify(state.votes));
+  localStorage.setItem(K.history, JSON.stringify(state.history));
+  if (state.role) localStorage.setItem(K.role, state.role);
 }
 
-// ── Profile ────────────────────────────────────────────────────────────────
-async function loadProfile(retries = 5) {
-  const { data, error } = await sb
-    .from('profiles').select('*').eq('id', currentUser.id).single();
+const deck = document.getElementById('deck');
+const remaining = document.getElementById('remaining');
+const curRole = document.getElementById('curRole');
+const matchList = document.getElementById('matchList');
+const emptyState = document.getElementById('emptyState');
 
-  if (!data) {
-    if (retries <= 0) {
-      // Profil existiert nicht (User vor Trigger angelegt) → jetzt selbst anlegen
-      const displayName = currentUser.user_metadata?.display_name
-        || currentUser.email.split('@')[0];
-      const { error: insertError } = await sb
-        .from('profiles').insert({ id: currentUser.id, display_name: displayName });
-      if (insertError) {
-        document.getElementById('authError').textContent = 'Profil konnte nicht erstellt werden: ' + insertError.message;
-        showScreen('screenAuth');
-        return;
-      }
-      return loadProfile(3);
-    }
-    await sleep(900);
-    return loadProfile(retries - 1);
-  }
-
-  profile = data;
-  document.getElementById('userName').textContent = profile.display_name;
-  document.getElementById('userChip').style.display   = 'flex';
-  document.getElementById('headerSpacer').style.display = 'none';
-
-  if (!profile.partner_id) {
-    document.getElementById('myCode').textContent = profile.invite_code;
-    showScreen('screenPartner');
-    startPartnerPoll();
-  } else {
-    await enterSwipeMode();
-  }
+function pendingFor(role) {
+  if (!role) return [];
+  return RECIPES.filter(r => !(r.id in state.votes[role]));
 }
 
-function startPartnerPoll() {
-  partnerPollTimer = setInterval(async () => {
-    const { data } = await sb
-      .from('profiles').select('partner_id').eq('id', currentUser.id).single();
-    if (data?.partner_id) {
-      clearInterval(partnerPollTimer);
-      profile.partner_id = data.partner_id;
-      await enterSwipeMode();
-    }
-  }, 3000);
+function renderRolePicker() {
+  document.querySelectorAll('.role-btn').forEach(b => {
+    b.classList.toggle('on', b.dataset.role === state.role);
+  });
+  curRole.textContent = state.role
+    ? (state.role === 'max' ? 'Max' : 'Minou')
+    : '— bitte wählen —';
 }
 
-// ── Auth ───────────────────────────────────────────────────────────────────
-function toggleAuth() {
-  isSignup = !isSignup;
-  document.getElementById('authSub').textContent = isSignup
-    ? 'Erstelle deinen Account.'
-    : 'Meld dich an und finde heraus, was ihr heute kochen wollt.';
-  document.getElementById('authSubmit').textContent  = isSignup ? 'Registrieren' : 'Anmelden';
-  document.getElementById('authToggle').textContent  = isSignup ? '← Schon ein Konto? Anmelden' : 'Noch kein Konto? Registrieren →';
-  document.getElementById('authNameField').style.display = isSignup ? 'block' : 'none';
-  document.getElementById('authError').textContent = '';
-}
-
-async function handleAuth() {
-  const email    = document.getElementById('authEmail').value.trim();
-  const password = document.getElementById('authPassword').value;
-  const name     = document.getElementById('authName').value.trim();
-  const errEl    = document.getElementById('authError');
-  errEl.textContent = '';
-
-  if (!email || !password) { errEl.textContent = 'Bitte E-Mail und Passwort eingeben.'; return; }
-
-  if (isSignup) {
-    if (!name) { errEl.textContent = 'Bitte deinen Namen eingeben.'; return; }
-    const { data, error } = await sb.auth.signUp({
-      email, password,
-      options: { data: { display_name: name } }
-    });
-    if (error) { errEl.textContent = error.message; return; }
-    currentUser = data.user;
-    await sleep(800);
-    await loadProfile();
-  } else {
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) { errEl.textContent = 'E-Mail oder Passwort falsch.'; return; }
-    currentUser = data.user;
-    await loadProfile();
-  }
-}
-
-async function signOut() {
-  clearInterval(partnerPollTimer);
-  await sb.auth.signOut();
-  currentUser = null; profile = null; queue = [];
-  document.getElementById('userChip').style.display    = 'none';
-  document.getElementById('headerSpacer').style.display = 'block';
-  showScreen('screenAuth');
-}
-
-// ── Partner ────────────────────────────────────────────────────────────────
-async function copyCode() {
-  await navigator.clipboard.writeText(profile.invite_code).catch(() => {});
-  const btn = document.querySelector('.btn-copy');
-  btn.textContent = '✓ Kopiert!';
-  setTimeout(() => btn.textContent = 'Kopieren', 2000);
-}
-
-async function connectPartner() {
-  const code  = document.getElementById('partnerCodeInput').value.trim().toUpperCase();
-  const errEl = document.getElementById('partnerError');
-  const okEl  = document.getElementById('partnerSuccess');
-  errEl.textContent = ''; okEl.textContent = '';
-
-  if (code.length !== 6) { errEl.textContent = 'Bitte den 6-stelligen Code eingeben.'; return; }
-
-  const { data, error } = await sb.rpc('connect_partner', { p_invite_code: code });
-  if (error || data?.error) {
-    errEl.textContent = data?.error || 'Verbindung fehlgeschlagen.';
+function renderDeck() {
+  deck.innerHTML = '';
+  const pending = pendingFor(state.role);
+  remaining.textContent = pending.length;
+  if (!state.role) {
+    deck.innerHTML = '<div class="deck-done">Wählt zuerst eine <b>Rolle</b> oben.</div>';
     return;
   }
-  okEl.textContent = '✓ Verbunden! Einen Moment…';
-  const { data: updated } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  profile = updated;
-  clearInterval(partnerPollTimer);
-  await sleep(600);
-  await enterSwipeMode();
-}
-
-// ── Swipe Mode ─────────────────────────────────────────────────────────────
-async function enterSwipeMode() {
-  const { data: partnerProfile } = await sb
-    .from('profiles').select('display_name').eq('id', profile.partner_id).single();
-  document.getElementById('partnerName').textContent = partnerProfile?.display_name || 'Partner';
-
-  const { data: done } = await sb
-    .from('swipes').select('recipe_slug').eq('user_id', currentUser.id);
-  const doneSet = new Set((done || []).map(s => s.recipe_slug));
-  queue = RECIPES.filter(r => !doneSet.has(r.slug));
-
-  if (queue.length === 0) {
-    showScreen('screenDone');
-  } else {
-    buildStack();
-    showScreen('screenSwipe');
+  if (pending.length === 0) {
+    deck.innerHTML = '<div class="deck-done">Alles bewertet, <b>'+(state.role==='max'?'Max':'Minou')+'</b>.<br />Lasst den anderen swipen — oder schaut auf eure Matches.</div>';
+    return;
   }
-}
-
-function buildStack() {
-  const stack = document.getElementById('cardStack');
-  stack.innerHTML = '';
-  queue.slice(0, 3).forEach((r, i) => {
-    const card = makeCard(r);
-    if (i === 0) attachDrag(card);
-    stack.appendChild(card);
-  });
-  updateProgress();
-}
-
-function makeCard(recipe) {
-  const el = document.createElement('div');
-  el.className = 'recipe-card';
-  el.innerHTML = `
-    <div class="card-visual">
-      <span>${recipe.emoji}</span>
-      <div class="card-overlay overlay-like">❤️</div>
-      <div class="card-overlay overlay-skip">✕</div>
-    </div>
-    <div class="card-info">
-      <div class="card-tag">${recipe.tag}</div>
-      <div class="card-title">${recipe.title}</div>
-      <div class="card-meta">⏱ ${recipe.time} &nbsp;·&nbsp; 👥 2 Personen</div>
-    </div>`;
-  return el;
-}
-
-function updateProgress() {
-  const done = RECIPES.length - queue.length;
-  document.getElementById('progress').textContent = `${done} von ${RECIPES.length} bewertet`;
-}
-
-async function doSwipe(dir) {
-  if (!queue.length) return;
-  const stack = document.getElementById('cardStack');
-  const top   = stack.firstElementChild;
-  if (!top) return;
-
-  const tx = dir === 'like' ? 520 : -520;
-  top.style.transition = 'transform 0.35s ease-in, opacity 0.3s ease-in';
-  top.style.transform  = `translateX(${tx}px) rotate(${dir === 'like' ? 22 : -22}deg)`;
-  top.style.opacity    = '0';
-
-  await sb.from('swipes').upsert({
-    user_id: currentUser.id,
-    recipe_slug: queue[0].slug,
-    liked: dir === 'like'
-  });
-
-  queue.shift();
-
-  setTimeout(() => {
-    top.remove();
-    if (!queue.length) {
-      showScreen('screenDone');
-      return;
-    }
-    if (queue.length >= 3) {
-      const newCard = makeCard(queue[2]);
-      stack.appendChild(newCard);
-    }
-    // Reflow stack visual
-    Array.from(stack.children).forEach((c, i) => {
-      c.style.transition = 'transform 0.3s ease';
-      c.style.zIndex     = 10 - i;
-      if (i === 0)      c.style.transform = '';
-      else if (i === 1) c.style.transform = 'scale(0.95) translateY(14px)';
-      else              c.style.transform = 'scale(0.90) translateY(28px)';
-      setTimeout(() => c.style.transition = '', 300);
-    });
-    if (stack.firstElementChild) attachDrag(stack.firstElementChild);
-    updateProgress();
-  }, 340);
-}
-
-// ── Drag / Touch ───────────────────────────────────────────────────────────
-function attachDrag(card) {
-  const overlayLike = card.querySelector('.overlay-like');
-  const overlaySkip = card.querySelector('.overlay-skip');
-  let dragging = false, sx = 0, sy = 0, dx = 0;
-
-  const pt = e => e.touches ? e.touches[0] : e;
-
-  function onStart(e) {
-    dragging = true; dx = 0;
-    sx = pt(e).clientX; sy = pt(e).clientY;
-    card.style.transition = 'none';
-    card.style.zIndex = '20';
-  }
-  function onMove(e) {
-    if (!dragging) return;
-    if (e.cancelable) e.preventDefault();
-    dx = pt(e).clientX - sx;
-    const dy = (pt(e).clientY - sy) * 0.25;
-    card.style.transform = `translateX(${dx}px) translateY(${dy}px) rotate(${dx * 0.07}deg)`;
-    const progress = Math.max(0, (Math.abs(dx) - 40) / 130);
-    overlayLike.style.opacity = dx >  40 ? Math.min(1, progress) : 0;
-    overlaySkip.style.opacity = dx < -40 ? Math.min(1, progress) : 0;
-  }
-  function onEnd() {
-    if (!dragging) return; dragging = false;
-    overlayLike.style.opacity = 0;
-    overlaySkip.style.opacity = 0;
-    if      (dx >  85) doSwipe('like');
-    else if (dx < -85) doSwipe('skip');
-    else {
-      card.style.transition = 'transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275)';
-      card.style.transform  = '';
-      card.style.zIndex     = '10';
-    }
-  }
-
-  card.addEventListener('mousedown',  onStart);
-  card.addEventListener('touchstart', onStart, { passive: true });
-  document.addEventListener('mousemove',  onMove);
-  document.addEventListener('touchmove',  onMove, { passive: false });
-  document.addEventListener('mouseup',    onEnd);
-  document.addEventListener('touchend',   onEnd);
-}
-
-// ── Matches ────────────────────────────────────────────────────────────────
-async function showMatches() {
-  const [{ data: mine }, { data: theirs }] = await Promise.all([
-    sb.from('swipes').select('recipe_slug').eq('user_id', currentUser.id).eq('liked', true),
-    sb.from('swipes').select('recipe_slug').eq('user_id', profile.partner_id).eq('liked', true),
-  ]);
-  const mySet     = new Set((mine   || []).map(s => s.recipe_slug));
-  const theirSet  = new Set((theirs || []).map(s => s.recipe_slug));
-  const matches   = RECIPES.filter(r => mySet.has(r.slug) && theirSet.has(r.slug));
-
-  const list = document.getElementById('matchList');
-  if (!matches.length) {
-    list.innerHTML = `<div class="no-matches"><span>🤔</span>Noch keine gemeinsamen Favoriten.<br>Swiped weiter — da kommt bestimmt was!</div>`;
-  } else {
-    list.innerHTML = matches.map(r => `
-      <a class="match-item" href="rezepte/${r.slug}.html">
-        <div class="match-emoji-big">${r.emoji}</div>
-        <div class="match-info">
-          <div class="match-name">${r.title}</div>
-          <div class="match-detail">${r.tag} · ⏱ ${r.time}</div>
+  // Render top 3 cards stacked
+  const stack = pending.slice(0, 3);
+  stack.forEach((r, i) => {
+    const card = document.createElement('div');
+    card.className = 'card-swipe';
+    card.dataset.id = r.id;
+    card.style.zIndex = 100 - i;
+    card.style.transform = `translateY(${i*8}px) scale(${1 - i*0.03})`;
+    card.innerHTML = `
+      <div class="photo-block">
+        <div class="stripes"></div>
+        <div class="meta-row">
+          <span class="pill">${r.season}</span>
+          <span class="pill">${r.time}</span>
         </div>
-        <div class="match-arrow">→</div>
-      </a>`).join('');
+        <div class="label">${r.label}</div>
+        <div class="stamp yes">JA</div>
+        <div class="stamp no">NEIN</div>
+      </div>
+      <div class="info-block">
+        <h3>${r.title}</h3>
+        <div class="roles-line">
+          <span><b class="max-c">Max</b> · ${r.max}</span>
+          <span><b class="minou-c">Minou</b> · ${r.minou}</span>
+        </div>
+      </div>
+    `;
+    deck.appendChild(card);
+    if (i === 0) attachDrag(card, r);
+  });
+}
+
+function vote(recipeId, choice) {
+  if (!state.role) return;
+  state.votes[state.role][recipeId] = choice;
+  state.history.push({role: state.role, id: recipeId, vote: choice});
+  save();
+  renderDeck();
+  renderMatches();
+}
+
+function undo() {
+  if (!state.history.length) return;
+  const last = state.history.pop();
+  if (state.votes[last.role]) delete state.votes[last.role][last.id];
+  // restore role if different
+  state.role = last.role;
+  save();
+  renderRolePicker();
+  renderDeck();
+  renderMatches();
+}
+
+function attachDrag(card, recipe) {
+  let startX = 0, startY = 0, dx = 0, dy = 0, active = false;
+  const stampYes = card.querySelector('.stamp.yes');
+  const stampNo  = card.querySelector('.stamp.no');
+
+  const onDown = e => {
+    active = true; card.classList.add('dragging');
+    const p = e.touches ? e.touches[0] : e;
+    startX = p.clientX; startY = p.clientY;
+  };
+  const onMove = e => {
+    if (!active) return;
+    const p = e.touches ? e.touches[0] : e;
+    dx = p.clientX - startX; dy = p.clientY - startY;
+    const rot = dx * 0.05;
+    card.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
+    const ratio = Math.min(Math.abs(dx) / 120, 1);
+    if (dx > 0) { stampYes.style.opacity = ratio; stampNo.style.opacity = 0; }
+    else        { stampNo.style.opacity  = ratio; stampYes.style.opacity = 0; }
+  };
+  const onUp = () => {
+    if (!active) return;
+    active = false; card.classList.remove('dragging');
+    if (Math.abs(dx) > 110) {
+      const choice = dx > 0 ? 'yes' : 'no';
+      const dir = dx > 0 ? 1 : -1;
+      card.style.transform = `translate(${dir*600}px, ${dy}px) rotate(${dir*30}deg)`;
+      card.style.opacity = 0;
+      setTimeout(() => vote(recipe.id, choice), 240);
+    } else {
+      card.style.transform = '';
+      stampYes.style.opacity = 0; stampNo.style.opacity = 0;
+    }
+    dx = 0; dy = 0;
+  };
+
+  card.addEventListener('mousedown', onDown);
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup',   onUp);
+  card.addEventListener('touchstart', onDown, {passive:true});
+  card.addEventListener('touchmove',  onMove, {passive:true});
+  card.addEventListener('touchend',   onUp);
+}
+
+function programmaticVote(choice) {
+  if (!state.role) return;
+  const pending = pendingFor(state.role);
+  if (!pending.length) return;
+  const recipe = pending[0];
+  const card = deck.querySelector('.card-swipe');
+  if (!card) return vote(recipe.id, choice);
+  const dir = choice === 'yes' ? 1 : -1;
+  card.style.transform = `translate(${dir*600}px, 0) rotate(${dir*30}deg)`;
+  card.style.opacity = 0;
+  setTimeout(() => vote(recipe.id, choice), 240);
+}
+
+function renderMatches() {
+  const matched = RECIPES.filter(r =>
+    state.votes.max[r.id]   === 'yes' &&
+    state.votes.minou[r.id] === 'yes'
+  );
+  matchList.innerHTML = '';
+  if (!matched.length) {
+    matchList.innerHTML = '<div class="empty">Noch keine Matches — beide müssen <em>ja</em> sagen.</div>';
+    return;
   }
-  showScreen('screenMatches');
+  matched.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'match-row';
+    row.innerHTML = `
+      <div class="heart">♥</div>
+      <div class="title">${r.title}</div>
+      <div class="stats">${r.time} · ${r.season}</div>
+      <a href="${r.href}">Rezept öffnen →</a>
+    `;
+    matchList.appendChild(row);
+  });
 }
 
-async function resetSwipes() {
-  await sb.from('swipes').delete().eq('user_id', currentUser.id);
-  queue = [...RECIPES];
-  buildStack();
-  showScreen('screenSwipe');
-}
+// Wire up
+document.getElementById('whoPick').addEventListener('click', e => {
+  const btn = e.target.closest('.role-btn');
+  if (!btn) return;
+  state.role = btn.dataset.role;
+  save();
+  renderRolePicker();
+  renderDeck();
+});
+document.getElementById('btnYes').addEventListener('click', () => programmaticVote('yes'));
+document.getElementById('btnNo').addEventListener('click',  () => programmaticVote('no'));
+document.getElementById('btnUndo').addEventListener('click', undo);
+document.getElementById('resetAll').addEventListener('click', () => {
+  if (!confirm('Wirklich alle Votes zurücksetzen?')) return;
+  state.votes = {max:{}, minou:{}};
+  state.history = [];
+  save();
+  renderDeck();
+  renderMatches();
+});
 
-// ── Utils ──────────────────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-init();
+renderRolePicker();
+renderDeck();
+renderMatches();
 </script>
+
 </body>
 </html>
