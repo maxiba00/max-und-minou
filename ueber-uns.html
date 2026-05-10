@@ -1,177 +1,252 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Über uns — Max & Minou</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --max:         #b85c42;
-      --max-light:   #e8896e;
-      --max-bg:      #fdf2ef;
-      --minou:       #5d8f6a;
-      --minou-light: #8bbf94;
-      --minou-bg:    #eef5ef;
-      --ink:         #1a1a1a;
-      --mid:         #8a8a8a;
-      --light:       #e8e8e8;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Georgia', serif;
-      background: #fff;
-      color: var(--ink);
-    }
-
-    /* ── Header ── */
-    header {
-      background: #f2ece3;
-      border-bottom: 1px solid #e5dbd0;
-      text-align: center;
-      padding: 2.2rem 1rem 1.8rem;
-    }
-
-    .logo {
-      display: flex;
-      align-items: baseline;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 0.4rem;
-      text-decoration: none;
-    }
-
-    .logo-max   { font-size: 2rem; font-weight: 700; color: var(--max); letter-spacing: -0.02em; }
-    .logo-amp   { font-size: 1.1rem; color: #bbb0a4; font-style: italic; }
-    .logo-minou { font-size: 2rem; font-weight: 700; color: var(--minou); letter-spacing: -0.02em; }
-
-    header p {
-      font-size: 0.8rem;
-      color: #a09488;
-      font-family: 'Arial', sans-serif;
-      letter-spacing: 0.06em;
-    }
-
-    /* ── Content ── */
-    .container {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 3.5rem 1.5rem 5rem;
-    }
-
-    .section-label {
-      font-family: 'Arial', sans-serif;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--mid);
-      margin-bottom: 1rem;
-    }
-
-    h1 {
-      font-size: clamp(1.8rem, 5vw, 2.6rem);
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 2rem;
-      color: var(--ink);
-    }
-
-    .text-block {
-      font-family: 'Arial', sans-serif;
-      font-size: 0.98rem;
-      line-height: 1.8;
-      color: #3a3a3a;
-      margin-bottom: 1.4rem;
-    }
-
-    /* ── Photo placeholder ── */
-    .photo-placeholder {
-      margin: 2.5rem 0;
-      background: #f4f0eb;
-      border-radius: 1rem;
-      height: 260px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      color: var(--mid);
-      font-family: 'Arial', sans-serif;
-      font-size: 0.85rem;
-      border: 1.5px dashed #d8d0c8;
-    }
-
-    .photo-placeholder span { font-size: 2rem; }
-
-    /* ── Back link ── */
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-top: 2.5rem;
-      font-family: 'Arial', sans-serif;
-      font-size: 0.85rem;
-      color: var(--max);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .back-link:hover { text-decoration: underline; text-underline-offset: 3px; }
-
-    /* ── Footer ── */
-    footer {
-      background: #1a1a1a;
-      text-align: center;
-      padding: 2.2rem 1rem;
-      font-family: 'Arial', sans-serif;
-      font-size: 0.78rem;
-      color: #888;
-    }
-
-    footer strong { color: #fff; }
-    footer span   { color: var(--max-light); }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Über uns — Max &amp; Minou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/site.css" />
+<style>
+  .about-hero { padding: 80px 40px 40px; text-align: center; border-bottom: 1px solid var(--rule); }
+  .about-hero h1 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(44px, 7vw, 88px); line-height: 0.98;
+    letter-spacing: -0.035em; margin-bottom: 24px;
+  }
+  .about-hero h1 em { font-style: italic; }
+  .about-hero h1 .max-c   { color: var(--max); font-style: italic; }
+  .about-hero h1 .minou-c { color: var(--minou); font-style: italic; }
+  .duo-portrait {
+    margin: 0 40px 64px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  @media (max-width: 720px) { .duo-portrait { grid-template-columns: 1fr; } }
+  .portrait {
+    aspect-ratio: 4 / 5; border-radius: 6px;
+    position: relative; overflow: hidden;
+    padding: 40px; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .portrait.max   { background: var(--max-bg); }
+  .portrait.minou { background: var(--minou-bg); }
+  .portrait .stripes {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(135deg, transparent 0 16px, rgba(0,0,0,0.04) 16px 17px);
+  }
+  .portrait .who {
+    position: relative;
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(64px, 8vw, 120px); line-height: 0.9;
+    letter-spacing: -0.035em; font-style: italic;
+  }
+  .portrait.max   .who { color: var(--max); }
+  .portrait.minou .who { color: var(--minou); }
+  .portrait .bio {
+    position: relative;
+    font-size: 14px; line-height: 1.7; max-width: 320px;
+    color: var(--ink);
+  }
+  .portrait .bio .role {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--mid); margin-bottom: 8px; font-weight: 700;
+  }
+  .portrait.max   .bio .role { color: var(--max); }
+  .portrait.minou .bio .role { color: var(--minou); }
+  .manifesto {
+    padding: 64px 40px 40px;
+    max-width: 760px; margin: 0 auto;
+    font-family: 'Fraunces', serif; font-size: clamp(22px, 2.6vw, 30px);
+    line-height: 1.45; letter-spacing: -0.012em;
+  }
+  .manifesto p { margin-bottom: 32px; }
+  .manifesto em { font-style: italic; color: var(--max); }
+  .manifesto strong { font-weight: 600; }
+  .manifesto .drop {
+    float: left; font-size: 5em; line-height: 0.8;
+    margin: 8px 14px 0 0; font-weight: 400; font-style: italic;
+    color: var(--minou);
+  }
+  .facts {
+    margin: 40px 40px 80px; padding: 40px;
+    background: var(--paper-2); border-radius: 14px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+  }
+  @media (max-width: 720px) { .facts { grid-template-columns: 1fr 1fr; } }
+  .fact .num {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 56px; line-height: 1; letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .fact:nth-child(1) .num { color: var(--max); }
+  .fact:nth-child(2) .num { color: var(--minou); }
+  .fact:nth-child(3) .num { color: var(--ink); }
+  .fact:nth-child(4) .num { color: var(--mid); }
+  .fact .label {
+    font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--mid);
+  }
+  .timeline {
+    margin: 0 40px 80px; padding-top: 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .timeline h2 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 28px; letter-spacing: -0.02em; margin-bottom: 32px;
+  }
+  .timeline h2 em { font-style: italic; font-weight: 400; color: var(--mid); }
+  .tl-item {
+    display: grid; grid-template-columns: 140px 1fr; gap: 32px;
+    padding: 20px 0; border-bottom: 1px solid var(--rule);
+  }
+  .tl-when {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 22px; color: var(--mid);
+  }
+  .tl-what { font-size: 15px; line-height: 1.6; color: var(--ink); }
+  .tl-what b { font-family: 'Fraunces', serif; font-weight: 600; font-style: italic; }
+  .closing {
+    text-align: center; padding: 64px 40px 80px;
+    border-top: 1px solid var(--rule);
+  }
+  .closing h3 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.15; letter-spacing: -0.02em;
+    max-width: 600px; margin: 0 auto 24px;
+  }
+  .closing h3 em { font-style: italic; }
+</style>
 </head>
 <body>
 
-<header>
-  <a class="logo" href="index.html">
-    <span class="logo-max">Max</span>
-    <span class="logo-amp">&</span>
-    <span class="logo-minou">Minou</span>
-  </a>
-  <p>Vegane Rezepte — gemeinsam kochen, jede:r mit eigenem Teil</p>
-</header>
-
-<div class="container">
-
-  <div class="section-label">Über uns</div>
-  <h1>Wir sind Max & Minou</h1>
-
-  <div class="photo-placeholder">
-    <span>📷</span>
-    Foto folgt bald
+<div class="util">
+  <div class="search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input placeholder="Suchen — z.B. Spargel, Pasta, 30 Min." />
   </div>
-
-  <p class="text-block">
-    Wir kochen vegane Gerichte — und haben irgendwann festgestellt, dass dabei immer eine:r kocht und die andere:r daneben steht. Das wollten wir ändern. Also haben wir angefangen, Rezepte so aufzuteilen, dass beide gleichzeitig einen eigenen Part haben und am Ende alles zusammenkommt.
-  </p>
-
-  <p class="text-block">
-    Alle Rezepte sind vegan, saisonal und für zwei Personen gedacht.
-  </p>
-
-  <a class="back-link" href="index.html">← Zurück zu den Rezepten</a>
-
+  <div class="pulse"><span class="dot"></span>Lebt seit <b>September 2025</b> · zwei Köpfe, eine Küche</div>
+  <div class="right">
+    <a href="#">Folgen</a>
+    <a href="#">RSS</a>
+    <a class="login" href="#">Anmelden</a>
+  </div>
 </div>
 
-<footer>
-  <strong>Max & Minou</strong> — Vegane Rezepte für zwei, die beide kochen.<br>
-  Jedes Rezept. Jede Person. <span>Gemeinsam am Tisch.</span>
+<header class="site-header">
+  <nav class="nav-primary">
+    <a href="index.html">Rezepte</a>
+    <a href="index.html#saison">Saison</a>
+    <a href="tinder.html">Was kochen wir?</a>
+    <a class="on" href="ueber-uns.html">Über uns</a>
+  </nav>
+  <a class="logo" href="index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
+  <nav class="nav-secondary">
+    <a href="#">Frühling</a>
+    <a href="#">Sommer</a>
+    <a href="#">Ganzjährig</a>
+    <a href="#">≤ 30 Min.</a>
+  </nav>
+</header>
+
+<section class="about-hero">
+  <div class="kicker">Über uns · zwei Menschen, eine Küche, zwei Pfannen</div>
+  <h1>Wir sind <span class="max-c">Max</span><br />&amp; <span class="minou-c">Minou</span>.</h1>
+  <p class="lede">Wir kochen seit zehn Jahren zusammen — und seit drei Jahren rein pflanzlich. Dieser Blog dokumentiert, wie wir es uns leichter gemacht haben: Rezepte, die ausdrücklich für zwei Köche an zwei Pfannen geschrieben sind.</p>
+</section>
+
+<section class="duo-portrait">
+  <div class="portrait max">
+    <div class="stripes"></div>
+    <div class="who">Max</div>
+    <div class="bio">
+      <div class="role">Max · meistens am Herd</div>
+      Mag heißes Eisen, Maillard-Bräune und Timing-Stress. Übernimmt Pasta, Tofu, Ofen, Pfanne. Liest Rezepte zweimal, hält sich beim ersten Versuch dran, weicht beim zweiten ab.
+    </div>
+  </div>
+  <div class="portrait minou">
+    <div class="stripes"></div>
+    <div class="who">Minou</div>
+    <div class="bio">
+      <div class="role">Minou · meistens an der Sauce</div>
+      Mag Schichten, Säuren und das letzte Drittel eines Gerichts. Übernimmt Saucen, Dressings, Toppings, Anrichten. Probiert dreimal, würzt nach Gefühl, fotografiert am Ende.
+    </div>
+  </div>
+</section>
+
+<section class="manifesto">
+  <p><span class="drop">A</span>ls wir angefangen haben, gemeinsam zu kochen, gab es jedes Mal die gleiche Szene: einer steht ratlos in der Tür, der andere hat die Hände voll. <em>„Was kann ich tun?"</em> war die häufigste Frage in unserer Küche.</p>
+  <p>Irgendwann haben wir aufgehört, Rezepte linear zu lesen. Wir haben sie aufgeteilt — in <strong>zwei Spalten</strong>. Was kann <em>parallel</em> passieren? Was muss <em>warten</em>? Wo treffen wir uns wieder?</p>
+  <p>Dieser Blog ist die Sammlung dieser Aufteilungen. Jedes Rezept ist für <em>zwei Personen</em>, die <em>gleichzeitig</em> kochen — nicht für einen Koch und einen Helfer. Beide Hände voll, beide am Tisch.</p>
+</section>
+
+<section class="facts">
+  <div class="fact"><div class="num"><em>10</em></div><div class="label">Jahre gemeinsam<br />am Herd</div></div>
+  <div class="fact"><div class="num"><em>3</em></div><div class="label">Jahre rein<br />pflanzlich</div></div>
+  <div class="fact"><div class="num"><em>5</em></div><div class="label">veröffentlichte<br />Rezepte</div></div>
+  <div class="fact"><div class="num"><em>∞</em></div><div class="label">Diskussionen über<br />Knoblauchmengen</div></div>
+</section>
+
+<section class="timeline">
+  <h2>Wie wir hier <em>gelandet</em> sind</h2>
+  <div class="tl-item">
+    <div class="tl-when"><em>2016</em></div>
+    <div class="tl-what">Erstes gemeinsames Abendessen — Pasta mit zu viel Knoblauch. <b>Beide Hände</b> in der Küche, einer im Weg.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-when"><em>2019</em></div>
+    <div class="tl-what">Wir merken: Wir kochen am liebsten, wenn wir <b>beide etwas zu tun</b> haben — und am wenigsten, wenn einer „assistiert".</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-when"><em>2023</em></div>
+    <div class="tl-what">Umstellung auf vegan. Plötzlich noch mehr <b>Komponenten</b> pro Gericht — Saucen, Toppings, Texturen. Aufteilung wird wichtiger.</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-when"><em>2025</em></div>
+    <div class="tl-what">Wir fangen an, unsere Rezepte zweispaltig auf Papier zu schreiben. Freunde fragen nach Kopien. <b>Der Blog beginnt.</b></div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-when"><em>2026</em></div>
+    <div class="tl-what">Fünf Rezepte online. <b>Vier in der Testküche.</b> Und ein kleines „Was kochen wir?"-Tool, das Streit am Donnerstagabend verhindert.</div>
+  </div>
+</section>
+
+<section class="closing">
+  <h3>Lust mitzukochen? Fangt mit <em>einem Rezept</em> an — einer übernimmt links, einer rechts.</h3>
+  <a class="btn-pill" href="index.html">Zu den Rezepten <em>→</em></a>
+</section>
+
+<footer class="site-footer">
+  <div>
+    <h5>Max <em>&amp;</em> Minou</h5>
+    <p>Vegane Rezepte für zwei,<br />die beide kochen.<br /><br />Jedes Rezept. Jede Person.<br />Gemeinsam am Tisch.</p>
+  </div>
+  <div>
+    <h5>Lesen</h5>
+    <a href="index.html">Alle Rezepte</a>
+    <a href="#">Saison Frühling</a>
+    <a href="#">Saison Sommer</a>
+    <a href="#">Archiv</a>
+    <a href="#">RSS-Feed</a>
+  </div>
+  <div>
+    <h5>Kochen</h5>
+    <a href="tinder.html">Was kochen wir?</a>
+    <a href="tinder.html">Mit Partner verbinden</a>
+    <a href="#">Anmelden</a>
+  </div>
+  <div>
+    <h5>Folgen</h5>
+    <a href="#">Newsletter</a>
+    <a href="#">Instagram</a>
+    <a href="ueber-uns.html">Über uns</a>
+    <a href="#">Kontakt</a>
+  </div>
+  <div class="colophon">
+    <span>© 2026 Max &amp; Minou</span>
+    <span>Gesetzt in Fraunces &amp; Inter</span>
+    <span>Lebt seit 2025 · wächst weiter</span>
+  </div>
 </footer>
 
 </body>
