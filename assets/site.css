@@ -272,7 +272,167 @@ h1.hero-title .minou-w { color: var(--minou); font-style: italic; }
   .util { grid-template-columns: 1fr; }
   .util .search { width: 100%; }
   .util .pulse, .util .right { justify-content: flex-start; }
-  .site-header { grid-template-columns: 1fr; text-align: center; }
-  .nav-primary, .nav-secondary { justify-content: center; }
   .site-footer { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── Mobile (≤ 640px) ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Tighter padding everywhere */
+  .section,
+  .hero { padding-left: 20px; padding-right: 20px; }
+
+  /* Hide utility bar entirely — items live in hamburger now */
+  .util { display: none; }
+
+  /* Header becomes two-row stack: logo on top, controls below */
+  .site-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      ".      logo   .     "
+      "burger pulse  search";
+    row-gap: 12px; column-gap: 12px;
+    padding: 22px 20px 18px;
+    text-align: left;
+    align-items: center;
+    border-bottom: 1px solid var(--rule);
+  }
+  .logo { grid-area: logo; font-size: 30px; text-align: center; justify-self: center; }
+  .logo i { font-size: 22px; padding: 0 3px; }
+  .nav-secondary, .nav-primary { display: none; }
+
+  /* Hamburger trigger */
+  .mob-burger {
+    grid-area: burger;
+    display: flex; flex-direction: column; gap: 4px;
+    width: 28px; height: 28px;
+    background: transparent; border: none; cursor: pointer;
+    align-items: flex-start; justify-content: center;
+    padding: 0;
+  }
+  .mob-burger span {
+    display: block; width: 22px; height: 1.5px;
+    background: var(--ink); border-radius: 1px;
+  }
+
+  /* "Zuletzt aktualisiert" line, centered between burger & search */
+  .mob-pulse {
+    grid-area: pulse;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 10.5px; letter-spacing: 0.06em; color: var(--mid);
+    text-align: center; line-height: 1.3;
+  }
+  .mob-pulse .dot {
+    width: 6px; height: 6px; background: var(--minou); border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite; flex-shrink: 0;
+  }
+  .mob-pulse b { color: var(--ink); font-weight: 500; }
+
+  /* Search trigger — circle on the right */
+  .mob-search-btn {
+    grid-area: search;
+    width: 34px; height: 34px;
+    border: 1px solid var(--rule); border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer;
+    color: var(--ink);
+    justify-self: end;
+  }
+  .mob-search-btn svg { display: block; }
+
+  /* Search overlay */
+  #mob-search { display: none; }
+  #mob-search:checked ~ .mob-search-overlay { display: flex; }
+  .mob-search-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 110;
+    background: var(--paper);
+    flex-direction: column;
+    padding: 24px 20px;
+  }
+  .mob-search-overlay .row {
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--rule); padding-bottom: 16px;
+  }
+  .mob-search-overlay input {
+    flex: 1; border: none; background: transparent;
+    font-family: 'Fraunces', serif; font-size: 22px;
+    letter-spacing: -0.01em; color: var(--ink); outline: none;
+    padding: 6px 0;
+  }
+  .mob-search-overlay .close {
+    background: transparent; border: none; font-size: 28px;
+    color: var(--ink); cursor: pointer; padding: 0;
+    width: 32px; height: 32px;
+  }
+  .mob-search-overlay .hint {
+    margin-top: 20px; font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--mid);
+  }
+  .mob-search-overlay .sugg {
+    margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .mob-search-overlay .sugg a {
+    padding: 7px 14px; border: 1px solid var(--rule); border-radius: 999px;
+    font-size: 12px; color: var(--mid); text-decoration: none;
+  }
+
+  /* Slide-down menu via :target / checkbox-hack */
+  #mob-nav { display: none; }
+  #mob-toggle:checked ~ #mob-nav { display: block; }
+  #mob-toggle { display: none; }
+  #mob-nav {
+    position: fixed; inset: 0;
+    background: var(--paper);
+    z-index: 100;
+    padding: 80px 32px 32px;
+    overflow-y: auto;
+  }
+  #mob-nav a {
+    display: block;
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 32px; line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--ink); text-decoration: none;
+    padding: 12px 0; border-bottom: 1px solid var(--rule);
+  }
+  #mob-nav a em { font-style: italic; color: var(--mid); font-size: 14px; display: block; margin-top: 2px; font-family: 'Inter',sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
+  #mob-nav .mob-close {
+    position: absolute; top: 24px; right: 24px;
+    background: transparent; border: none; font-size: 28px;
+    cursor: pointer; color: var(--ink); padding: 0;
+    width: 32px; height: 32px;
+  }
+
+  /* Hero type-scale: more breathing room */
+  h1.hero-title { font-size: clamp(40px, 11vw, 56px); }
+  .lede { font-size: 15px; }
+  .kicker { font-size: 10px; letter-spacing: 0.16em; margin-bottom: 22px; }
+
+  /* Section heads */
+  .section-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .section-head h2 { font-size: 24px; }
+  .section-head .meta-link { font-size: 11px; }
+
+  /* Role split stacks */
+  .role-split { grid-template-columns: 1fr; }
+  .role-cell.minou { border-left: none; border-top: 1px solid var(--rule); }
+
+  /* Footer */
+  .site-footer { grid-template-columns: 1fr; padding: 32px 20px; gap: 24px; }
+  .site-footer h5 { font-size: 16px; }
+  .colophon { flex-direction: column; gap: 6px; align-items: flex-start; }
+}
+
+/* Horizontal scroll utility for chip rows */
+.h-scroll {
+  display: flex; gap: 8px; overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.h-scroll::-webkit-scrollbar { display: none; }
+.h-scroll > * { scroll-snap-align: start; flex-shrink: 0; }
+

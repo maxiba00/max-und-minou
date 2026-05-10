@@ -196,6 +196,8 @@
   </div>
 </div>
 
+<input type="checkbox" id="mob-toggle" />
+<input type="checkbox" id="mob-search" />
 <header class="site-header">
   <nav class="nav-primary">
     <a href="index.html">Rezepte</a>
@@ -203,7 +205,10 @@
     <a class="on" href="tinder.html">Was kochen wir?</a>
     <a href="ueber-uns.html">Über uns</a>
   </nav>
+  <label class="mob-burger" for="mob-toggle" aria-label="Menü öffnen"><span></span><span></span><span></span></label>
   <a class="logo" href="index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
+  <div class="mob-pulse"><span class="dot"></span>Zuletzt aktualisiert · <b>Carbonara</b></div>
+  <label class="mob-search-btn" for="mob-search" aria-label="Suche öffnen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
   <nav class="nav-secondary">
     <a href="#">Frühling</a>
     <a href="#">Sommer</a>
@@ -211,6 +216,31 @@
     <a href="#">≤ 30 Min.</a>
   </nav>
 </header>
+<nav id="mob-nav">
+  <label class="mob-close" for="mob-toggle" aria-label="Schließen">×</label>
+  <a href="index.html">Rezepte<em>Alle Gerichte</em></a>
+  <a href="index.html#saison">Saison<em>Nach Jahreszeit filtern</em></a>
+  <a href="tinder.html">Was kochen wir?<em>Swipt &amp; matcht</em></a>
+  <a href="ueber-uns.html">Über uns<em>Max &amp; Minou</em></a>
+  <a href="#">Folgen<em>Newsletter alle 14 Tage</em></a>
+  <a href="#">RSS<em>Feed abonnieren</em></a>
+  <a href="#">Anmelden<em>Eigene Rezepte speichern</em></a>
+</nav>
+<div class="mob-search-overlay">
+  <div class="row">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="search" placeholder="Suchen — Spargel, Pasta, 30 Min." />
+    <label class="close" for="mob-search" aria-label="Schließen">×</label>
+  </div>
+  <div class="hint">Beliebt diese Woche</div>
+  <div class="sugg">
+    <a href="rezepte/carbonara.html">Carbonara</a>
+    <a href="rezepte/primavera.html">Primavera</a>
+    <a href="rezepte/buddha-bowl.html">Buddha Bowl</a>
+    <a href="rezepte/tacos.html">Tacos</a>
+    <a href="rezepte/kartoffelsalat.html">Kartoffelsalat</a>
+  </div>
+</div>
 
 <section class="swipe-hero">
   <div class="kicker">Unentschieden? · wischt einzeln · seht, wo ihr beide <em>ja</em> sagt</div>

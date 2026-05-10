@@ -195,6 +195,40 @@
   .nav-recipes a:hover .name { color: var(--max); }
   .closing { text-align: center; padding: 48px 40px 64px; }
 </style>
+
+<style>
+  /* mobile + role-switch overrides */
+  .role-switch {
+    position: sticky; top: 0; z-index: 10;
+    background: linear-gradient(180deg, var(--paper) 75%, rgba(246,244,239,0));
+  }
+  @media (max-width: 640px) {
+    .role-switch { padding: 14px 20px 12px !important; gap: 6px !important; flex-wrap: nowrap !important; overflow-x: auto !important; justify-content: flex-start !important; scrollbar-width: none; }
+    .role-switch::-webkit-scrollbar { display: none; }
+    .role-switch button { flex-shrink: 0; font-size: 12px !important; padding: 8px 16px !important; }
+    .ingredients { margin: 36px 20px 0 !important; padding: 24px 20px !important; }
+    .columns { padding: 20px 20px 0 !important; grid-template-columns: 1fr !important; }
+    .col { padding: 20px !important; }
+    .recipe-hero { padding: 40px 20px 24px !important; }
+    .recipe-hero h1 { font-size: clamp(38px, 11vw, 56px) !important; }
+    .recipe-meta {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 0 !important;
+      border-radius: 10px !important;
+      width: 100%;
+    }
+    .recipe-meta .m { padding: 10px 4px !important; }
+    .recipe-meta .v { font-size: 14px !important; margin-bottom: 2px !important; }
+    .recipe-meta .l { font-size: 9px !important; letter-spacing: 0.12em !important; }
+    .intro { padding: 32px 20px !important; font-size: 17px !important; }
+    .recipe-photo { margin: 32px 20px !important; }
+    .steps-intro { padding: 36px 20px 0 !important; font-size: 22px !important; }
+    .plating { margin: 56px 20px !important; padding: 28px 20px !important; }
+  }
+  .col.hidden { display: none !important; }
+  .columns.single { grid-template-columns: 1fr !important; }
+</style>
 </head>
 <body>
 
@@ -211,6 +245,8 @@
   </div>
 </div>
 
+<input type="checkbox" id="mob-toggle" />
+<input type="checkbox" id="mob-search" />
 <header class="site-header">
   <nav class="nav-primary">
     <a class="on" href="../index.html">Rezepte</a>
@@ -218,7 +254,10 @@
     <a href="../tinder.html">Was kochen wir?</a>
     <a href="../ueber-uns.html">Über uns</a>
   </nav>
+  <label class="mob-burger" for="mob-toggle" aria-label="Menü öffnen"><span></span><span></span><span></span></label>
   <a class="logo" href="../index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
+  <div class="mob-pulse"><span class="dot"></span>Zuletzt aktualisiert · <b>Carbonara</b></div>
+  <label class="mob-search-btn" for="mob-search" aria-label="Suche öffnen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
   <nav class="nav-secondary">
     <a href="#">Frühling</a>
     <a href="#">Sommer</a>
@@ -226,6 +265,31 @@
     <a href="#">≤ 30 Min.</a>
   </nav>
 </header>
+<nav id="mob-nav">
+  <label class="mob-close" for="mob-toggle" aria-label="Schließen">×</label>
+  <a href="../index.html">Rezepte<em>Alle Gerichte</em></a>
+  <a href="../index.html#saison">Saison<em>Nach Jahreszeit filtern</em></a>
+  <a href="../tinder.html">Was kochen wir?<em>Swipt &amp; matcht</em></a>
+  <a href="../ueber-uns.html">Über uns<em>Max &amp; Minou</em></a>
+  <a href="#">Folgen<em>Newsletter alle 14 Tage</em></a>
+  <a href="#">RSS<em>Feed abonnieren</em></a>
+  <a href="#">Anmelden<em>Eigene Rezepte speichern</em></a>
+</nav>
+<div class="mob-search-overlay">
+  <div class="row">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="search" placeholder="Suchen — Spargel, Pasta, 30 Min." />
+    <label class="close" for="mob-search" aria-label="Schließen">×</label>
+  </div>
+  <div class="hint">Beliebt diese Woche</div>
+  <div class="sugg">
+    <a href="carbonara.html">Carbonara</a>
+    <a href="primavera.html">Primavera</a>
+    <a href="buddha-bowl.html">Buddha Bowl</a>
+    <a href="tacos.html">Tacos</a>
+    <a href="kartoffelsalat.html">Kartoffelsalat</a>
+  </div>
+</div>
 
 <section class="recipe-hero">
   <div class="kicker">Frühling · <span class="max-c">Max</span> &amp; <span class="minou-c">Minou</span> · gemeinsam am Tisch</div>
@@ -358,9 +422,11 @@
       const max = document.getElementById('colMax');
       const min = document.getElementById('colMinou');
       const fin = document.getElementById('finale');
-      max.classList.toggle('dimmed', r === 'minou');
-      min.classList.toggle('dimmed', r === 'max');
-      fin.classList.toggle('dimmed', false); // finale always visible
+      const cols = document.querySelector('.columns');
+      max.classList.toggle('hidden', r === 'minou');
+      min.classList.toggle('hidden', r === 'max');
+      cols.classList.toggle('single', r !== 'both');
+      if (fin) fin.classList.remove('hidden');
     });
   });
 </script>
