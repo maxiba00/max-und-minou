@@ -268,7 +268,9 @@ h1.hero-title .minou-w { color: var(--minou); font-style: italic; }
 }
 
 /* Mobile-only elements — versteckt auf Desktop */
-.mob-burger, .mob-pulse, .mob-search-btn { display: none; }
+.mob-burger, .mob-pulse, .mob-search-btn,
+.mob-search-overlay, #mob-nav { display: none; }
+#mob-search, #mob-toggle { display: none; }
 
 /* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 820px) {
