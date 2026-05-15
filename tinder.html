@@ -273,7 +273,7 @@
 <body>
 
 <!-- ── Auth Wall ─────────────────────────────────────────── -->
-<div id="authWall">
+<div id="authWall" class="hidden">
   <div class="auth-box">
     <h2>Hallo, <em>ihr zwei.</em></h2>
     <p id="authSubtitle">Meld dich an um loszulegen.</p>
@@ -439,8 +439,10 @@ async function init() {
   if (session?.user) {
     currentUser = session.user;
     await loadProfile();
+  } else {
+    // Keine Session — Auth-Wall zeigen
+    document.getElementById('authWall').classList.remove('hidden');
   }
-  // authWall stays visible until loadProfile succeeds
 }
 
 // ── Auth ───────────────────────────────────────────────────
