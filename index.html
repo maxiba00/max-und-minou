@@ -246,10 +246,10 @@
   <div class="mob-pulse"><span class="dot"></span>Zuletzt aktualisiert · <b>Carbonara</b></div>
   <label class="mob-search-btn" for="mob-search" aria-label="Suche öffnen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
   <nav class="nav-secondary">
-    <a href="#">Frühling</a>
-    <a href="#">Sommer</a>
-    <a href="#">Ganzjährig</a>
-    <a href="#">≤ 30 Min.</a>
+    <a href="#sammlung" onclick="filterAndScroll('season','Frühling')">Frühling</a>
+    <a href="#sammlung" onclick="filterAndScroll('season','Sommer')">Sommer</a>
+    <a href="#sammlung" onclick="filterAndScroll('season','Ganzjährig')">Ganzjährig</a>
+    <a href="#sammlung" onclick="filterAndScroll('time','30')">≤ 30 Min.</a>
   </nav>
 </header>
 <nav id="mob-nav">
@@ -328,47 +328,49 @@
   <div class="filter-stack" id="saison">
     <div class="filter-row h-scroll">
       <span class="label">Saison</span>
-      <button class="chip on">Alle</button>
-      <button class="chip">Frühling</button>
-      <button class="chip">Sommer</button>
-      <button class="chip">Herbst</button>
-      <button class="chip">Winter</button>
-      <button class="chip">Ganzjährig</button>
+      <button class="chip on" data-filter="season" data-value="alle">Alle</button>
+      <button class="chip" data-filter="season" data-value="Frühling">Frühling</button>
+      <button class="chip" data-filter="season" data-value="Sommer">Sommer</button>
+      <button class="chip" data-filter="season" data-value="Herbst">Herbst</button>
+      <button class="chip" data-filter="season" data-value="Winter">Winter</button>
+      <button class="chip" data-filter="season" data-value="Ganzjährig">Ganzjährig</button>
     </div>
     <div class="filter-row h-scroll">
       <span class="label">Zeit</span>
-      <button class="chip">≤ 20 Min.</button>
-      <button class="chip">≤ 40 Min.</button>
-      <button class="chip">≤ 60 Min.</button>
+      <button class="chip on" data-filter="time" data-value="alle">Alle</button>
+      <button class="chip" data-filter="time" data-value="20">≤ 20 Min.</button>
+      <button class="chip" data-filter="time" data-value="30">≤ 30 Min.</button>
+      <button class="chip" data-filter="time" data-value="40">≤ 40 Min.</button>
+      <button class="chip" data-filter="time" data-value="60">≤ 60 Min.</button>
     </div>
   </div>
 
   <div class="grid">
-    <a class="card" href="rezepte/kartoffelsalat.html">
+    <a class="card" href="rezepte/kartoffelsalat.html" data-season="Frühling" data-time="50">
       <div class="photo"><div class="stripes"></div><div class="label">— smashed potatoes &amp; spargel —</div></div>
       <div class="card-date"><span>3. Mai 2026</span><span class="tag warm">Frühling</span></div>
       <h3>Knuspriger <em>Kartoffelsalat</em> mit grünem Spargel.</h3>
       <div class="card-meta"><span>50 Min.</span><span>Max · Ofen</span><span>Minou · Sauce</span></div>
     </a>
-    <a class="card" href="rezepte/primavera.html">
+    <a class="card" href="rezepte/primavera.html" data-season="Sommer" data-time="30">
       <div class="photo"><div class="stripes"></div><div class="label">— pasta primavera, side angle —</div></div>
       <div class="card-date"><span>24. April 2026</span><span class="tag">Sommer</span></div>
       <h3>Cremige <em>Pasta Primavera</em> mit Zitronen-Cashew-Sauce.</h3>
       <div class="card-meta"><span>30 Min.</span><span>Max · Pasta</span><span>Minou · Sauce</span></div>
     </a>
-    <a class="card" href="rezepte/buddha-bowl.html">
+    <a class="card" href="rezepte/buddha-bowl.html" data-season="Ganzjährig" data-time="40">
       <div class="photo"><div class="stripes"></div><div class="label">— buddha bowl, overhead —</div></div>
       <div class="card-date"><span>11. April 2026</span><span class="tag">Ganzjährig</span></div>
       <h3>Buddha Bowl <em>mit Süßkartoffel</em> &amp; Tahini.</h3>
       <div class="card-meta"><span>40 Min.</span><span>Max · Süßkartoffel</span><span>Minou · Bowl</span></div>
     </a>
-    <a class="card" href="rezepte/tacos.html">
+    <a class="card" href="rezepte/tacos.html" data-season="Ganzjährig" data-time="35">
       <div class="photo"><div class="stripes"></div><div class="label">— blumenkohl tacos, hand reaching —</div></div>
       <div class="card-date"><span>28. März 2026</span><span class="tag">Ganzjährig</span></div>
       <h3>Blumenkohl-<em>Tacos</em> mit Tahini-Sauce.</h3>
       <div class="card-meta"><span>35 Min.</span><span>Max · Blumenkohl</span><span>Minou · Tacos</span></div>
     </a>
-    <a class="card" href="rezepte/carbonara.html">
+    <a class="card" href="rezepte/carbonara.html" data-season="Frühling" data-time="20">
       <div class="photo"><div class="stripes"></div><div class="label">— spaghetti carbonara —</div></div>
       <div class="card-date"><span>7. Mai 2026</span><span class="tag warm">Frühling</span></div>
       <h3>Vegane Spaghetti <em>Carbonara</em> mit Räuchertofu.</h3>
@@ -480,6 +482,46 @@
       chip.classList.add('on');
     });
   });
+</script>
+
+<script>
+// ── Filter logic ───────────────────────────────────────────
+const activeFilter = { season: 'alle', time: 'alle' };
+
+function applyFilter() {
+  const cards = document.querySelectorAll('.grid .card[data-season]');
+  cards.forEach(card => {
+    const seasonMatch = activeFilter.season === 'alle' || card.dataset.season === activeFilter.season;
+    const timeMatch   = activeFilter.time   === 'alle' || parseInt(card.dataset.time) <= parseInt(activeFilter.time);
+    card.style.display = (seasonMatch && timeMatch) ? '' : 'none';
+  });
+}
+
+function setChipActive(filter, value) {
+  document.querySelectorAll(`.chip[data-filter="${filter}"]`).forEach(c => {
+    c.classList.toggle('on', c.dataset.value === value);
+  });
+}
+
+// Chip clicks
+document.querySelectorAll('.chip[data-filter]').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const { filter, value } = chip.dataset;
+    activeFilter[filter] = value;
+    setChipActive(filter, value);
+    applyFilter();
+  });
+});
+
+// Called from nav-secondary links
+function filterAndScroll(filter, value) {
+  activeFilter[filter] = value;
+  setChipActive(filter, value);
+  applyFilter();
+  setTimeout(() => {
+    document.getElementById('sammlung').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
 </script>
 
 </body>
