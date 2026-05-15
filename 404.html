@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Seite nicht gefunden — Max &amp; Minou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/site.css" />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<style>
+  .not-found {
+    min-height: 70vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 64px 40px;
+  }
+  .not-found .kicker {
+    font-size: 11px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--soft);
+    margin-bottom: 20px;
+  }
+  .not-found h1 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(56px, 12vw, 140px);
+    line-height: 1; letter-spacing: -0.04em;
+    color: var(--rule); margin-bottom: 0;
+  }
+  .not-found h2 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(24px, 4vw, 36px);
+    line-height: 1.2; letter-spacing: -0.02em;
+    margin: 16px 0 16px;
+  }
+  .not-found h2 em { font-style: italic; }
+  .not-found p {
+    color: var(--mid); font-size: 15px;
+    line-height: 1.7; max-width: 400px; margin-bottom: 40px;
+  }
+  .not-found .links {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  }
+  .not-found .links a {
+    padding: 11px 24px; border-radius: 999px;
+    font-family: 'Fraunces', serif; font-size: 15px;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .not-found .links a.primary {
+    background: var(--ink); color: var(--paper);
+  }
+  .not-found .links a.secondary {
+    border: 1px solid var(--rule); color: var(--mid);
+  }
+  .not-found .links a:hover { opacity: 0.75; }
+</style>
+</head>
+<body>
+
+<input type="checkbox" id="mob-toggle" />
+<input type="checkbox" id="mob-search" />
+<header class="site-header">
+  <nav class="nav-primary">
+    <a href="index.html">Rezepte</a>
+    <a href="index.html#saison">Saison</a>
+    <a href="tinder.html">Was kochen wir?</a>
+    <a href="ueber-uns.html">Über uns</a>
+  </nav>
+  <label class="mob-burger" for="mob-toggle" aria-label="Menü öffnen"><span></span><span></span><span></span></label>
+  <a class="logo" href="index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
+  <div class="mob-pulse"></div>
+  <label class="mob-search-btn" for="mob-search" aria-label="Suche öffnen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
+  <nav class="nav-secondary"></nav>
+</header>
+<nav id="mob-nav">
+  <label class="mob-close" for="mob-toggle" aria-label="Schließen">×</label>
+  <a href="index.html">Rezepte<em>Alle Gerichte</em></a>
+  <a href="tinder.html">Was kochen wir?<em>Swipt &amp; matcht</em></a>
+  <a href="ueber-uns.html">Über uns<em>Max &amp; Minou</em></a>
+</nav>
+<div class="mob-search-overlay">
+  <div class="row">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="search" placeholder="Suchen — Spargel, Pasta, 30 Min." />
+    <label class="close" for="mob-search" aria-label="Schließen">×</label>
+  </div>
+</div>
+
+<div class="not-found">
+  <p class="kicker">Fehler 404</p>
+  <h1>404</h1>
+  <h2>Diese Seite existiert <em>leider nicht.</em></h2>
+  <p>Vielleicht wurde das Rezept noch nicht veröffentlicht, oder der Link ist veraltet. Zurück zur Startseite?</p>
+  <div class="links">
+    <a href="index.html" class="primary">Alle Rezepte</a>
+    <a href="tinder.html" class="secondary">Was kochen wir?</a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div>
+    <h5>Max <em>&amp;</em> Minou</h5>
+    <p>Vegane Rezepte für zwei,<br />die beide kochen.<br /><br />Jedes Rezept. Jede Person.<br />Gemeinsam am Tisch.</p>
+  </div>
+  <div><h5>Lesen</h5><a href="index.html">Alle Rezepte</a><a href="#">Archiv</a><a href="#">RSS-Feed</a></div>
+  <div><h5>Kochen</h5><a href="tinder.html">Was kochen wir?</a></div>
+  <div><h5>Folgen</h5><a href="#">Newsletter</a><a href="ueber-uns.html">Über uns</a></div>
+  <div class="colophon">
+    <span>© 2026 Max &amp; Minou</span>
+    <span><a href="impressum.html" style="color:inherit">Impressum</a> · <a href="datenschutz.html" style="color:inherit">Datenschutz</a></span>
+    <span>Lebt seit 2025 · wächst weiter</span>
+  </div>
+</footer>
+
+</body>
+</html>
