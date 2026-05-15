@@ -258,6 +258,7 @@ h1.hero-title .minou-w { color: var(--minou); font-style: italic; }
 .site-footer p { line-height: 1.7; }
 .site-footer a { color: var(--mid); text-decoration: none; display: block; padding: 2px 0; }
 .site-footer a:hover { color: var(--ink); }
+.colophon a { display: inline; padding: 0; }
 .colophon {
   grid-column: 1 / -1;
   margin-top: 24px; padding-top: 18px;
