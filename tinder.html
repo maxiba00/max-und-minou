@@ -323,7 +323,7 @@
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <input placeholder="Suchen — z.B. Spargel, Pasta, 30 Min." />
   </div>
-  <div class="pulse"><span class="dot"></span>Verbunden mit <b id="partnerNamePulse">…</b></div>
+  <div class="pulse"><span class="dot"></span>Verbunden mit <b id="partnerNamePulse">…</b><button id="disconnectBtn" onclick="disconnectPartner()" style="display:none;margin-left:10px;font-size:11px;color:var(--mid);background:none;border:1px solid var(--rule);border-radius:999px;padding:2px 10px;cursor:pointer;font-family:inherit;letter-spacing:0.04em" title="Verbindung trennen">Trennen</button></div>
   <div class="right">
     <span id="userNameDisplay" style="color:var(--mid);font-size:12px"></span>
     <a href="#" onclick="signOut(); return false;" style="color:var(--mid);font-size:12px">Abmelden</a>
@@ -524,6 +524,7 @@ async function loadProfile(retries = 6) {
   const partnerName = pp?.display_name || 'Partner';
   document.getElementById('partnerNamePulse').textContent = partnerName;
   document.getElementById('partnerNameMob').textContent   = partnerName;
+  document.getElementById('disconnectBtn').style.display  = 'inline-block';
 
   // Votes laden
   await loadVotes();
@@ -569,6 +570,28 @@ async function connectPartner() {
   profile = updated;
   clearInterval(partnerPoll);
   await loadProfile(3);
+}
+
+async function disconnectPartner() {
+  if (!confirm('Verbindung zu ' + (partnerProfile?.display_name || 'Partner') + ' wirklich trennen?')) return;
+  const { error } = await sb.rpc('disconnect_partner');
+  if (error) { alert('Fehler beim Trennen: ' + error.message); return; }
+  // State zurücksetzen
+  profile.partner_id = null;
+  partnerProfile = null;
+  myVotes = {}; partnerVotes = {}; history = [];
+  clearInterval(partnerPoll);
+  // Partner-Button verstecken
+  document.getElementById('disconnectBtn').style.display = 'none';
+  document.getElementById('partnerNamePulse').textContent = '…';
+  document.getElementById('partnerNameMob').textContent   = '…';
+  // Partner-Wall zeigen
+  document.getElementById('myCode').textContent = profile.invite_code;
+  document.getElementById('partnerWall').classList.remove('hidden');
+  // Deck/Matches zurücksetzen
+  document.getElementById('deck').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('matchList').innerHTML = '<div class="empty">Noch keine Matches — beide müssen <em>ja</em> sagen.</div>';
+  startPartnerPoll();
 }
 
 // ── Votes ──────────────────────────────────────────────────
