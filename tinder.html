@@ -8,7 +8,112 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/site.css" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+  /* ── Auth overlay ── */
+  #authWall {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  #authWall.hidden { display: none; }
+  .auth-box {
+    background: white; border-radius: 16px;
+    padding: 40px 36px; width: 100%; max-width: 400px;
+    box-shadow: 0 8px 40px rgba(29,26,20,0.12);
+    border: 1px solid var(--rule);
+  }
+  .auth-box h2 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 28px; letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .auth-box h2 em { font-style: italic; color: var(--mid); }
+  .auth-box p { font-size: 14px; color: var(--mid); margin-bottom: 28px; line-height: 1.6; }
+  .auth-field { margin-bottom: 14px; }
+  .auth-field label {
+    display: block; font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--mid);
+    font-weight: 600; margin-bottom: 6px;
+  }
+  .auth-field input {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--rule); border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: 14px;
+    color: var(--ink); outline: none; background: var(--paper);
+    transition: border-color 0.15s;
+  }
+  .auth-field input:focus { border-color: var(--ink); }
+  .auth-submit {
+    width: 100%; padding: 13px; border-radius: 999px;
+    background: var(--ink); color: var(--paper);
+    border: none; font-family: 'Fraunces', serif;
+    font-size: 16px; cursor: pointer; margin-top: 8px;
+    transition: opacity 0.15s;
+  }
+  .auth-submit:hover { opacity: 0.85; }
+  .auth-toggle {
+    display: block; text-align: center; margin-top: 16px;
+    font-size: 13px; color: var(--mid); cursor: pointer;
+    background: none; border: none; font-family: inherit;
+    text-decoration: underline; text-underline-offset: 3px;
+    width: 100%;
+  }
+  .auth-toggle:hover { color: var(--ink); }
+  .auth-err { font-size: 13px; color: var(--max); margin-top: 10px; text-align: center; min-height: 18px; }
+
+  /* ── Partner screen ── */
+  #partnerWall {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  #partnerWall.hidden { display: none; }
+  .partner-box {
+    background: white; border-radius: 16px;
+    padding: 40px 36px; width: 100%; max-width: 420px;
+    box-shadow: 0 8px 40px rgba(29,26,20,0.12);
+    border: 1px solid var(--rule);
+  }
+  .partner-box h2 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 28px; letter-spacing: -0.02em; margin-bottom: 6px;
+  }
+  .partner-box h2 em { font-style: italic; color: var(--mid); }
+  .partner-box p { font-size: 14px; color: var(--mid); margin-bottom: 24px; line-height: 1.6; }
+  .code-display {
+    background: var(--paper); border: 1.5px solid var(--rule);
+    border-radius: 12px; padding: 20px; text-align: center;
+    margin-bottom: 20px;
+  }
+  .code-display .lbl {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--mid); margin-bottom: 10px;
+  }
+  .code-display .code {
+    font-family: ui-monospace, 'SF Mono', monospace;
+    font-size: 32px; letter-spacing: 0.25em; color: var(--max);
+    font-weight: 700;
+  }
+  .code-copy {
+    margin-top: 10px; font-size: 12px; color: var(--mid);
+    background: none; border: 1px solid var(--rule);
+    border-radius: 999px; padding: 5px 14px;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s;
+  }
+  .code-copy:hover { background: var(--paper-2); }
+  .partner-divider {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; color: var(--soft); margin: 16px 0;
+  }
+  .partner-divider::before, .partner-divider::after {
+    content:''; flex:1; height:1px; background: var(--rule);
+  }
+
+  /* ── Swipe page ── */
   .swipe-hero { padding: 56px 40px 24px; text-align: center; }
   .swipe-hero h1 {
     font-family: 'Fraunces', serif; font-weight: 400;
@@ -17,7 +122,6 @@
   }
   .swipe-hero h1 em { font-style: italic; }
   .swipe-hero p { color: var(--mid); max-width: 560px; margin: 0 auto; font-size: 15px; line-height: 1.7; }
-  /* Role picker */
   .who-pick {
     display: flex; gap: 12px; justify-content: center;
     padding: 8px 40px 24px;
@@ -26,18 +130,14 @@
     font-family: inherit; font-size: 13px;
     padding: 10px 22px; border-radius: 999px;
     border: 1px solid var(--rule); background: transparent;
-    cursor: pointer; color: var(--mid);
-    letter-spacing: 0.04em;
+    cursor: pointer; color: var(--mid); letter-spacing: 0.04em;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
   }
   .who-pick button.on.max   { background: var(--max);   color: var(--paper); border-color: var(--max); }
   .who-pick button.on.minou { background: var(--minou); color: var(--paper); border-color: var(--minou); }
-  /* Deck */
   .deck-wrap {
-    position: relative;
-    height: 560px;
-    margin: 0 auto 24px;
-    max-width: 420px;
-    padding: 0 20px;
+    position: relative; height: 560px;
+    margin: 0 auto 24px; max-width: 420px; padding: 0 20px;
   }
   .card-swipe {
     position: absolute; inset: 0 20px;
@@ -46,8 +146,7 @@
     box-shadow: 0 12px 32px rgba(29,26,20,0.12);
     cursor: grab;
     transition: transform 0.3s cubic-bezier(.2,.7,.2,1), opacity 0.3s;
-    user-select: none;
-    display: flex; flex-direction: column;
+    user-select: none; display: flex; flex-direction: column;
   }
   .card-swipe.dragging { transition: none; cursor: grabbing; }
   .card-swipe .photo-block {
@@ -69,12 +168,9 @@
     display: flex; justify-content: space-between;
     font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid);
   }
-  .card-swipe .meta-row .pill {
-    background: var(--paper); padding: 5px 10px; border-radius: 999px;
-  }
+  .card-swipe .meta-row .pill { background: var(--paper); padding: 5px 10px; border-radius: 999px; }
   .card-swipe .info-block {
-    padding: 22px 24px 24px;
-    background: var(--paper);
+    padding: 22px 24px 24px; background: var(--paper);
     border-top: 1px solid var(--rule);
   }
   .card-swipe h3 {
@@ -83,13 +179,10 @@
     letter-spacing: -0.02em; margin-bottom: 12px;
   }
   .card-swipe h3 em { font-style: italic; }
-  .card-swipe .roles-line {
-    display: flex; gap: 14px; font-size: 12px; color: var(--mid);
-  }
+  .card-swipe .roles-line { display: flex; gap: 14px; font-size: 12px; color: var(--mid); }
   .card-swipe .roles-line b { color: var(--ink); font-weight: 500; }
   .card-swipe .roles-line .max-c   { color: var(--max); }
   .card-swipe .roles-line .minou-c { color: var(--minou); }
-  /* Stamp overlays */
   .stamp {
     position: absolute; top: 28px;
     font-family: 'Fraunces', serif; font-style: italic;
@@ -100,7 +193,6 @@
   }
   .stamp.yes { right: 24px; color: var(--minou); }
   .stamp.no  { left: 24px;  color: var(--max); transform: rotate(8deg); }
-  /* Action buttons */
   .actions {
     display: flex; gap: 18px; justify-content: center;
     padding: 0 40px 32px;
@@ -112,13 +204,11 @@
     transition: transform 0.15s, background 0.15s;
   }
   .action-btn:hover { transform: translateY(-2px); }
-  .action-btn.no  { color: var(--max); border-color: var(--max); }
+  .action-btn.no  { color: var(--max);   border-color: var(--max); }
   .action-btn.yes { color: var(--minou); border-color: var(--minou); }
   .action-btn.undo { font-size: 18px; color: var(--mid); }
-  /* Matches strip */
   .matches {
-    margin: 24px 40px 40px;
-    padding: 28px 32px;
+    margin: 24px 40px 40px; padding: 28px 32px;
     background: var(--paper-2); border-radius: 14px;
   }
   .matches-head {
@@ -138,17 +228,14 @@
   .match-row {
     display: grid; grid-template-columns: auto 1fr auto auto;
     gap: 16px; align-items: center;
-    padding: 12px 16px; background: var(--paper);
-    border-radius: 8px;
+    padding: 12px 16px; background: var(--paper); border-radius: 8px;
   }
   .match-row .heart {
     width: 28px; height: 28px; border-radius: 50%;
     background: var(--ink); color: var(--paper);
     display: grid; place-items: center; font-size: 14px;
   }
-  .match-row .title {
-    font-family: 'Fraunces', serif; font-size: 16px;
-  }
+  .match-row .title { font-family: 'Fraunces', serif; font-size: 16px; }
   .match-row .title em { font-style: italic; }
   .match-row .stats { font-size: 11px; color: var(--mid); letter-spacing: 0.08em; }
   .match-row a {
@@ -162,37 +249,84 @@
     font-family: 'Fraunces', serif; font-style: italic;
     font-size: 18px; padding: 24px 0;
   }
-  /* End-of-deck state */
   .deck-done {
-    text-align: center; padding: 80px 24px;
-    color: var(--mid);
+    text-align: center; padding: 80px 24px; color: var(--mid);
     font-family: 'Fraunces', serif; font-style: italic; font-size: 22px;
     line-height: 1.4;
   }
   .deck-done b { color: var(--ink); font-style: normal; font-weight: 500; }
-  /* Status bar */
   .status-bar {
     display: flex; justify-content: space-between;
-    max-width: 420px; margin: 0 auto 12px;
-    padding: 0 28px;
+    max-width: 420px; margin: 0 auto 12px; padding: 0 28px;
     font-size: 11px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--mid);
   }
   .status-bar b { color: var(--ink); font-weight: 600; }
+  .spinner {
+    width: 28px; height: 28px; border: 3px solid var(--rule);
+    border-top-color: var(--max); border-radius: 50%;
+    animation: spin 0.75s linear infinite; margin: 80px auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
+<!-- ── Auth Wall ─────────────────────────────────────────── -->
+<div id="authWall">
+  <div class="auth-box">
+    <h2>Hallo, <em>ihr zwei.</em></h2>
+    <p id="authSubtitle">Meld dich an um loszulegen.</p>
+    <div class="auth-field">
+      <label>E-Mail</label>
+      <input type="email" id="authEmail" placeholder="du@beispiel.de" />
+    </div>
+    <div class="auth-field" id="authNameWrap" style="display:none">
+      <label>Dein Name</label>
+      <input type="text" id="authName" placeholder="Max oder Minou" />
+    </div>
+    <div class="auth-field">
+      <label>Passwort</label>
+      <input type="password" id="authPassword" placeholder="••••••••" />
+    </div>
+    <div class="auth-err" id="authErr"></div>
+    <button class="auth-submit" id="authBtn" onclick="handleAuth()">Anmelden</button>
+    <button class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">Noch kein Konto? Registrieren →</button>
+  </div>
+</div>
+
+<!-- ── Partner Wall ──────────────────────────────────────── -->
+<div id="partnerWall" class="hidden">
+  <div class="partner-box">
+    <h2>Partner <em>verbinden</em></h2>
+    <p>Teile deinen Code mit deinem Partner oder gib seinen Code ein — dann könnt ihr swipen.</p>
+    <div class="code-display">
+      <div class="lbl">Dein Code</div>
+      <div class="code" id="myCode">——</div>
+      <button class="code-copy" onclick="copyCode()">Kopieren</button>
+    </div>
+    <div class="partner-divider">oder Partner-Code eingeben</div>
+    <div class="auth-field">
+      <label>Code des Partners</label>
+      <input type="text" id="partnerCodeIn" placeholder="ABC123" maxlength="6"
+        style="text-transform:uppercase;letter-spacing:0.2em;text-align:center;font-size:1.2rem" />
+    </div>
+    <div class="auth-err" id="partnerErr"></div>
+    <button class="auth-submit" onclick="connectPartner()">Verbinden</button>
+    <button class="auth-toggle" onclick="signOut()">Abmelden</button>
+  </div>
+</div>
+
+<!-- ── Page ─────────────────────────────────────────────── -->
 <div class="util">
   <div class="search">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <input placeholder="Suchen — z.B. Spargel, Pasta, 30 Min." />
   </div>
-  <div class="pulse"><span class="dot"></span>Lokaler Modus · ihr swipt unabhängig auf demselben Gerät</div>
+  <div class="pulse"><span class="dot"></span>Verbunden mit <b id="partnerNamePulse">…</b></div>
   <div class="right">
-    <a href="#">Folgen</a>
-    <a href="#">RSS</a>
-    <a class="login" href="#">Anmelden</a>
+    <span id="userNameDisplay" style="color:var(--mid);font-size:12px"></span>
+    <a href="#" onclick="signOut(); return false;" style="color:var(--mid);font-size:12px">Abmelden</a>
   </div>
 </div>
 
@@ -207,24 +341,18 @@
   </nav>
   <label class="mob-burger" for="mob-toggle" aria-label="Menü öffnen"><span></span><span></span><span></span></label>
   <a class="logo" href="index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
-  <div class="mob-pulse"><span class="dot"></span>Zuletzt aktualisiert · <b>Carbonara</b></div>
+  <div class="mob-pulse"><span class="dot"></span>Verbunden · <b id="partnerNameMob">…</b></div>
   <label class="mob-search-btn" for="mob-search" aria-label="Suche öffnen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
   <nav class="nav-secondary">
-    <a href="#">Frühling</a>
-    <a href="#">Sommer</a>
-    <a href="#">Ganzjährig</a>
-    <a href="#">≤ 30 Min.</a>
+    <a href="#">Frühling</a><a href="#">Sommer</a>
+    <a href="#">Ganzjährig</a><a href="#">≤ 30 Min.</a>
   </nav>
 </header>
 <nav id="mob-nav">
   <label class="mob-close" for="mob-toggle" aria-label="Schließen">×</label>
   <a href="index.html">Rezepte<em>Alle Gerichte</em></a>
-  <a href="index.html#saison">Saison<em>Nach Jahreszeit filtern</em></a>
   <a href="tinder.html">Was kochen wir?<em>Swipt &amp; matcht</em></a>
   <a href="ueber-uns.html">Über uns<em>Max &amp; Minou</em></a>
-  <a href="#">Folgen<em>Newsletter alle 14 Tage</em></a>
-  <a href="#">RSS<em>Feed abonnieren</em></a>
-  <a href="#">Anmelden<em>Eigene Rezepte speichern</em></a>
 </nav>
 <div class="mob-search-overlay">
   <div class="row">
@@ -232,20 +360,12 @@
     <input type="search" placeholder="Suchen — Spargel, Pasta, 30 Min." />
     <label class="close" for="mob-search" aria-label="Schließen">×</label>
   </div>
-  <div class="hint">Beliebt diese Woche</div>
-  <div class="sugg">
-    <a href="rezepte/carbonara.html">Carbonara</a>
-    <a href="rezepte/primavera.html">Primavera</a>
-    <a href="rezepte/buddha-bowl.html">Buddha Bowl</a>
-    <a href="rezepte/tacos.html">Tacos</a>
-    <a href="rezepte/kartoffelsalat.html">Kartoffelsalat</a>
-  </div>
 </div>
 
 <section class="swipe-hero">
   <div class="kicker">Unentschieden? · wischt einzeln · seht, wo ihr beide <em>ja</em> sagt</div>
   <h1>Was kochen wir <em>heute?</em></h1>
-  <p>Beide swipen unabhängig durch dieselben Rezepte. Sobald ihr beide auf dasselbe Rezept ja sagt, taucht es unten als <em>Match</em> auf.</p>
+  <p>Beide swipen unabhängig durch dieselben Rezepte. Sobald ihr beide auf dasselbe Rezept <em>ja</em> sagt, taucht es als Match auf.</p>
 </section>
 
 <div class="who-pick" id="whoPick">
@@ -258,21 +378,21 @@
   <span><b id="remaining">5</b> übrig</span>
 </div>
 
-<div class="deck-wrap" id="deck"></div>
+<div class="deck-wrap" id="deck"><div class="spinner"></div></div>
 
 <div class="actions" id="actions">
-  <button class="action-btn no"  id="btnNo"  title="Nein">✕</button>
+  <button class="action-btn no"   id="btnNo"   title="Nein">✕</button>
   <button class="action-btn undo" id="btnUndo" title="Zurück">↶</button>
-  <button class="action-btn yes" id="btnYes" title="Ja">♥</button>
+  <button class="action-btn yes"  id="btnYes"  title="Ja">♥</button>
 </div>
 
 <section class="matches">
   <div class="matches-head">
     <h2>Eure <em>Matches</em></h2>
-    <button class="reset" id="resetAll">Alles zurücksetzen</button>
+    <button class="reset" id="resetAll">Meine Votes zurücksetzen</button>
   </div>
   <div class="match-list" id="matchList">
-    <div class="empty" id="emptyState">Noch keine Matches — beide müssen ja sagen.</div>
+    <div class="empty">Noch keine Matches — beide müssen <em>ja</em> sagen.</div>
   </div>
 </section>
 
@@ -281,22 +401,9 @@
     <h5>Max <em>&amp;</em> Minou</h5>
     <p>Vegane Rezepte für zwei,<br />die beide kochen.<br /><br />Jedes Rezept. Jede Person.<br />Gemeinsam am Tisch.</p>
   </div>
-  <div>
-    <h5>Lesen</h5>
-    <a href="index.html">Alle Rezepte</a>
-    <a href="#">Archiv</a>
-    <a href="#">RSS-Feed</a>
-  </div>
-  <div>
-    <h5>Kochen</h5>
-    <a href="tinder.html">Was kochen wir?</a>
-    <a href="#">Mit Partner verbinden</a>
-  </div>
-  <div>
-    <h5>Folgen</h5>
-    <a href="#">Newsletter</a>
-    <a href="ueber-uns.html">Über uns</a>
-  </div>
+  <div><h5>Lesen</h5><a href="index.html">Alle Rezepte</a><a href="#">Archiv</a><a href="#">RSS-Feed</a></div>
+  <div><h5>Kochen</h5><a href="tinder.html">Was kochen wir?</a></div>
+  <div><h5>Folgen</h5><a href="#">Newsletter</a><a href="ueber-uns.html">Über uns</a></div>
   <div class="colophon">
     <span>© 2026 Max &amp; Minou</span>
     <span>Gesetzt in Fraunces &amp; Inter</span>
@@ -305,71 +412,229 @@
 </footer>
 
 <script>
+const SB_URL = 'https://cojxukugaorbqxqhbyfy.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvanh1a3VnYW9yYnF4cWhieWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTIzMDcsImV4cCI6MjA5MzkyODMwN30.YR43iaqO2gOMmduJgdVVr7bmvd08fgHi-wZ9AiPpipI';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
 const RECIPES = [
-  { id:'carbonara',     title:'Vegane Spaghetti <em>Carbonara</em>',    href:'rezepte/carbonara.html',     time:'20 Min.', season:'Frühling', max:'Tofu &amp; Pasta',  minou:'Cremige Sauce', label:'— spaghetti, schwarzer teller —' },
-  { id:'kartoffelsalat',title:'Knuspriger <em>Kartoffelsalat</em>',     href:'rezepte/kartoffelsalat.html', time:'50 Min.', season:'Frühling', max:'Ofen-Kartoffeln',  minou:'Senf-Dressing', label:'— smashed potatoes &amp; spargel —' },
-  { id:'primavera',     title:'Pasta <em>Primavera</em>',               href:'rezepte/primavera.html',     time:'30 Min.', season:'Sommer',   max:'Pasta &amp; Gemüse',minou:'Zitronen-Cashew',label:'— pasta primavera —' },
-  { id:'buddha-bowl',   title:'Buddha Bowl <em>mit Süßkartoffel</em>',  href:'rezepte/buddha-bowl.html',   time:'40 Min.', season:'Ganzjährig',max:'Süßkartoffel',     minou:'Bowl &amp; Tahini', label:'— buddha bowl, overhead —' },
-  { id:'tacos',         title:'Blumenkohl-<em>Tacos</em>',              href:'rezepte/tacos.html',         time:'35 Min.', season:'Ganzjährig',max:'Blumenkohl',       minou:'Tortillas &amp; Toppings', label:'— blumenkohl tacos —' }
+  { id:'carbonara',      title:'Vegane Spaghetti <em>Carbonara</em>',   href:'rezepte/carbonara.html',     time:'20 Min.', season:'Frühling',  max:'Tofu &amp; Pasta',          minou:'Cremige Sauce',           label:'— spaghetti, schwarzer teller —' },
+  { id:'kartoffelsalat', title:'Knuspriger <em>Kartoffelsalat</em>',    href:'rezepte/kartoffelsalat.html',time:'50 Min.', season:'Frühling',  max:'Ofen-Kartoffeln',           minou:'Senf-Dressing',           label:'— smashed potatoes &amp; spargel —' },
+  { id:'primavera',      title:'Pasta <em>Primavera</em>',              href:'rezepte/primavera.html',     time:'30 Min.', season:'Sommer',    max:'Pasta &amp; Gemüse',        minou:'Zitronen-Cashew',         label:'— pasta primavera —' },
+  { id:'buddha-bowl',    title:'Buddha Bowl <em>mit Süßkartoffel</em>', href:'rezepte/buddha-bowl.html',   time:'40 Min.', season:'Ganzjährig',max:'Süßkartoffel',              minou:'Bowl &amp; Tahini',        label:'— buddha bowl, overhead —' },
+  { id:'tacos',          title:'Blumenkohl-<em>Tacos</em>',             href:'rezepte/tacos.html',         time:'35 Min.', season:'Ganzjährig',max:'Blumenkohl',                minou:'Tortillas &amp; Toppings',label:'— blumenkohl tacos —' }
 ];
 
-const K = {
-  votes: 'mm_tinder_votes_v2', // {max:{id:'yes'|'no'}, minou:{...}}
-  role:  'mm_tinder_role_v2',
-  history:'mm_tinder_history_v2' // [{role,id,vote}]
-};
-const state = {
-  votes: JSON.parse(localStorage.getItem(K.votes) || '{"max":{},"minou":{}}'),
-  role:  localStorage.getItem(K.role) || null,
-  history: JSON.parse(localStorage.getItem(K.history) || '[]'),
-  currentIdx: 0
-};
-function save() {
-  localStorage.setItem(K.votes, JSON.stringify(state.votes));
-  localStorage.setItem(K.history, JSON.stringify(state.history));
-  if (state.role) localStorage.setItem(K.role, state.role);
+// ── State ──────────────────────────────────────────────────
+let currentUser = null, profile = null, partnerProfile = null;
+let isSignup = false;
+let partnerPoll = null;
+// votes: { recipeId: true|false }
+let myVotes = {}, partnerVotes = {};
+let role = null; // 'max' | 'minou'
+let history = []; // [{id, liked}]
+
+// ── Boot ───────────────────────────────────────────────────
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    currentUser = session.user;
+    await loadProfile();
+  }
+  // authWall stays visible until loadProfile succeeds
 }
 
-const deck = document.getElementById('deck');
-const remaining = document.getElementById('remaining');
-const curRole = document.getElementById('curRole');
-const matchList = document.getElementById('matchList');
-const emptyState = document.getElementById('emptyState');
+// ── Auth ───────────────────────────────────────────────────
+function toggleAuthMode() {
+  isSignup = !isSignup;
+  document.getElementById('authSubtitle').textContent = isSignup
+    ? 'Erstelle deinen Account.' : 'Meld dich an um loszulegen.';
+  document.getElementById('authBtn').textContent     = isSignup ? 'Registrieren' : 'Anmelden';
+  document.getElementById('authToggle').textContent  = isSignup ? '← Schon ein Konto? Anmelden' : 'Noch kein Konto? Registrieren →';
+  document.getElementById('authNameWrap').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('authErr').textContent = '';
+}
 
-function pendingFor(role) {
-  if (!role) return [];
-  return RECIPES.filter(r => !(r.id in state.votes[role]));
+async function handleAuth() {
+  const email    = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const name     = document.getElementById('authName').value.trim();
+  const err      = document.getElementById('authErr');
+  err.textContent = '';
+
+  if (!email || !password) { err.textContent = 'Bitte E-Mail und Passwort eingeben.'; return; }
+
+  if (isSignup) {
+    if (!name) { err.textContent = 'Bitte deinen Namen eingeben.'; return; }
+    const { data, error } = await sb.auth.signUp({
+      email, password, options: { data: { display_name: name } }
+    });
+    if (error) { err.textContent = error.message; return; }
+    currentUser = data.user;
+    await sleep(800);
+    await loadProfile();
+  } else {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) { err.textContent = 'E-Mail oder Passwort falsch.'; return; }
+    currentUser = data.user;
+    await loadProfile();
+  }
+}
+
+async function signOut() {
+  clearInterval(partnerPoll);
+  await sb.auth.signOut();
+  currentUser = null; profile = null; partnerProfile = null;
+  myVotes = {}; partnerVotes = {}; role = null; history = [];
+  document.getElementById('authWall').classList.remove('hidden');
+  document.getElementById('partnerWall').classList.add('hidden');
+}
+
+// ── Profile ────────────────────────────────────────────────
+async function loadProfile(retries = 6) {
+  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+
+  if (!data) {
+    if (retries <= 0) {
+      // Trigger hat nicht gefeuert → Profil selbst anlegen
+      const displayName = currentUser.user_metadata?.display_name
+        || currentUser.email.split('@')[0];
+      await sb.from('profiles').insert({ id: currentUser.id, display_name: displayName });
+      return loadProfile(3);
+    }
+    await sleep(800);
+    return loadProfile(retries - 1);
+  }
+
+  profile = data;
+  document.getElementById('userNameDisplay').textContent = profile.display_name;
+
+  if (!profile.partner_id) {
+    document.getElementById('myCode').textContent = profile.invite_code;
+    document.getElementById('authWall').classList.add('hidden');
+    document.getElementById('partnerWall').classList.remove('hidden');
+    startPartnerPoll();
+    return;
+  }
+
+  // Partner laden
+  const { data: pp } = await sb.from('profiles').select('display_name').eq('id', profile.partner_id).single();
+  partnerProfile = pp;
+  const partnerName = pp?.display_name || 'Partner';
+  document.getElementById('partnerNamePulse').textContent = partnerName;
+  document.getElementById('partnerNameMob').textContent   = partnerName;
+
+  // Votes laden
+  await loadVotes();
+
+  // Auth & Partner walls schließen
+  document.getElementById('authWall').classList.add('hidden');
+  document.getElementById('partnerWall').classList.add('hidden');
+
+  renderRolePicker();
+  renderDeck();
+  renderMatches();
+}
+
+function startPartnerPoll() {
+  partnerPoll = setInterval(async () => {
+    const { data } = await sb.from('profiles').select('partner_id').eq('id', currentUser.id).single();
+    if (data?.partner_id) {
+      clearInterval(partnerPoll);
+      profile.partner_id = data.partner_id;
+      await loadProfile(3);
+    }
+  }, 3000);
+}
+
+// ── Partner connect ────────────────────────────────────────
+async function copyCode() {
+  await navigator.clipboard.writeText(profile.invite_code).catch(() => {});
+  const btn = document.querySelector('.code-copy');
+  btn.textContent = '✓ Kopiert!';
+  setTimeout(() => btn.textContent = 'Kopieren', 2000);
+}
+
+async function connectPartner() {
+  const code = document.getElementById('partnerCodeIn').value.trim().toUpperCase();
+  const err  = document.getElementById('partnerErr');
+  err.textContent = '';
+  if (code.length !== 6) { err.textContent = 'Bitte den 6-stelligen Code eingeben.'; return; }
+
+  const { data, error } = await sb.rpc('connect_partner', { p_invite_code: code });
+  if (error || data?.error) { err.textContent = data?.error || 'Verbindung fehlgeschlagen.'; return; }
+
+  const { data: updated } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  profile = updated;
+  clearInterval(partnerPoll);
+  await loadProfile(3);
+}
+
+// ── Votes ──────────────────────────────────────────────────
+async function loadVotes() {
+  const [{ data: mine }, { data: theirs }] = await Promise.all([
+    sb.from('swipes').select('recipe_slug, liked').eq('user_id', currentUser.id),
+    sb.from('swipes').select('recipe_slug, liked').eq('user_id', profile.partner_id),
+  ]);
+  myVotes      = Object.fromEntries((mine   || []).map(s => [s.recipe_slug, s.liked]));
+  partnerVotes = Object.fromEntries((theirs || []).map(s => [s.recipe_slug, s.liked]));
+}
+
+async function castVote(recipeId, liked) {
+  myVotes[recipeId] = liked;
+  history.push({ id: recipeId, liked });
+  await sb.from('swipes').upsert({ user_id: currentUser.id, recipe_slug: recipeId, liked });
+  renderDeck();
+  renderMatches();
+}
+
+async function undoVote() {
+  if (!history.length) return;
+  const last = history.pop();
+  delete myVotes[last.id];
+  await sb.from('swipes').delete()
+    .eq('user_id', currentUser.id).eq('recipe_slug', last.id);
+  renderDeck();
+  renderMatches();
+}
+
+// ── Render ─────────────────────────────────────────────────
+function pendingFor() {
+  return RECIPES.filter(r => !(r.id in myVotes));
 }
 
 function renderRolePicker() {
   document.querySelectorAll('.role-btn').forEach(b => {
-    b.classList.toggle('on', b.dataset.role === state.role);
+    b.classList.toggle('on', b.dataset.role === role);
+    if (b.dataset.role === 'max')   b.textContent = profile.display_name === 'Max'   ? 'Ich bin Max'   : 'Max';
+    if (b.dataset.role === 'minou') b.textContent = profile.display_name === 'Minou' ? 'Ich bin Minou' : 'Minou';
   });
-  curRole.textContent = state.role
-    ? (state.role === 'max' ? 'Max' : 'Minou')
+  document.getElementById('curRole').textContent = role
+    ? (role === 'max' ? 'Max' : 'Minou')
     : '— bitte wählen —';
 }
 
 function renderDeck() {
+  const deck = document.getElementById('deck');
   deck.innerHTML = '';
-  const pending = pendingFor(state.role);
-  remaining.textContent = pending.length;
-  if (!state.role) {
+  const pending = pendingFor();
+  document.getElementById('remaining').textContent = pending.length;
+
+  if (!role) {
     deck.innerHTML = '<div class="deck-done">Wählt zuerst eine <b>Rolle</b> oben.</div>';
     return;
   }
   if (pending.length === 0) {
-    deck.innerHTML = '<div class="deck-done">Alles bewertet, <b>'+(state.role==='max'?'Max':'Minou')+'</b>.<br />Lasst den anderen swipen — oder schaut auf eure Matches.</div>';
+    deck.innerHTML = `<div class="deck-done">Alles bewertet, <b>${profile.display_name}</b>.<br />Schaut auf eure Matches unten.</div>`;
     return;
   }
-  // Render top 3 cards stacked
+
   const stack = pending.slice(0, 3);
   stack.forEach((r, i) => {
     const card = document.createElement('div');
     card.className = 'card-swipe';
     card.dataset.id = r.id;
     card.style.zIndex = 100 - i;
-    card.style.transform = `translateY(${i*8}px) scale(${1 - i*0.03})`;
+    card.style.transform = `translateY(${i * 8}px) scale(${1 - i * 0.03})`;
     card.innerHTML = `
       <div class="photo-block">
         <div class="stripes"></div>
@@ -387,34 +652,44 @@ function renderDeck() {
           <span><b class="max-c">Max</b> · ${r.max}</span>
           <span><b class="minou-c">Minou</b> · ${r.minou}</span>
         </div>
-      </div>
-    `;
+      </div>`;
     deck.appendChild(card);
     if (i === 0) attachDrag(card, r);
   });
 }
 
-function vote(recipeId, choice) {
-  if (!state.role) return;
-  state.votes[state.role][recipeId] = choice;
-  state.history.push({role: state.role, id: recipeId, vote: choice});
-  save();
-  renderDeck();
-  renderMatches();
+function renderMatches() {
+  const matchList = document.getElementById('matchList');
+  const matched = RECIPES.filter(r => myVotes[r.id] === true && partnerVotes[r.id] === true);
+
+  // Refresh partner votes async (fire and forget)
+  sb.from('swipes').select('recipe_slug, liked').eq('user_id', profile.partner_id)
+    .then(({ data }) => {
+      if (data) {
+        partnerVotes = Object.fromEntries(data.map(s => [s.recipe_slug, s.liked]));
+        const freshMatches = RECIPES.filter(r => myVotes[r.id] === true && partnerVotes[r.id] === true);
+        if (freshMatches.length !== matched.length) renderMatches();
+      }
+    });
+
+  matchList.innerHTML = '';
+  if (!matched.length) {
+    matchList.innerHTML = '<div class="empty">Noch keine Matches — beide müssen <em>ja</em> sagen.</div>';
+    return;
+  }
+  matched.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'match-row';
+    row.innerHTML = `
+      <div class="heart">♥</div>
+      <div class="title">${r.title}</div>
+      <div class="stats">${r.time} · ${r.season}</div>
+      <a href="${r.href}">Rezept öffnen →</a>`;
+    matchList.appendChild(row);
+  });
 }
 
-function undo() {
-  if (!state.history.length) return;
-  const last = state.history.pop();
-  if (state.votes[last.role]) delete state.votes[last.role][last.id];
-  // restore role if different
-  state.role = last.role;
-  save();
-  renderRolePicker();
-  renderDeck();
-  renderMatches();
-}
-
+// ── Drag ───────────────────────────────────────────────────
 function attachDrag(card, recipe) {
   let startX = 0, startY = 0, dx = 0, dy = 0, active = false;
   const stampYes = card.querySelector('.stamp.yes');
@@ -429,21 +704,20 @@ function attachDrag(card, recipe) {
     if (!active) return;
     const p = e.touches ? e.touches[0] : e;
     dx = p.clientX - startX; dy = p.clientY - startY;
-    const rot = dx * 0.05;
-    card.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
+    card.style.transform = `translate(${dx}px,${dy}px) rotate(${dx * 0.05}deg)`;
     const ratio = Math.min(Math.abs(dx) / 120, 1);
-    if (dx > 0) { stampYes.style.opacity = ratio; stampNo.style.opacity = 0; }
+    if (dx > 0) { stampYes.style.opacity = ratio; stampNo.style.opacity  = 0; }
     else        { stampNo.style.opacity  = ratio; stampYes.style.opacity = 0; }
   };
   const onUp = () => {
     if (!active) return;
     active = false; card.classList.remove('dragging');
     if (Math.abs(dx) > 110) {
-      const choice = dx > 0 ? 'yes' : 'no';
-      const dir = dx > 0 ? 1 : -1;
-      card.style.transform = `translate(${dir*600}px, ${dy}px) rotate(${dir*30}deg)`;
-      card.style.opacity = 0;
-      setTimeout(() => vote(recipe.id, choice), 240);
+      const liked = dx > 0;
+      const dir   = liked ? 1 : -1;
+      card.style.transform = `translate(${dir * 600}px,${dy}px) rotate(${dir * 30}deg)`;
+      card.style.opacity = '0';
+      setTimeout(() => castVote(recipe.id, liked), 240);
     } else {
       card.style.transform = '';
       stampYes.style.opacity = 0; stampNo.style.opacity = 0;
@@ -453,73 +727,46 @@ function attachDrag(card, recipe) {
 
   card.addEventListener('mousedown', onDown);
   window.addEventListener('mousemove', onMove);
-  window.addEventListener('mouseup',   onUp);
-  card.addEventListener('touchstart', onDown, {passive:true});
-  card.addEventListener('touchmove',  onMove, {passive:true});
+  window.addEventListener('mouseup', onUp);
+  card.addEventListener('touchstart', onDown, { passive: true });
+  card.addEventListener('touchmove',  onMove, { passive: true });
   card.addEventListener('touchend',   onUp);
 }
 
-function programmaticVote(choice) {
-  if (!state.role) return;
-  const pending = pendingFor(state.role);
-  if (!pending.length) return;
+function programmaticVote(liked) {
+  const pending = pendingFor();
+  if (!pending.length || !role) return;
   const recipe = pending[0];
-  const card = deck.querySelector('.card-swipe');
-  if (!card) return vote(recipe.id, choice);
-  const dir = choice === 'yes' ? 1 : -1;
-  card.style.transform = `translate(${dir*600}px, 0) rotate(${dir*30}deg)`;
-  card.style.opacity = 0;
-  setTimeout(() => vote(recipe.id, choice), 240);
+  const card   = document.getElementById('deck').querySelector('.card-swipe');
+  if (!card) { castVote(recipe.id, liked); return; }
+  const dir = liked ? 1 : -1;
+  card.style.transform = `translate(${dir * 600}px,0) rotate(${dir * 30}deg)`;
+  card.style.opacity = '0';
+  setTimeout(() => castVote(recipe.id, liked), 240);
 }
 
-function renderMatches() {
-  const matched = RECIPES.filter(r =>
-    state.votes.max[r.id]   === 'yes' &&
-    state.votes.minou[r.id] === 'yes'
-  );
-  matchList.innerHTML = '';
-  if (!matched.length) {
-    matchList.innerHTML = '<div class="empty">Noch keine Matches — beide müssen <em>ja</em> sagen.</div>';
-    return;
-  }
-  matched.forEach(r => {
-    const row = document.createElement('div');
-    row.className = 'match-row';
-    row.innerHTML = `
-      <div class="heart">♥</div>
-      <div class="title">${r.title}</div>
-      <div class="stats">${r.time} · ${r.season}</div>
-      <a href="${r.href}">Rezept öffnen →</a>
-    `;
-    matchList.appendChild(row);
-  });
-}
-
-// Wire up
+// ── Events ─────────────────────────────────────────────────
 document.getElementById('whoPick').addEventListener('click', e => {
   const btn = e.target.closest('.role-btn');
   if (!btn) return;
-  state.role = btn.dataset.role;
-  save();
+  role = btn.dataset.role;
   renderRolePicker();
   renderDeck();
 });
-document.getElementById('btnYes').addEventListener('click', () => programmaticVote('yes'));
-document.getElementById('btnNo').addEventListener('click',  () => programmaticVote('no'));
-document.getElementById('btnUndo').addEventListener('click', undo);
-document.getElementById('resetAll').addEventListener('click', () => {
-  if (!confirm('Wirklich alle Votes zurücksetzen?')) return;
-  state.votes = {max:{}, minou:{}};
-  state.history = [];
-  save();
-  renderDeck();
-  renderMatches();
+document.getElementById('btnYes').addEventListener('click',  () => programmaticVote(true));
+document.getElementById('btnNo').addEventListener('click',   () => programmaticVote(false));
+document.getElementById('btnUndo').addEventListener('click', undoVote);
+document.getElementById('resetAll').addEventListener('click', async () => {
+  if (!confirm('Wirklich alle deine Votes zurücksetzen?')) return;
+  await sb.from('swipes').delete().eq('user_id', currentUser.id);
+  myVotes = {}; history = [];
+  renderDeck(); renderMatches();
 });
 
-renderRolePicker();
-renderDeck();
-renderMatches();
-</script>
+// ── Utils ───────────────────────────────────────────────────
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+init();
+</script>
 </body>
 </html>
