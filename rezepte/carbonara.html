@@ -34,9 +34,9 @@
     margin: 0 40px; aspect-ratio: 16 / 7;
     background: var(--paper-2); position: relative; overflow: hidden; border-radius: 6px;
   }
-  .recipe-photo .stripes {
+  .recipe-photo img {
     position: absolute; inset: 0;
-    background: repeating-linear-gradient(135deg, transparent 0 16px, rgba(0,0,0,0.035) 16px 17px);
+    width: 100%; height: 100%; object-fit: cover; display: block;
   }
   .recipe-photo .label {
     position: absolute; bottom: 14px; right: 14px;
@@ -302,8 +302,7 @@
 </section>
 
 <div class="recipe-photo">
-  <div class="stripes"></div>
-  <div class="label">— spaghetti, schwarzer teller —</div>
+  <img src="../assets/images/carbonara.jpg" alt="Vegane Spaghetti Carbonara mit Räuchertofu in weißem Teller" />
 </div>
 
 <p class="intro">Cremig, rauchig, in zwanzig Minuten auf dem Tisch — unser bisher schnellstes Rezept. Kein Ei, keine Sahne, kein Kompromiss. Die Carbonara-Note kommt aus Hefeflocken und Räuchertofu, die Cremigkeit aus eingeweichten Cashews.</p>
