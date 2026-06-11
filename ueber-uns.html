@@ -26,10 +26,10 @@
   .about-hero h1 .max-c   { color: var(--max); font-style: italic; }
   .about-hero h1 .minou-c { color: var(--minou); font-style: italic; }
   .duo-portrait {
-    margin: 0 40px 64px;
+    width: 75%; margin: 0 auto 64px;
     display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
   }
-  @media (max-width: 720px) { .duo-portrait { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .duo-portrait { width: 90%; grid-template-columns: 1fr; } }
   .portrait {
     aspect-ratio: 4 / 5; border-radius: 6px;
     position: relative; overflow: hidden;
@@ -193,18 +193,18 @@
 </section>
 
 <section class="duo-portrait">
-  <div class="portrait max">
-    <div class="stripes"></div>
-    <div class="who">Max</div>
-    <div class="bio">
+  <div class="portrait max" style="background-image:url('assets/images/portrait-max.jpg'); background-size:cover; background-position:center top;">
+    <div class="portrait-overlay" style="position:absolute;inset:0;background:linear-gradient(to bottom, transparent 40%, rgba(245,224,210,0.96) 72%);pointer-events:none;"></div>
+    <div class="who" style="position:relative;z-index:1;">Max</div>
+    <div class="bio" style="position:relative;z-index:1;">
       <div class="role">Max · meistens am Herd</div>
-      Mag heißes Eisen, Maillard-Bräune und Timing-Stress. Übernimmt Pasta, Tofu, Ofen, Pfanne. Isst eigentlich pflanzlich — außer wenn Käse im Spiel ist. Dann wird geschummelt. Keine Entschuldigung.
+      Mag heißes Eisen, Maillard-Bräune und Timing-Stress. Übernimmt Pasta, Tofu, Ofen, Pfanne. Meistens pflanzlich — mit gelegentlichen Ausnahmen, über die nicht weiter gesprochen wird. ;)
     </div>
   </div>
-  <div class="portrait minou">
-    <div class="stripes"></div>
-    <div class="who">Minou</div>
-    <div class="bio">
+  <div class="portrait minou" style="background-image:url('assets/images/portrait-minou.jpg'); background-size:cover; background-position:center top;">
+    <div class="portrait-overlay" style="position:absolute;inset:0;background:linear-gradient(to bottom, transparent 40%, rgba(218,232,214,0.96) 72%);pointer-events:none;"></div>
+    <div class="who" style="position:relative;z-index:1;">Minou</div>
+    <div class="bio" style="position:relative;z-index:1;">
       <div class="role">Minou · meistens an der Sauce</div>
       Rein pflanzlich — und das aus Überzeugung, nicht aus Verzicht. Mag Schichten, Säuren und das letzte Drittel eines Gerichts. Übernimmt Saucen, Dressings, Toppings, Anrichten. Fotografiert am Ende, bevor Max kosten darf.
     </div>
@@ -219,9 +219,9 @@
 
 <section class="facts">
   <div class="fact"><div class="num"><em>2</em></div><div class="label">Jahre gemeinsam<br />am Herd</div></div>
-  <div class="fact"><div class="num"><em>1</em></div><div class="label">unverbesserlicher<br />Käsefan</div></div>
-  <div class="fact"><div class="num"><em>5</em></div><div class="label">veröffentlichte<br />Rezepte</div></div>
-  <div class="fact"><div class="num"><em>∞</em></div><div class="label">Diskussionen über<br />Knoblauchmengen</div></div>
+  <div class="fact"><div class="num"><em>∞</em></div><div class="label">neue<br />Rezeptversuche</div></div>
+  <div class="fact"><div class="num"><em>5</em></div><div class="label">davon<br />online</div></div>
+  <div class="fact"><div class="num"><em>0</em></div><div class="label">Diskussionen über<br />Knoblauchmengen (mehr ist mehr)</div></div>
 </section>
 
 <section class="timeline">
