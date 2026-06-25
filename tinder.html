@@ -18,16 +18,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/site.css" />
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/pocketbase/dist/pocketbase.umd.js"></script>
 <style>
-  /* ── Auth overlay ── */
-  #authWall {
+  /* ── Join overlay ── */
+  #joinWall {
     position: fixed; inset: 0; z-index: 200;
     background: var(--paper);
-    display: flex; align-items: center; justify-content: center;
+    display: none; align-items: center; justify-content: center;
     padding: 24px;
   }
-  #authWall.hidden { display: none; }
   .auth-box {
     background: white; border-radius: 16px;
     padding: 40px 36px; width: 100%; max-width: 400px;
@@ -73,14 +72,6 @@
   .auth-toggle:hover { color: var(--ink); }
   .auth-err { font-size: 13px; color: var(--max); margin-top: 10px; text-align: center; min-height: 18px; }
 
-  /* ── Partner screen ── */
-  #partnerWall {
-    position: fixed; inset: 0; z-index: 200;
-    background: var(--paper);
-    display: flex; align-items: center; justify-content: center;
-    padding: 24px;
-  }
-  #partnerWall.hidden { display: none; }
   .partner-box {
     background: white; border-radius: 16px;
     padding: 40px 36px; width: 100%; max-width: 420px;
@@ -282,48 +273,24 @@
 </head>
 <body>
 
-<!-- ── Auth Wall ─────────────────────────────────────────── -->
-<div id="authWall" class="hidden">
+<!-- ── Join Wall ──────────────────────────────────────────── -->
+<div id="joinWall">
   <div class="auth-box">
-    <h2>Hallo, <em>ihr zwei.</em></h2>
-    <p id="authSubtitle">Meld dich an um loszulegen.</p>
+    <h2>Hallo! <em>Wie heißt du?</em></h2>
+    <p>Erstelle einen neuen Raum oder tritt einem bestehenden bei.</p>
     <div class="auth-field">
-      <label>E-Mail</label>
-      <input type="email" id="authEmail" placeholder="du@beispiel.de" />
-    </div>
-    <div class="auth-field" id="authNameWrap" style="display:none">
       <label>Dein Name</label>
-      <input type="text" id="authName" placeholder="Max oder Minou" />
+      <input type="text" id="joinName" placeholder="Max, Minou, …" autocomplete="off" />
     </div>
+    <button class="auth-submit" onclick="createRoom()">Neuen Raum erstellen</button>
+    <div class="partner-divider">oder vorhandenem Raum beitreten</div>
     <div class="auth-field">
-      <label>Passwort</label>
-      <input type="password" id="authPassword" placeholder="••••••••" />
-    </div>
-    <div class="auth-err" id="authErr"></div>
-    <button class="auth-submit" id="authBtn" onclick="handleAuth()">Anmelden</button>
-    <button class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">Noch kein Konto? Registrieren →</button>
-  </div>
-</div>
-
-<!-- ── Partner Wall ──────────────────────────────────────── -->
-<div id="partnerWall" class="hidden">
-  <div class="partner-box">
-    <h2>Partner <em>verbinden</em></h2>
-    <p>Teile deinen Code mit deinem Partner oder gib seinen Code ein — dann könnt ihr swipen.</p>
-    <div class="code-display">
-      <div class="lbl">Dein Code</div>
-      <div class="code" id="myCode">——</div>
-      <button class="code-copy" onclick="copyCode()">Kopieren</button>
-    </div>
-    <div class="partner-divider">oder Partner-Code eingeben</div>
-    <div class="auth-field">
-      <label>Code des Partners</label>
-      <input type="text" id="partnerCodeIn" placeholder="ABC123" maxlength="6"
+      <label>Raum-Code</label>
+      <input type="text" id="joinCode" placeholder="ABC123" maxlength="8"
         style="text-transform:uppercase;letter-spacing:0.2em;text-align:center;font-size:1.2rem" />
     </div>
-    <div class="auth-err" id="partnerErr"></div>
-    <button class="auth-submit" onclick="connectPartner()">Verbinden</button>
-    <button class="auth-toggle" onclick="signOut()">Abmelden</button>
+    <button class="auth-submit" style="background:var(--minou)" onclick="joinExistingRoom()">Beitreten →</button>
+    <div class="auth-err" id="joinErr"></div>
   </div>
 </div>
 
@@ -333,10 +300,10 @@
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <input placeholder="Suchen — z.B. Spargel, Pasta, 30 Min." />
   </div>
-  <div class="pulse"><span class="dot"></span>Verbunden mit <b id="partnerNamePulse">…</b><button id="disconnectBtn" onclick="disconnectPartner()" style="display:none;margin-left:10px;font-size:11px;color:var(--mid);background:none;border:1px solid var(--rule);border-radius:999px;padding:2px 10px;cursor:pointer;font-family:inherit;letter-spacing:0.04em" title="Verbindung trennen">Trennen</button></div>
+  <div class="pulse"><span class="dot"></span>Raum: <b id="roomCodeDisplay">—</b><button onclick="copyRoomCode()" style="margin-left:8px;font-size:11px;color:var(--mid);background:none;border:1px solid var(--rule);border-radius:999px;padding:2px 10px;cursor:pointer;font-family:inherit">Kopieren</button></div>
   <div class="right">
     <span id="userNameDisplay" style="color:var(--mid);font-size:12px"></span>
-    <a href="#" onclick="signOut(); return false;" style="color:var(--mid);font-size:12px">Abmelden</a>
+    <a href="#" onclick="leaveRoom(); return false;" style="color:var(--mid);font-size:12px">Verlassen</a>
   </div>
 </div>
 
@@ -351,7 +318,7 @@
   </nav>
   <label class="mob-burger" for="mob-toggle" aria-label="Menü öffnen"><span></span><span></span><span></span></label>
   <a class="logo" href="index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
-  <div class="mob-pulse"><span class="dot"></span>Verbunden · <b id="partnerNameMob">…</b></div>
+  <div class="mob-pulse"><span class="dot"></span>Raum: <b id="roomCodeMob">—</b></div>
   <label class="mob-search-btn" for="mob-search" aria-label="Suche öffnen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
   <nav class="nav-secondary">
     <a href="#">Frühling</a><a href="#">Sommer</a>
@@ -422,212 +389,150 @@
 </footer>
 
 <script>
-const SB_URL = 'https://cojxukugaorbqxqhbyfy.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvanh1a3VnYW9yYnF4cWhieWZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTIzMDcsImV4cCI6MjA5MzkyODMwN30.YR43iaqO2gOMmduJgdVVr7bmvd08fgHi-wZ9AiPpipI';
-const sb = supabase.createClient(SB_URL, SB_KEY);
+const pb = new PocketBase('https://pb.maxundminou.de');
 
 const RECIPES = [
-  { id:'carbonara',      title:'Vegane Spaghetti <em>Carbonara</em>',   href:'rezepte/carbonara.html',     time:'20 Min.', season:'Frühling',  max:'Tofu &amp; Pasta',          minou:'Cremige Sauce',           label:'— spaghetti, schwarzer teller —' },
-  { id:'kartoffelsalat', title:'Knuspriger <em>Kartoffelsalat</em>',    href:'rezepte/kartoffelsalat.html',time:'50 Min.', season:'Frühling',  max:'Ofen-Kartoffeln',           minou:'Senf-Dressing',           label:'— smashed potatoes &amp; spargel —' },
-  { id:'primavera',      title:'Pasta <em>Primavera</em>',              href:'rezepte/primavera.html',     time:'30 Min.', season:'Sommer',    max:'Pasta &amp; Gemüse',        minou:'Zitronen-Cashew',         label:'— pasta primavera —' },
-  { id:'buddha-bowl',    title:'Buddha Bowl <em>mit Süßkartoffel</em>', href:'rezepte/buddha-bowl.html',   time:'40 Min.', season:'Ganzjährig',max:'Süßkartoffel',              minou:'Bowl &amp; Tahini',        label:'— buddha bowl, overhead —' },
-  { id:'tacos',          title:'Blumenkohl-<em>Tacos</em>',             href:'rezepte/tacos.html',         time:'35 Min.', season:'Ganzjährig',max:'Blumenkohl',                minou:'Tortillas &amp; Toppings',label:'— blumenkohl tacos —' }
+  { id:'carbonara',      title:'Vegane Spaghetti <em>Carbonara</em>',   href:'rezepte/carbonara.html',     time:'20 Min.', season:'Frühling',  max:'Tofu &amp; Pasta',           minou:'Cremige Sauce',            label:'— spaghetti, schwarzer teller —' },
+  { id:'kartoffelsalat', title:'Knuspriger <em>Kartoffelsalat</em>',    href:'rezepte/kartoffelsalat.html',time:'50 Min.', season:'Frühling',  max:'Ofen-Kartoffeln',            minou:'Senf-Dressing',            label:'— smashed potatoes &amp; spargel —' },
+  { id:'primavera',      title:'Pasta <em>Primavera</em>',              href:'rezepte/primavera.html',     time:'30 Min.', season:'Sommer',    max:'Pasta &amp; Gemüse',         minou:'Zitronen-Cashew',          label:'— pasta primavera —' },
+  { id:'buddha-bowl',    title:'Buddha Bowl <em>mit Süßkartoffel</em>', href:'rezepte/buddha-bowl.html',   time:'40 Min.', season:'Ganzjährig',max:'Süßkartoffel',               minou:'Bowl &amp; Tahini',        label:'— buddha bowl, overhead —' },
+  { id:'tacos',          title:'Blumenkohl-<em>Tacos</em>',             href:'rezepte/tacos.html',         time:'35 Min.', season:'Ganzjährig',max:'Blumenkohl',                 minou:'Tortillas &amp; Toppings', label:'— blumenkohl tacos —' }
 ];
 
 // ── State ──────────────────────────────────────────────────
-let currentUser = null, profile = null, partnerProfile = null;
-let isSignup = false;
-let partnerPoll = null;
-// votes: { recipeId: true|false }
-let myVotes = {}, partnerVotes = {};
-let role = null; // 'max' | 'minou'
-let history = []; // [{id, liked}]
+let myName    = null;
+let roomCode  = null;
+let myVotes   = {};      // { recipeId: true|false }
+let roomSwipes = [];     // all swipes in the room
+let swipeHistory = [];   // [{id, liked}] for undo
+let role = null;
+let pollTimer = null;
 
 // ── Boot ───────────────────────────────────────────────────
 async function init() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session?.user) {
-    currentUser = session.user;
-    await loadProfile();
+  myName   = localStorage.getItem('mm_name');
+  roomCode = localStorage.getItem('mm_room');
+  if (myName && roomCode) {
+    await enterRoom();
   } else {
-    // Keine Session — Auth-Wall zeigen
-    document.getElementById('authWall').classList.remove('hidden');
+    document.getElementById('joinWall').style.display = 'flex';
   }
 }
 
-// ── Auth ───────────────────────────────────────────────────
-function toggleAuthMode() {
-  isSignup = !isSignup;
-  document.getElementById('authSubtitle').textContent = isSignup
-    ? 'Erstelle deinen Account.' : 'Meld dich an um loszulegen.';
-  document.getElementById('authBtn').textContent     = isSignup ? 'Registrieren' : 'Anmelden';
-  document.getElementById('authToggle').textContent  = isSignup ? '← Schon ein Konto? Anmelden' : 'Noch kein Konto? Registrieren →';
-  document.getElementById('authNameWrap').style.display = isSignup ? 'block' : 'none';
-  document.getElementById('authErr').textContent = '';
+// ── Join ───────────────────────────────────────────────────
+function generateCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }
 
-async function handleAuth() {
-  const email    = document.getElementById('authEmail').value.trim();
-  const password = document.getElementById('authPassword').value;
-  const name     = document.getElementById('authName').value.trim();
-  const err      = document.getElementById('authErr');
-  err.textContent = '';
-
-  if (!email || !password) { err.textContent = 'Bitte E-Mail und Passwort eingeben.'; return; }
-
-  if (isSignup) {
-    if (!name) { err.textContent = 'Bitte deinen Namen eingeben.'; return; }
-    const { data, error } = await sb.auth.signUp({
-      email, password, options: { data: { display_name: name } }
-    });
-    if (error) { err.textContent = error.message; return; }
-    currentUser = data.user;
-    await sleep(800);
-    await loadProfile();
-  } else {
-    const { data, error } = await sb.auth.signInWithPassword({ email, password });
-    if (error) { err.textContent = 'E-Mail oder Passwort falsch.'; return; }
-    currentUser = data.user;
-    await loadProfile();
-  }
+async function createRoom() {
+  const name = document.getElementById('joinName').value.trim();
+  if (!name) { document.getElementById('joinErr').textContent = 'Bitte deinen Namen eingeben.'; return; }
+  await joinRoom(name, generateCode());
 }
 
-async function signOut() {
-  clearInterval(partnerPoll);
-  await sb.auth.signOut();
-  currentUser = null; profile = null; partnerProfile = null;
-  myVotes = {}; partnerVotes = {}; role = null; history = [];
-  document.getElementById('authWall').classList.remove('hidden');
-  document.getElementById('partnerWall').classList.add('hidden');
+async function joinExistingRoom() {
+  const name = document.getElementById('joinName').value.trim();
+  const code = document.getElementById('joinCode').value.trim().toUpperCase();
+  if (!name) { document.getElementById('joinErr').textContent = 'Bitte deinen Namen eingeben.'; return; }
+  if (code.length < 4) { document.getElementById('joinErr').textContent = 'Bitte gültigen Raum-Code eingeben.'; return; }
+  await joinRoom(name, code);
 }
 
-// ── Profile ────────────────────────────────────────────────
-async function loadProfile(retries = 6) {
-  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+async function joinRoom(name, code) {
+  myName   = name;
+  roomCode = code;
+  localStorage.setItem('mm_name', name);
+  localStorage.setItem('mm_room', code);
+  await enterRoom();
+}
 
-  if (!data) {
-    if (retries <= 0) {
-      // Trigger hat nicht gefeuert → Profil selbst anlegen
-      const displayName = currentUser.user_metadata?.display_name
-        || currentUser.email.split('@')[0];
-      await sb.from('profiles').insert({ id: currentUser.id, display_name: displayName });
-      return loadProfile(3);
-    }
-    await sleep(800);
-    return loadProfile(retries - 1);
-  }
-
-  profile = data;
-  document.getElementById('userNameDisplay').textContent = profile.display_name;
-
-  if (!profile.partner_id) {
-    document.getElementById('myCode').textContent = profile.invite_code;
-    document.getElementById('authWall').classList.add('hidden');
-    document.getElementById('partnerWall').classList.remove('hidden');
-    startPartnerPoll();
-    return;
-  }
-
-  // Partner laden
-  const { data: pp } = await sb.from('profiles').select('display_name').eq('id', profile.partner_id).single();
-  partnerProfile = pp;
-  const partnerName = pp?.display_name || 'Partner';
-  document.getElementById('partnerNamePulse').textContent = partnerName;
-  document.getElementById('partnerNameMob').textContent   = partnerName;
-  document.getElementById('disconnectBtn').style.display  = 'inline-block';
-
-  // Votes laden
+async function enterRoom() {
+  document.getElementById('joinWall').style.display = 'none';
+  document.getElementById('roomCodeDisplay').textContent = roomCode;
+  document.getElementById('roomCodeMob').textContent     = roomCode;
+  document.getElementById('userNameDisplay').textContent = myName;
   await loadVotes();
-
-  // Auth & Partner walls schließen
-  document.getElementById('authWall').classList.add('hidden');
-  document.getElementById('partnerWall').classList.add('hidden');
-
   renderRolePicker();
   renderDeck();
   renderMatches();
+  startPolling();
 }
 
-function startPartnerPoll() {
-  partnerPoll = setInterval(async () => {
-    const { data } = await sb.from('profiles').select('partner_id').eq('id', currentUser.id).single();
-    if (data?.partner_id) {
-      clearInterval(partnerPoll);
-      profile.partner_id = data.partner_id;
-      await loadProfile(3);
-    }
-  }, 3000);
-}
-
-// ── Partner connect ────────────────────────────────────────
-async function copyCode() {
-  await navigator.clipboard.writeText(profile.invite_code).catch(() => {});
-  const btn = document.querySelector('.code-copy');
-  btn.textContent = '✓ Kopiert!';
-  setTimeout(() => btn.textContent = 'Kopieren', 2000);
-}
-
-async function connectPartner() {
-  const code = document.getElementById('partnerCodeIn').value.trim().toUpperCase();
-  const err  = document.getElementById('partnerErr');
-  err.textContent = '';
-  if (code.length !== 6) { err.textContent = 'Bitte den 6-stelligen Code eingeben.'; return; }
-
-  const { data, error } = await sb.rpc('connect_partner', { p_invite_code: code });
-  if (error || data?.error) { err.textContent = data?.error || 'Verbindung fehlgeschlagen.'; return; }
-
-  const { data: updated } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  profile = updated;
-  clearInterval(partnerPoll);
-  await loadProfile(3);
-}
-
-async function disconnectPartner() {
-  if (!confirm('Verbindung zu ' + (partnerProfile?.display_name || 'Partner') + ' wirklich trennen?')) return;
-  const { error } = await sb.rpc('disconnect_partner');
-  if (error) { alert('Fehler beim Trennen: ' + error.message); return; }
-  // State zurücksetzen
-  profile.partner_id = null;
-  partnerProfile = null;
-  myVotes = {}; partnerVotes = {}; history = [];
-  clearInterval(partnerPoll);
-  // Partner-Button verstecken
-  document.getElementById('disconnectBtn').style.display = 'none';
-  document.getElementById('partnerNamePulse').textContent = '…';
-  document.getElementById('partnerNameMob').textContent   = '…';
-  // Partner-Wall zeigen
-  document.getElementById('myCode').textContent = profile.invite_code;
-  document.getElementById('partnerWall').classList.remove('hidden');
-  // Deck/Matches zurücksetzen
+function leaveRoom() {
+  clearInterval(pollTimer);
+  localStorage.removeItem('mm_name');
+  localStorage.removeItem('mm_room');
+  myName = null; roomCode = null;
+  myVotes = {}; roomSwipes = []; swipeHistory = []; role = null;
   document.getElementById('deck').innerHTML = '<div class="spinner"></div>';
   document.getElementById('matchList').innerHTML = '<div class="empty">Noch keine Matches — beide müssen <em>ja</em> sagen.</div>';
-  startPartnerPoll();
+  document.getElementById('joinWall').style.display = 'flex';
+}
+
+async function copyRoomCode() {
+  await navigator.clipboard.writeText(roomCode).catch(() => {});
+  const btn = document.querySelector('.pulse button');
+  const prev = btn.textContent;
+  btn.textContent = '✓ Kopiert!';
+  setTimeout(() => btn.textContent = prev, 2000);
+}
+
+// ── Polling ────────────────────────────────────────────────
+function startPolling() {
+  clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    try {
+      const records = await pb.collection('swipes').getFullList({
+        filter: `room_code="${roomCode}"`
+      });
+      roomSwipes = records;
+      renderMatches();
+    } catch (e) {}
+  }, 5000);
 }
 
 // ── Votes ──────────────────────────────────────────────────
 async function loadVotes() {
-  const [{ data: mine }, { data: theirs }] = await Promise.all([
-    sb.from('swipes').select('recipe_slug, liked').eq('user_id', currentUser.id),
-    sb.from('swipes').select('recipe_slug, liked').eq('user_id', profile.partner_id),
-  ]);
-  myVotes      = Object.fromEntries((mine   || []).map(s => [s.recipe_slug, s.liked]));
-  partnerVotes = Object.fromEntries((theirs || []).map(s => [s.recipe_slug, s.liked]));
+  try {
+    roomSwipes = await pb.collection('swipes').getFullList({
+      filter: `room_code="${roomCode}"`
+    });
+    myVotes = {};
+    roomSwipes.filter(s => s.user_name === myName).forEach(s => {
+      myVotes[s.recipe_id] = s.liked;
+    });
+  } catch (e) { console.error('loadVotes', e); }
 }
 
 async function castVote(recipeId, liked) {
   myVotes[recipeId] = liked;
-  history.push({ id: recipeId, liked });
-  await sb.from('swipes').upsert({ user_id: currentUser.id, recipe_slug: recipeId, liked });
+  swipeHistory.push({ id: recipeId, liked });
+  try {
+    const existing = roomSwipes.find(s => s.user_name === myName && s.recipe_id === recipeId);
+    if (existing) {
+      const updated = await pb.collection('swipes').update(existing.id, { liked });
+      roomSwipes = roomSwipes.map(s => s.id === existing.id ? updated : s);
+    } else {
+      const created = await pb.collection('swipes').create({ room_code: roomCode, user_name: myName, recipe_id: recipeId, liked });
+      roomSwipes.push(created);
+    }
+  } catch (e) { console.error('castVote', e); }
   renderDeck();
   renderMatches();
 }
 
 async function undoVote() {
-  if (!history.length) return;
-  const last = history.pop();
+  if (!swipeHistory.length) return;
+  const last = swipeHistory.pop();
   delete myVotes[last.id];
-  await sb.from('swipes').delete()
-    .eq('user_id', currentUser.id).eq('recipe_slug', last.id);
+  try {
+    const existing = roomSwipes.find(s => s.user_name === myName && s.recipe_id === last.id);
+    if (existing) {
+      await pb.collection('swipes').delete(existing.id);
+      roomSwipes = roomSwipes.filter(s => s.id !== existing.id);
+    }
+  } catch (e) { console.error('undoVote', e); }
   renderDeck();
   renderMatches();
 }
@@ -640,8 +545,6 @@ function pendingFor() {
 function renderRolePicker() {
   document.querySelectorAll('.role-btn').forEach(b => {
     b.classList.toggle('on', b.dataset.role === role);
-    if (b.dataset.role === 'max')   b.textContent = profile.display_name === 'Max'   ? 'Ich bin Max'   : 'Max';
-    if (b.dataset.role === 'minou') b.textContent = profile.display_name === 'Minou' ? 'Ich bin Minou' : 'Minou';
   });
   document.getElementById('curRole').textContent = role
     ? (role === 'max' ? 'Max' : 'Minou')
@@ -659,12 +562,11 @@ function renderDeck() {
     return;
   }
   if (pending.length === 0) {
-    deck.innerHTML = `<div class="deck-done">Alles bewertet, <b>${profile.display_name}</b>.<br />Schaut auf eure Matches unten.</div>`;
+    deck.innerHTML = `<div class="deck-done">Alles bewertet, <b>${myName}</b>.<br />Schaut auf eure Matches unten.</div>`;
     return;
   }
 
-  const stack = pending.slice(0, 3);
-  stack.forEach((r, i) => {
+  pending.slice(0, 3).forEach((r, i) => {
     const card = document.createElement('div');
     card.className = 'card-swipe';
     card.dataset.id = r.id;
@@ -695,17 +597,12 @@ function renderDeck() {
 
 function renderMatches() {
   const matchList = document.getElementById('matchList');
-  const matched = RECIPES.filter(r => myVotes[r.id] === true && partnerVotes[r.id] === true);
-
-  // Refresh partner votes async (fire and forget)
-  sb.from('swipes').select('recipe_slug, liked').eq('user_id', profile.partner_id)
-    .then(({ data }) => {
-      if (data) {
-        partnerVotes = Object.fromEntries(data.map(s => [s.recipe_slug, s.liked]));
-        const freshMatches = RECIPES.filter(r => myVotes[r.id] === true && partnerVotes[r.id] === true);
-        if (freshMatches.length !== matched.length) renderMatches();
-      }
-    });
+  const likedBy = {};
+  roomSwipes.filter(s => s.liked).forEach(s => {
+    if (!likedBy[s.recipe_id]) likedBy[s.recipe_id] = new Set();
+    likedBy[s.recipe_id].add(s.user_name);
+  });
+  const matched = RECIPES.filter(r => (likedBy[r.id]?.size || 0) >= 2);
 
   matchList.innerHTML = '';
   if (!matched.length) {
@@ -719,7 +616,7 @@ function renderMatches() {
       <div class="heart">♥</div>
       <div class="title">${r.title}</div>
       <div class="stats">${r.time} · ${r.season}</div>
-      <a href="${r.href}">Rezept öffnen →</a>`;
+      <a href="${r.href}">Rezept →</a>`;
     matchList.appendChild(row);
   });
 }
@@ -793,13 +690,20 @@ document.getElementById('btnNo').addEventListener('click',   () => programmaticV
 document.getElementById('btnUndo').addEventListener('click', undoVote);
 document.getElementById('resetAll').addEventListener('click', async () => {
   if (!confirm('Wirklich alle deine Votes zurücksetzen?')) return;
-  await sb.from('swipes').delete().eq('user_id', currentUser.id);
-  myVotes = {}; history = [];
+  const mine = roomSwipes.filter(s => s.user_name === myName);
+  await Promise.all(mine.map(s => pb.collection('swipes').delete(s.id)));
+  myVotes = {}; swipeHistory = [];
+  roomSwipes = roomSwipes.filter(s => s.user_name !== myName);
   renderDeck(); renderMatches();
 });
 
-// ── Utils ───────────────────────────────────────────────────
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+// Enter-Taste im Join-Formular
+document.getElementById('joinCode').addEventListener('keydown', e => {
+  if (e.key === 'Enter') joinExistingRoom();
+});
+document.getElementById('joinName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') createRoom();
+});
 
 init();
 </script>
