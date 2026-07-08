@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin — Max &amp; Minou</title>
+<style>
+  :root {
+    --paper: #f6f1e7;
+    --ink: #1d1a14;
+    --mid: #7a7060;
+    --soft: #b5afa4;
+    --rule: #e2ddd4;
+    --max: #b14a30;
+    --minou: #4f7a5b;
+    --green: #2a7a3b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Helvetica Neue', sans-serif;
+    background: #f0ece2; color: var(--ink); font-size: 14px; line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .admin-header {
+    background: var(--ink); color: var(--paper);
+    padding: 16px 40px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .admin-header h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .admin-header .logo { font-size: 13px; opacity: 0.6; }
+  .admin-header a { color: rgba(246,241,231,0.6); text-decoration: none; font-size: 13px; }
+  .admin-header a:hover { color: var(--paper); }
+
+  /* Token bar */
+  .token-bar {
+    background: white; border-bottom: 1px solid var(--rule);
+    padding: 14px 40px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  }
+  .token-bar label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mid); white-space: nowrap; }
+  .token-bar input {
+    padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px;
+    font-family: ui-monospace, 'SF Mono', monospace; font-size: 12px;
+    width: 320px; background: var(--paper); color: var(--ink);
+  }
+  .token-bar input:focus { outline: 2px solid var(--ink); outline-offset: -1px; }
+  .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: 500; font-family: inherit; }
+  .btn-dark { background: var(--ink); color: white; }
+  .btn-dark:hover { background: #333; }
+  .btn-ghost { background: transparent; color: var(--mid); border: 1px solid var(--rule); }
+  .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+  .token-hint { font-size: 11px; color: var(--mid); }
+  .token-hint a { color: var(--minou); }
+  .token-saved { font-size: 11px; color: var(--green); font-weight: 500; display: none; }
+
+  /* Main */
+  main { padding: 32px 40px; max-width: 860px; }
+  .section-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em;
+    color: var(--soft); margin-bottom: 16px; font-weight: 600;
+  }
+
+  /* Recipe card */
+  .recipe-card {
+    background: white; border: 1px solid var(--rule); border-radius: 12px;
+    overflow: hidden; margin-bottom: 14px;
+  }
+  .card-head {
+    padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .thumb {
+    width: 72px; height: 54px; border-radius: 7px; border: 1px solid var(--rule);
+    overflow: hidden; flex-shrink: 0; background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--soft); font-weight: 500;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb-loading { opacity: 0.5; }
+  .card-info { flex: 1; min-width: 0; }
+  .card-title { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+  .card-sub { font-size: 11px; color: var(--soft); margin-top: 2px; font-family: ui-monospace, monospace; }
+  .badge {
+    padding: 4px 10px; border-radius: 999px; font-size: 11px;
+    font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; flex-shrink: 0;
+  }
+  .badge-ok { background: rgba(42,122,59,0.1); color: var(--green); }
+  .badge-missing { background: rgba(177,74,48,0.1); color: var(--max); }
+
+  /* Upload zone */
+  .card-body { padding: 16px 20px; }
+  .drop-zone {
+    border: 2px dashed var(--rule); border-radius: 8px;
+    padding: 28px 20px; text-align: center; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s; position: relative;
+  }
+  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--ink); background: rgba(0,0,0,0.02); }
+  .drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .dz-icon { font-size: 24px; margin-bottom: 6px; }
+  .dz-label { font-size: 13px; color: var(--mid); font-weight: 500; }
+  .dz-sub { font-size: 11px; color: var(--soft); margin-top: 3px; }
+
+  /* Replace link (when image exists) */
+  .replace-row { display: flex; align-items: center; gap: 10px; }
+  .replace-label { font-size: 12px; color: var(--soft); }
+  .replace-link { font-size: 12px; color: var(--minou); cursor: pointer; text-decoration: underline; position: relative; }
+  .replace-link input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+  /* Preview */
+  .preview-area { display: none; margin-top: 14px; }
+  .preview-img { width: 100%; max-height: 260px; object-fit: cover; border-radius: 8px; display: block; }
+  .preview-meta { font-size: 11px; color: var(--soft); margin-top: 8px; font-family: ui-monospace, monospace; }
+  .preview-actions { display: flex; gap: 10px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+  .btn-upload { padding: 10px 22px; background: var(--minou); color: white; border: none; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; }
+  .btn-upload:hover { background: #3d6448; }
+  .btn-upload:disabled { opacity: 0.45; cursor: not-allowed; }
+  .status { font-size: 12px; color: var(--mid); }
+  .status.ok { color: var(--green); font-weight: 500; }
+  .status.err { color: var(--max); font-weight: 500; }
+
+  /* Progress steps */
+  .steps { display: flex; gap: 6px; align-items: center; font-size: 11px; color: var(--soft); flex-wrap: wrap; }
+  .step-item { display: flex; align-items: center; gap: 4px; }
+  .step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--rule); }
+  .step-dot.active { background: var(--minou); }
+  .step-dot.done { background: var(--green); }
+  .step-dot.err { background: var(--max); }
+
+  @media (max-width: 640px) {
+    .admin-header, .token-bar, main { padding-left: 20px; padding-right: 20px; }
+    .token-bar input { width: 100%; }
+    .card-head { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="admin-header">
+  <h1>Rezeptfotos hochladen</h1>
+  <div>
+    <a href="index.html" target="_blank">← maxundminou.de</a>
+  </div>
+</header>
+
+<div class="token-bar">
+  <label>GitHub Token</label>
+  <input type="password" id="gh-token" placeholder="github_pat_…" autocomplete="off" />
+  <button class="btn btn-dark" onclick="saveToken()">Speichern</button>
+  <span class="token-saved" id="token-saved">✓ Token gespeichert</span>
+  <span class="token-hint">Braucht <b>Contents: Read &amp; Write</b> — <a href="https://github.com/settings/tokens/new?scopes=repo" target="_blank">Token erstellen ↗</a></span>
+</div>
+
+<main>
+  <div class="section-label">7 Rezepte</div>
+  <div id="recipe-list"></div>
+</main>
+
+<script>
+const OWNER = 'maxiba00';
+const REPO  = 'max-und-minou';
+
+const RECIPES = [
+  { id: 'pad-kra-pao',    title: 'Pad Kra Pao',           alt: 'Pad Kra Pao mit Naturtofu und Thai-Basilikum',              label: '— pad kra pao, thai basil stir fry —' },
+  { id: 'patatas-bravas', title: 'Patatas Bravas',         alt: 'Patatas Bravas mit Bravas-Sauce und Chimichurri',           label: '— patatas bravas, overhead —' },
+  { id: 'carbonara',      title: 'Spaghetti Carbonara',    alt: 'Vegane Spaghetti Carbonara mit Räuchertofu',               label: '— spaghetti, schwarzer teller —' },
+  { id: 'kartoffelsalat', title: 'Kartoffelsalat',         alt: 'Knuspriger Kartoffelsalat mit grünem Spargel',             label: '— smashed potatoes &amp; spargel —' },
+  { id: 'primavera',      title: 'Pasta Primavera',        alt: 'Cremige Pasta Primavera mit Zitronen-Cashew-Sauce',        label: '— pasta primavera —' },
+  { id: 'buddha-bowl',    title: 'Buddha Bowl',            alt: 'Buddha Bowl mit Süßkartoffel und Tahini',                  label: '— buddha bowl, overhead —' },
+  { id: 'tacos',          title: 'Blumenkohl-Tacos',       alt: 'Blumenkohl-Tacos mit Tahini-Sauce',                        label: '— blumenkohl tacos —' },
+];
+
+// image status cache
+const imageStatus = {}; // id → 'loading' | 'ok' | 'missing'
+const pending = {};     // id → { b64, dataUrl, size, w, h }
+
+// ── Token ────────────────────────────────────────────────────
+function getToken() { return localStorage.getItem('mm_admin_token') || ''; }
+function saveToken() {
+  const v = document.getElementById('gh-token').value.trim();
+  if (!v) return;
+  localStorage.setItem('mm_admin_token', v);
+  document.getElementById('token-saved').style.display = 'inline';
+  setTimeout(() => { document.getElementById('token-saved').style.display = 'none'; }, 2500);
+}
+document.getElementById('gh-token').value = getToken();
+
+// ── Image processing ─────────────────────────────────────────
+function processImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onerror = () => reject(new Error('Bild konnte nicht geladen werden.'));
+    img.onload = () => {
+      const MAX = 1400;
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({
+          b64: reader.result.split(',')[1],
+          dataUrl: canvas.toDataURL('image/jpeg', 0.85),
+          size: Math.round(blob.size / 1024),
+          w, h,
+        });
+        reader.readAsDataURL(blob);
+      }, 'image/jpeg', 0.85);
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  });
+}
+
+// ── GitHub API ───────────────────────────────────────────────
+async function ghGet(path) {
+  const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+    headers: { Authorization: `Bearer ${getToken()}`, Accept: 'application/vnd.github+json' },
+  });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`GitHub ${r.status}`);
+  return r.json();
+}
+
+async function ghPut(path, b64, message, sha) {
+  const body = { message, content: b64, branch: 'main' };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+      Accept: 'application/vnd.github+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(e.message || `GitHub ${r.status}`);
+  }
+  return r.json();
+}
+
+function decodeGhContent(content) {
+  const bytes = Uint8Array.from(atob(content.replace(/\n/g, '')), c => c.charCodeAt(0));
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+function encodeToB64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  bytes.forEach(b => (bin += String.fromCharCode(b)));
+  return btoa(bin);
+}
+
+// ── HTML patching ────────────────────────────────────────────
+function patchRecipeHtml(html, id, alt) {
+  // Add <img> before the <div class="label"> if not already there
+  const noImg = /<div class="recipe-photo">\s*\n\s*<div class="label">/;
+  if (noImg.test(html)) {
+    return html.replace(noImg,
+      `<div class="recipe-photo">\n  <img src="../assets/images/${id}.jpg" alt="${alt}" />\n  <div class="label">`
+    );
+  }
+  // Update existing img src
+  return html.replace(
+    /(<div class="recipe-photo">\s*\n\s*)<img[^>]*>/,
+    `$1<img src="../assets/images/${id}.jpg" alt="${alt}" />`
+  );
+}
+
+function patchIndexHtml(html, id, alt, label) {
+  // 1. Grid card: replace stripes placeholder with img
+  const stripesStr = `<div class="photo"><div class="stripes"></div><div class="label">${label}</div></div>`;
+  const imgStr = `<div class="photo"><img src="assets/images/${id}.jpg" alt="${alt}" style="object-fit:cover" /></div>`;
+  if (html.includes(stripesStr)) html = html.replace(stripesStr, imgStr);
+
+  // 2. RECIPES_DATA: replace image: null with actual path
+  const nullStr = `image: null, imageLabel: '${label}',`;
+  const imgDataStr = `image: 'assets/images/${id}.jpg', imageAlt: '${alt}', imageStyle: 'object-fit:cover', imageLabel: '${label}',`;
+  if (html.includes(nullStr)) html = html.replace(nullStr, imgDataStr);
+
+  return html;
+}
+
+// ── Upload ───────────────────────────────────────────────────
+async function doUpload(id) {
+  if (!getToken()) { alert('Bitte zuerst GitHub Token eingeben und speichern.'); return; }
+  const data = pending[id];
+  if (!data) return;
+  const recipe = RECIPES.find(r => r.id === id);
+  const btn = document.getElementById(`btn-${id}`);
+  const statusEl = document.getElementById(`status-${id}`);
+  const steps = ['img', 'rezept', 'index'];
+
+  function setStep(step, state, text) {
+    const dot = document.getElementById(`step-${id}-${step}`);
+    if (dot) { dot.className = 'step-dot ' + state; }
+    if (text) { statusEl.textContent = text; statusEl.className = 'status'; }
+  }
+
+  btn.disabled = true;
+  statusEl.className = 'status';
+
+  try {
+    // 1. Upload image
+    setStep('img', 'active', 'Bild hochladen…');
+    const existing = await ghGet(`assets/images/${id}.jpg`);
+    await ghPut(`assets/images/${id}.jpg`, data.b64, `Foto: ${recipe.title}`, existing?.sha);
+    setStep('img', 'done');
+
+    // 2. Update recipe HTML
+    setStep('rezept', 'active', 'Rezeptseite aktualisieren…');
+    const recipeFile = await ghGet(`rezepte/${id}.html`);
+    if (recipeFile) {
+      const raw = decodeGhContent(recipeFile.content);
+      const patched = patchRecipeHtml(raw, id, recipe.alt);
+      if (patched !== raw) {
+        await ghPut(`rezepte/${id}.html`, encodeToB64(patched), `Foto eingebaut: ${recipe.title}`, recipeFile.sha);
+      }
+    }
+    setStep('rezept', 'done');
+
+    // 3. Update index.html
+    setStep('index', 'active', 'index.html aktualisieren…');
+    const indexFile = await ghGet('index.html');
+    if (indexFile) {
+      const rawIdx = decodeGhContent(indexFile.content);
+      const patchedIdx = patchIndexHtml(rawIdx, id, recipe.alt, recipe.label);
+      if (patchedIdx !== rawIdx) {
+        await ghPut('index.html', encodeToB64(patchedIdx), `Grid-Foto: ${recipe.title}`, indexFile.sha);
+      }
+    }
+    setStep('index', 'done');
+
+    statusEl.textContent = '✓ Fertig — live in ~30 Sek.';
+    statusEl.className = 'status ok';
+    imageStatus[id] = 'ok';
+    // Update thumb immediately
+    const thumb = document.getElementById(`thumb-${id}`);
+    if (thumb) {
+      thumb.innerHTML = `<img src="${data.dataUrl}" />`;
+      thumb.classList.remove('thumb-loading');
+    }
+    const badge = document.getElementById(`badge-${id}`);
+    if (badge) { badge.textContent = '✓ Foto vorhanden'; badge.className = 'badge badge-ok'; }
+    // Switch drop zone to replace mode
+    const cardBody = document.getElementById(`body-${id}`);
+    if (cardBody) renderReplaceRow(cardBody, id);
+
+  } catch (e) {
+    steps.forEach(s => {
+      const dot = document.getElementById(`step-${id}-${s}`);
+      if (dot && dot.className.includes('active')) dot.className = 'step-dot err';
+    });
+    statusEl.textContent = '✗ ' + e.message;
+    statusEl.className = 'status err';
+    btn.disabled = false;
+  }
+}
+
+// ── File handling ─────────────────────────────────────────────
+async function handleFile(file, id) {
+  if (!file) return;
+  try {
+    const result = await processImage(file);
+    pending[id] = result;
+    const pa = document.getElementById(`preview-${id}`);
+    pa.querySelector('.preview-img').src = result.dataUrl;
+    pa.querySelector('.preview-meta').textContent =
+      `${result.w} × ${result.h} px · ${result.size} KB JPEG`;
+    pa.style.display = 'block';
+    document.getElementById(`status-${id}`).textContent = '';
+    // Reset step dots
+    ['img','rezept','index'].forEach(s => {
+      const d = document.getElementById(`step-${id}-${s}`);
+      if (d) d.className = 'step-dot';
+    });
+  } catch (e) { alert(e.message); }
+}
+
+// ── Render ────────────────────────────────────────────────────
+function renderReplaceRow(container, id) {
+  container.innerHTML = `
+    <div class="replace-row">
+      <span class="replace-label">Foto ersetzen:</span>
+      <span class="replace-link">Neue Datei wählen
+        <input type="file" accept="image/*"
+          onchange="handleFile(this.files[0],'${id}');document.getElementById('preview-${id}').style.display='block'">
+      </span>
+    </div>
+    <div class="preview-area" id="preview-${id}">
+      <img class="preview-img" src="" alt="" />
+      <div class="preview-meta"></div>
+      <div class="preview-actions">
+        <button class="btn-upload" id="btn-${id}" onclick="doUpload('${id}')">Hochladen &amp; ersetzen</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('preview-${id}').style.display='none'">Abbrechen</button>
+        <div class="steps">
+          <div class="step-item"><div class="step-dot" id="step-${id}-img"></div> Bild</div>
+          <div class="step-item"><div class="step-dot" id="step-${id}-rezept"></div> Rezeptseite</div>
+          <div class="step-item"><div class="step-dot" id="step-${id}-index"></div> Startseite</div>
+        </div>
+        <span class="status" id="status-${id}"></span>
+      </div>
+    </div>`;
+}
+
+function renderUploadZone(container, id) {
+  container.innerHTML = `
+    <div class="drop-zone"
+      ondragover="event.preventDefault();this.classList.add('drag-over')"
+      ondragleave="this.classList.remove('drag-over')"
+      ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0],'${id}')">
+      <input type="file" accept="image/*" onchange="handleFile(this.files[0],'${id}')">
+      <div class="dz-icon">📷</div>
+      <div class="dz-label">Foto hier ablegen oder klicken</div>
+      <div class="dz-sub">JPEG · PNG · HEIC · wird auf max. 1400 px skaliert</div>
+    </div>
+    <div class="preview-area" id="preview-${id}">
+      <img class="preview-img" src="" alt="" />
+      <div class="preview-meta"></div>
+      <div class="preview-actions">
+        <button class="btn-upload" id="btn-${id}" onclick="doUpload('${id}')">Hochladen &amp; einbauen</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('preview-${id}').style.display='none'">Abbrechen</button>
+        <div class="steps">
+          <div class="step-item"><div class="step-dot" id="step-${id}-img"></div> Bild</div>
+          <div class="step-item"><div class="step-dot" id="step-${id}-rezept"></div> Rezeptseite</div>
+          <div class="step-item"><div class="step-dot" id="step-${id}-index"></div> Startseite</div>
+        </div>
+        <span class="status" id="status-${id}"></span>
+      </div>
+    </div>`;
+}
+
+function renderCard(recipe) {
+  const { id, title } = recipe;
+  const status = imageStatus[id] || 'loading';
+
+  const thumbHtml = status === 'ok'
+    ? `<img src="https://raw.githubusercontent.com/${OWNER}/${REPO}/main/assets/images/${id}.jpg?t=${Date.now()}" />`
+    : (status === 'loading' ? 'lädt…' : 'kein Foto');
+
+  const badgeHtml = status === 'ok'
+    ? `<span class="badge badge-ok" id="badge-${id}">✓ Foto vorhanden</span>`
+    : `<span class="badge badge-missing" id="badge-${id}">○ Kein Foto</span>`;
+
+  const card = document.createElement('div');
+  card.className = 'recipe-card';
+  card.id = `card-${id}`;
+  card.innerHTML = `
+    <div class="card-head">
+      <div class="thumb ${status === 'loading' ? 'thumb-loading' : ''}" id="thumb-${id}">${thumbHtml}</div>
+      <div class="card-info">
+        <div class="card-title">${title}</div>
+        <div class="card-sub">rezepte/${id}.html</div>
+      </div>
+      ${badgeHtml}
+    </div>
+    <div class="card-body" id="body-${id}"></div>`;
+
+  document.getElementById('recipe-list').appendChild(card);
+
+  const body = document.getElementById(`body-${id}`);
+  if (status === 'ok') renderReplaceRow(body, id);
+  else renderUploadZone(body, id);
+}
+
+// ── Init & image status check ─────────────────────────────────
+RECIPES.forEach(r => {
+  imageStatus[r.id] = 'loading';
+  renderCard(r);
+});
+
+// Check which images already exist via raw.githubusercontent.com
+(async () => {
+  for (const r of RECIPES) {
+    const url = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/assets/images/${r.id}.jpg`;
+    try {
+      const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+      imageStatus[r.id] = res.ok ? 'ok' : 'missing';
+    } catch {
+      imageStatus[r.id] = 'missing';
+    }
+    // Re-render card with updated status
+    const old = document.getElementById(`card-${r.id}`);
+    if (old) old.remove();
+    renderCard(r);
+  }
+})();
+</script>
+
+</body>
+</html>
