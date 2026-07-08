@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pad Kra Pao vegan — Max &amp; Minou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/site.css" />
+<style>
+  .recipe-hero { padding: 56px 40px 32px; text-align: center; border-bottom: 1px solid var(--rule); }
+  .recipe-hero h1 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(40px, 6vw, 80px); line-height: 0.98;
+    letter-spacing: -0.03em; margin-bottom: 14px;
+  }
+  .recipe-hero h1 em { font-style: italic; }
+  .recipe-hero .sub {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 400;
+    font-size: clamp(20px, 2.4vw, 28px); color: var(--mid); margin-bottom: 24px;
+  }
+  .recipe-meta {
+    display: inline-flex; gap: 0;
+    border: 1px solid var(--rule); border-radius: 14px;
+    background: rgba(255,255,255,0.5); overflow: hidden;
+  }
+  .recipe-meta .m { padding: 14px 24px; border-right: 1px solid var(--rule); text-align: center; }
+  .recipe-meta .m:last-child { border-right: none; }
+  .recipe-meta .v { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; line-height: 1; margin-bottom: 4px; }
+  .recipe-meta .v em { font-style: italic; font-weight: 400; }
+  .recipe-meta .l { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); }
+  .recipe-photo {
+    margin: 0 40px; aspect-ratio: 16 / 7;
+    background: var(--paper-2); position: relative; overflow: hidden; border-radius: 6px;
+  }
+  .recipe-photo img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .recipe-photo .label {
+    position: absolute; bottom: 14px; right: 14px;
+    background: var(--paper); padding: 4px 8px; border-radius: 2px;
+    font-size: 11px; color: var(--mid); font-family: ui-monospace, 'SF Mono', monospace;
+  }
+  .intro {
+    padding: 48px 40px 0; max-width: 760px; margin: 0 auto;
+    font-family: 'Fraunces', serif;
+    font-size: clamp(20px, 2.4vw, 26px);
+    line-height: 1.5; letter-spacing: -0.01em;
+    text-align: center; color: var(--ink);
+  }
+  .ingredients {
+    margin: 56px 40px 0; padding: 36px 40px;
+    background: var(--paper-2); border-radius: 14px;
+    display: grid; grid-template-columns: 1fr 2fr; gap: 40px;
+  }
+  @media (max-width: 720px) { .ingredients { grid-template-columns: 1fr; } }
+  .ingredients h3 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 28px; letter-spacing: -0.02em; }
+  .ingredients h3 em { font-style: italic; }
+  .ingredients .for {
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--mid); margin-top: 8px;
+  }
+  .ingr-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; }
+  @media (max-width: 540px) { .ingr-list { grid-template-columns: 1fr; } }
+  .ingr-row {
+    display: flex; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px dotted var(--rule);
+    font-size: 14px;
+  }
+  .ingr-row .name { color: var(--ink); }
+  .ingr-row .qty { color: var(--mid); font-variant-numeric: tabular-nums; }
+  .steps-intro {
+    text-align: center; padding: 56px 40px 0;
+    font-size: 11px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--mid);
+  }
+  .role-switch {
+    display: flex; gap: 8px; justify-content: center;
+    padding: 18px 40px 12px; flex-wrap: wrap;
+    position: sticky; top: 0; z-index: 10;
+    background: linear-gradient(180deg, var(--paper) 75%, rgba(246,244,239,0));
+  }
+  @media (max-width: 640px) {
+    .role-switch { padding: 14px 20px 12px; gap: 6px; flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
+    .role-switch::-webkit-scrollbar { display: none; }
+    .role-switch button { flex-shrink: 0; font-size: 12px; padding: 8px 16px; }
+    .ingredients { margin: 36px 20px 0; padding: 24px 20px; }
+    .columns { padding: 20px 20px 0; grid-template-columns: 1fr !important; }
+    .col { padding: 20px !important; }
+    .recipe-hero { padding: 40px 20px 24px !important; }
+    .recipe-hero h1 { font-size: clamp(38px, 11vw, 56px) !important; }
+    .recipe-meta {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 0 !important;
+      border-radius: 10px !important;
+      width: 100%;
+    }
+    .recipe-meta .m { padding: 10px 4px !important; }
+    .recipe-meta .v { font-size: 14px !important; margin-bottom: 2px !important; }
+    .recipe-meta .l { font-size: 9px !important; letter-spacing: 0.12em !important; }
+    .intro { padding: 32px 20px !important; font-size: 17px !important; }
+    .recipe-photo { margin: 32px 20px !important; }
+    .steps-intro { padding: 36px 20px 0 !important; font-size: 22px !important; }
+    .plating { margin: 56px 20px !important; padding: 28px 20px !important; }
+  }
+  .col.hidden { display: none !important; }
+  .columns.single { grid-template-columns: 1fr !important; }
+  .role-switch button {
+    font-family: inherit; font-size: 13px;
+    padding: 10px 22px; border-radius: 999px;
+    border: 1px solid var(--rule); background: transparent;
+    cursor: pointer; color: var(--mid); letter-spacing: 0.04em;
+  }
+  .role-switch button.on.max   { background: var(--max);   color: var(--paper); border-color: var(--max); }
+  .role-switch button.on.minou { background: var(--minou); color: var(--paper); border-color: var(--minou); }
+  .role-switch button.on.both  { background: var(--ink);   color: var(--paper); border-color: var(--ink); }
+  .columns {
+    padding: 24px 40px 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  @media (max-width: 820px) { .columns { grid-template-columns: 1fr; } }
+  .col {
+    border-radius: 12px; padding: 28px 28px 32px;
+    transition: opacity 0.2s, filter 0.2s;
+  }
+  .col.max   { background: var(--max-bg); }
+  .col.minou { background: var(--minou-bg); }
+  .col.dimmed { opacity: 0.25; filter: saturate(0.4); }
+  .col h2 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 28px; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 6px;
+  }
+  .col h2 em { font-style: italic; }
+  .col .role {
+    font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 700; margin-bottom: 18px;
+  }
+  .col.max   .role { color: var(--max); }
+  .col.minou .role { color: var(--minou); }
+  .step {
+    display: grid; grid-template-columns: 36px 1fr;
+    gap: 16px; padding: 16px 0;
+    border-top: 1px solid rgba(29,26,20,0.1);
+    align-items: start;
+  }
+  .step:first-of-type { border-top: none; }
+  .step .n {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 28px; line-height: 1; color: var(--ink);
+  }
+  .step .body strong {
+    display: block; font-weight: 600;
+    font-size: 14px; margin-bottom: 4px; letter-spacing: 0.02em;
+  }
+  .step .body { font-size: 14px; line-height: 1.6; color: var(--ink); }
+  .step .body em { font-style: italic; color: var(--mid); }
+  .finale {
+    margin: 32px 40px 0; padding: 36px 40px 40px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    position: relative;
+    transition: opacity 0.2s, filter 0.2s;
+    overflow: hidden;
+  }
+  .finale::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(to right, var(--max) 0%, var(--max) 50%, var(--minou) 50%, var(--minou) 100%);
+  }
+  .finale.dimmed { opacity: 0.25; filter: saturate(0.4); }
+  .finale .role {
+    font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 700;
+    margin-bottom: 14px;
+    display: flex; gap: 14px; align-items: center;
+    color: var(--mid);
+  }
+  .finale .role .max-c   { color: var(--max); }
+  .finale .role .minou-c { color: var(--minou); }
+  .finale .role .sep { color: var(--soft); }
+  .finale h2 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(28px, 4vw, 40px); line-height: 1.05;
+    letter-spacing: -0.025em; margin-bottom: 20px;
+    color: var(--ink);
+  }
+  .finale h2 em { font-style: italic; }
+  .finale .step { border-top: 1px solid var(--rule); }
+  .finale .step:first-of-type { border-top: none; }
+  .notes {
+    margin: 48px 40px 0; padding: 32px 40px;
+    border-left: 3px solid var(--minou);
+    background: rgba(74,122,91,0.04);
+    font-family: 'Fraunces', serif;
+    font-size: 18px; font-style: italic;
+    line-height: 1.6; color: var(--ink);
+  }
+  .notes .head {
+    font-family: 'Inter', sans-serif; font-style: normal;
+    font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--minou);
+    margin-bottom: 10px; font-weight: 700;
+  }
+  .nav-recipes {
+    margin: 64px 40px 0; padding: 28px 0;
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  .nav-recipes a { text-decoration: none; color: var(--ink); display: block; padding: 8px 0; }
+  .nav-recipes a .direction {
+    font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--mid); margin-bottom: 6px;
+  }
+  .nav-recipes a .name {
+    font-family: 'Fraunces', serif; font-size: 22px;
+    line-height: 1.1; letter-spacing: -0.015em;
+  }
+  .nav-recipes a .name em { font-style: italic; }
+  .nav-recipes .next { text-align: right; }
+  .nav-recipes a:hover .name { color: var(--max); }
+  .closing { text-align: center; padding: 48px 40px 64px; }
+</style>
+</head>
+<body>
+
+<div class="util">
+  <div class="search">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input placeholder="Suchen — z.B. Spargel, Pasta, 30 Min." />
+  </div>
+  <div class="pulse"><span class="dot"></span>Veröffentlicht <b>8. Juli 2026</b> · 30 Min. · Ganzjährig</div>
+  <div class="right">
+    <a href="#">Folgen</a>
+    <a href="#">RSS</a>
+    <a class="login" href="../tinder.html">Anmelden</a>
+  </div>
+</div>
+
+<input type="checkbox" id="mob-toggle" />
+<input type="checkbox" id="mob-search" />
+<header class="site-header">
+  <nav class="nav-primary">
+    <a class="on" href="../index.html">Rezepte</a>
+    <a href="../index.html#saison">Saison</a>
+    <a href="../tinder.html">Was kochen wir?</a>
+    <a href="../ueber-uns.html">Über uns</a>
+  </nav>
+  <label class="mob-burger" for="mob-toggle" aria-label="Menü öffnen"><span></span><span></span><span></span></label>
+  <a class="logo" href="../index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
+  <div class="mob-pulse"><span class="dot"></span>Zuletzt aktualisiert · <b>Pad Kra Pao</b></div>
+  <label class="mob-search-btn" for="mob-search" aria-label="Suche öffnen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
+  <nav class="nav-secondary">
+    <a href="#">Frühling</a>
+    <a href="#">Sommer</a>
+    <a href="#">Ganzjährig</a>
+    <a href="#">≤ 30 Min.</a>
+  </nav>
+</header>
+<nav id="mob-nav">
+  <label class="mob-close" for="mob-toggle" aria-label="Schließen">×</label>
+  <a href="../index.html">Rezepte<em>Alle Gerichte</em></a>
+  <a href="../index.html#saison">Saison<em>Nach Jahreszeit filtern</em></a>
+  <a href="../tinder.html">Was kochen wir?<em>Swipt &amp; matcht</em></a>
+  <a href="../ueber-uns.html">Über uns<em>Max &amp; Minou</em></a>
+  <a href="#">Folgen<em>Newsletter alle 14 Tage</em></a>
+  <a href="#">RSS<em>Feed abonnieren</em></a>
+  <a href="#">Anmelden<em>Eigene Rezepte speichern</em></a>
+</nav>
+<div class="mob-search-overlay">
+  <div class="row">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    <input type="search" placeholder="Suchen — Spargel, Pasta, 30 Min." />
+    <label class="close" for="mob-search" aria-label="Schließen">×</label>
+  </div>
+  <div class="hint">Beliebt diese Woche</div>
+  <div class="sugg">
+    <a href="pad-kra-pao.html">Pad Kra Pao</a>
+    <a href="carbonara.html">Carbonara</a>
+    <a href="primavera.html">Primavera</a>
+    <a href="buddha-bowl.html">Buddha Bowl</a>
+    <a href="tacos.html">Tacos</a>
+  </div>
+</div>
+
+<section class="recipe-hero">
+  <div class="kicker">Ganzjährig · <span class="max-c">Max</span> &amp; <span class="minou-c">Minou</span> · Thai aus dem Wok</div>
+  <h1>Pad <em>Kra Pao</em></h1>
+  <div class="sub">veganes Thai-Basilikum-Gericht mit Naturtofu</div>
+  <div class="recipe-meta">
+    <div class="m"><div class="v"><em>30 Min.</em></div><div class="l">Gesamtzeit</div></div>
+    <div class="m"><div class="v"><em>2</em></div><div class="l">Köche</div></div>
+    <div class="m"><div class="v"><em>2</em></div><div class="l">Portionen</div></div>
+    <div class="m"><div class="v"><em>Ganzjährig</em></div><div class="l">Saison</div></div>
+  </div>
+</section>
+
+<div class="recipe-photo">
+  <div class="label">— pad kra pao, thai basil stir fry —</div>
+</div>
+
+<p class="intro">Scharf, würzig, in 30 Minuten fertig — Thai Street Food für zu Hause. Während Max den Tofu vorbereitet und den Reis kocht, stellt Minou die Aromaten und die Soßenmischung bereit. Im Wok geht dann alles blitzschnell.</p>
+
+<section class="ingredients">
+  <div>
+    <h3><em>Zutaten</em></h3>
+    <div class="for">für 2 Portionen</div>
+  </div>
+  <div class="ingr-list">
+    <div class="ingr-row"><span class="name">Naturtofu</span><span class="qty">400 g</span></div>
+    <div class="ingr-row"><span class="name">Jasminreis</span><span class="qty">300 g</span></div>
+    <div class="ingr-row"><span class="name">Knoblauch</span><span class="qty">4 Zehen</span></div>
+    <div class="ingr-row"><span class="name">Thai-Chilis</span><span class="qty">1–3 Stück</span></div>
+    <div class="ingr-row"><span class="name">Schalotte</span><span class="qty">1 kleine</span></div>
+    <div class="ingr-row"><span class="name">Thai Holy Basil</span><span class="qty">15 g</span></div>
+    <div class="ingr-row"><span class="name">Helle Sojasoße</span><span class="qty">2 EL</span></div>
+    <div class="ingr-row"><span class="name">Dunkle Sojasoße</span><span class="qty">1 EL</span></div>
+    <div class="ingr-row"><span class="name">Vegane Pilzsoße</span><span class="qty">1 EL</span></div>
+    <div class="ingr-row"><span class="name">Palmzucker (gerieben)</span><span class="qty">1 TL</span></div>
+    <div class="ingr-row"><span class="name">Neutrales Öl</span><span class="qty">3 EL</span></div>
+  </div>
+</section>
+
+<div class="steps-intro">Wer macht was?</div>
+<div class="role-switch" id="roleSwitch">
+  <button class="rs both on" data-role="both">Beide anzeigen</button>
+  <button class="rs max"    data-role="max">Nur Max</button>
+  <button class="rs minou"  data-role="minou">Nur Minou</button>
+</div>
+
+<div class="columns">
+  <div class="col max" id="colMax">
+    <div class="role">Max</div>
+    <h2>Tofu <em>&amp; Reis</em></h2>
+    <div class="step"><div class="n">1</div><div class="body"><strong>Reis aufsetzen</strong>300 g Jasminreis waschen und nach Packungsanweisung kochen. Topf abseits stellen und warmhalten.</div></div>
+    <div class="step"><div class="n">2</div><div class="body"><strong>Tofu auspressen</strong>400 g Naturtofu in ein sauberes Küchentuch einwickeln, mit einem Schneidebrett und Gewicht beschweren. <em>Mindestens 15 Min. — je trockener, desto besser bräunt er.</em></div></div>
+    <div class="step"><div class="n">3</div><div class="body"><strong>Tofu krümeln</strong>Tofu mit den Händen grob und unregelmäßig zerpflücken — er soll Hackfleisch ähneln, mit größeren und kleineren Stücken.</div></div>
+    <div class="step"><div class="n">4</div><div class="body"><strong>Bereitstellen</strong>Tofu griffbereit neben dem Wok platzieren. Sobald Minou fertig ist, Bescheid geben — dann geht die Wok-Action los.</div></div>
+  </div>
+  <div class="col minou" id="colMinou">
+    <div class="role">Minou</div>
+    <h2>Aromen <em>&amp; Basilikum</em></h2>
+    <div class="step"><div class="n">1</div><div class="body"><strong>Aromaten vorbereiten</strong>4 Knoblauchzehen und 1–3 Thai-Chilis fein hacken oder im Mörser zerstoßen. 1 kleine Schalotte fein würfeln.</div></div>
+    <div class="step"><div class="n">2</div><div class="body"><strong>Soßen mischen</strong>2 EL helle Sojasoße, 1 EL dunkle Sojasoße, 1 EL Pilzsoße und 1 TL geriebenen Palmzucker in einer kleinen Schale verrühren. <em>Alles bereitstellen — im Wok geht's dann schnell.</em></div></div>
+    <div class="step"><div class="n">3</div><div class="body"><strong>Basilikum zupfen</strong>15 g Thai Holy Basil von den Stielen zupfen. Erst ganz am Ende in den Wok — jetzt noch beiseitelegen.</div></div>
+    <div class="step"><div class="n">4</div><div class="body"><strong>Signal geben</strong>Wenn alles parat liegt, Max Bescheid geben. Ab jetzt gehört der Wok beiden.</div></div>
+  </div>
+</div>
+
+<section class="finale" id="finale">
+  <div class="role"><span class="max-c">Max</span><span class="sep">+</span><span class="minou-c">Minou</span><span class="sep">·</span><span>gemeinsam</span></div>
+  <h2><em>Wok-Action</em> — gemeinsam</h2>
+  <div class="step"><div class="n">1</div><div class="body"><strong>Wok extrem heiß</strong>Wok oder große Pfanne auf höchster Stufe leer erhitzen, bis er zu rauchen beginnt. Erst dann 3 EL Öl rein.</div></div>
+  <div class="step"><div class="n">2</div><div class="body"><strong>Aromaten anrösten</strong>Knoblauch, Schalotte und Chili ins heiße Öl geben — nur 5–10 Sekunden unter ständigem Bewegen. Nicht verbrennen lassen.</div></div>
+  <div class="step"><div class="n">3</div><div class="body"><strong>Tofu braten</strong>Tofu sofort dazu, Hitze auf Maximum lassen. 3–4 Min. braten ohne dauernd zu rühren — der Tofu muss goldbraun und leicht trocken werden.</div></div>
+  <div class="step"><div class="n">4</div><div class="body"><strong>Ablöschen &amp; karamellisieren</strong>Soßenmischung direkt über den Tofu gießen. Bei hoher Hitze 1–2 Min. karamellisieren lassen. <em>Die Masse soll relativ trocken bleiben, nicht suppig.</em></div></div>
+  <div class="step"><div class="n">5</div><div class="body"><strong>Basilikum unterheben</strong>Herd ausschalten. Basilikum unterrühren bis die Blätter welk sind. Sofort auf warmem Jasminreis servieren.</div></div>
+</section>
+
+<aside class="notes">
+  <div class="head">Notiz aus der Testküche</div>
+  Thai Holy Basil ist nicht dasselbe wie normaler Basilikum — er schmeckt würziger und leicht pfeffrig. Im Asialaden zu finden, oft tiefgefroren. Normaler Basilikum geht zur Not, das Ergebnis wird aber milder. Der Wok muss wirklich sehr heiß sein — das ist das Geheimnis jedes guten Pad Kra Pao.
+</aside>
+
+<nav class="nav-recipes">
+  <a class="prev" href="carbonara.html">
+    <div class="direction">← Vorher</div>
+    <div class="name">Vegane Spaghetti <em>Carbonara</em></div>
+  </a>
+  <div></div>
+</nav>
+
+<section class="closing">
+  <a class="btn-pill ghost" href="../index.html">Alle Rezepte ansehen <em>→</em></a>
+</section>
+
+<footer class="site-footer">
+  <div>
+    <h5>Max <em>&amp;</em> Minou</h5>
+    <p>Vegane Rezepte für zwei,<br />die beide kochen.<br /><br />Jedes Rezept. Jede Person.<br />Gemeinsam am Tisch.</p>
+  </div>
+  <div>
+    <h5>Lesen</h5>
+    <a href="../index.html">Alle Rezepte</a>
+    <a href="#">Archiv</a>
+    <a href="#">RSS-Feed</a>
+  </div>
+  <div>
+    <h5>Kochen</h5>
+    <a href="../tinder.html">Was kochen wir?</a>
+    <a href="#">Mit Partner verbinden</a>
+  </div>
+  <div>
+    <h5>Folgen</h5>
+    <a href="#">Newsletter</a>
+    <a href="../ueber-uns.html">Über uns</a>
+  </div>
+  <div class="colophon">
+    <span>© 2026 Max &amp; Minou</span>
+    <span>Gesetzt in Fraunces &amp; Inter</span>
+    <span>Lebt seit 2025 · wächst weiter</span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('#roleSwitch .rs').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#roleSwitch .rs').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      const r = b.dataset.role;
+      const max = document.getElementById('colMax');
+      const min = document.getElementById('colMinou');
+      const fin = document.getElementById('finale');
+      const cols = document.querySelector('.columns');
+      max.classList.toggle('hidden', r === 'minou');
+      min.classList.toggle('hidden', r === 'max');
+      cols.classList.toggle('single', r !== 'both');
+      fin.classList.remove('hidden');
+    });
+  });
+</script>
+
+</body>
+</html>
