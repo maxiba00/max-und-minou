@@ -234,7 +234,7 @@
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <input placeholder="Suchen — z.B. Spargel, Pasta, 30 Min." />
   </div>
-  <div class="pulse"><span class="dot"></span>Zuletzt aktualisiert <b>vor 3 Tagen</b> · neuestes Rezept: <b>Spaghetti Carbonara</b></div>
+  <div class="pulse"><span class="dot"></span>Zuletzt aktualisiert · neuestes Rezept: <b id="util-newest">—</b></div>
   <div class="right">
     <a href="#">Folgen</a>
     <a href="#">RSS</a>
@@ -253,7 +253,7 @@
   </nav>
   <label class="mob-burger" for="mob-toggle" aria-label="Menü öffnen"><span></span><span></span><span></span></label>
   <a class="logo" href="index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
-  <div class="mob-pulse"><span class="dot"></span>Zuletzt aktualisiert · <b>Carbonara</b></div>
+  <div class="mob-pulse"><span class="dot"></span>Zuletzt aktualisiert · <b id="mob-newest">—</b></div>
   <label class="mob-search-btn" for="mob-search" aria-label="Suche öffnen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
   <nav class="nav-secondary">
     <a href="#sammlung" onclick="filterAndScroll('season','Frühling')">Frühling</a>
@@ -297,35 +297,10 @@
 <section class="section">
   <div class="section-head">
     <h2>Frisch aus der <em>Küche</em></h2>
-    <a class="meta-link" href="#sammlung"><em>Alle 6 Rezepte ansehen</em> →</a>
+    <a class="meta-link" href="#sammlung" id="recipe-count-link"><em>Alle 7 Rezepte ansehen</em> →</a>
   </div>
 
-  <article class="featured">
-    <div class="photo">
-      <img src="assets/images/carbonara.jpg" alt="Vegane Spaghetti Carbonara mit Räuchertofu in weißem Teller" style="object-fit: contain; padding: 12px;" />
-      <div class="badge-new">Neu · 7. Mai 2026</div>
-    </div>
-    <div class="info">
-      <div class="feat-date">
-        <span>Veröffentlicht 7. Mai 2026</span>
-        <span>·</span>
-        <span>Schnell · 20 Min.</span>
-      </div>
-      <h3><a href="rezepte/carbonara.html">Vegane Spaghetti <em>Carbonara</em> mit Räuchertofu.</a></h3>
-      <p>Cremig, rauchig, in 20 Minuten auf dem Tisch — unser bisher schnellstes Rezept. Max kümmert sich um Tofu und Pasta, Minou rührt eine seidige Carbonara-Sauce aus Cashews und Hefeflocken. Kein Ei, keine Sahne, kein Kompromiss.</p>
-      <div class="role-split">
-        <div class="role-cell max">
-          <div class="who">Max</div>
-          <div class="what"><em>Räuchertofu</em> &amp; Pasta</div>
-        </div>
-        <div class="role-cell minou">
-          <div class="who">Minou</div>
-          <div class="what">Cremige <em>Carbonara-Sauce</em></div>
-        </div>
-      </div>
-      <a class="btn-pill" href="rezepte/carbonara.html">Rezept lesen <em>→</em></a>
-    </div>
-  </article>
+  <article class="featured" id="featured-article"></article>
 </section>
 
 <section class="section" id="sammlung">
@@ -384,6 +359,12 @@
       <div class="card-date"><span>7. Mai 2026</span><span class="tag warm">Frühling</span></div>
       <h3>Vegane Spaghetti <em>Carbonara</em> mit Räuchertofu.</h3>
       <div class="card-meta"><span>20 Min.</span><span>Max · Tofu &amp; Pasta</span><span>Minou · Sauce</span></div>
+    </a>
+    <a class="card" href="rezepte/patatas-bravas.html" data-season="Ganzjährig" data-time="45">
+      <div class="photo"><div class="stripes"></div><div class="label">— patatas bravas, overhead —</div></div>
+      <div class="card-date"><span>29. Juni 2026</span><span class="tag">Ganzjährig</span></div>
+      <h3>Patatas <em>Bravas</em> mit Bravas-Sauce &amp; Chimichurri.</h3>
+      <div class="card-meta"><span>45 Min.</span><span>Max · Kartoffeln</span><span>Minou · 2 Saucen</span></div>
     </a>
     <a class="card" href="rezepte/pad-kra-pao.html" data-season="Ganzjährig" data-time="30">
       <div class="photo"><div class="stripes"></div><div class="label">— pad kra pao, thai basil stir fry —</div></div>
@@ -534,6 +515,120 @@ function filterAndScroll(filter, value) {
     document.getElementById('sammlung').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 50);
 }
+</script>
+
+<script>
+// ── Auto-Featured: picks newest recipe by date ──────────────
+const RECIPES_DATA = [
+  {
+    date: '2026-07-08', dateDisplay: '8. Juli 2026',
+    href: 'rezepte/pad-kra-pao.html',
+    title: 'Pad <em>Kra Pao</em> mit Naturtofu &amp; Thai-Basilikum.',
+    plainTitle: 'Pad Kra Pao',
+    time: '30 Min.',
+    desc: 'Scharf, würzig, in 30 Minuten fertig — Thai Street Food für zu Hause. Während Max den Tofu vorbereitet und den Reis kocht, stellt Minou die Aromaten und die Soßenmischung bereit. Im Wok geht dann alles blitzschnell.',
+    maxRole: 'Tofu &amp; Wok', minouRole: 'Aromen &amp; Basilikum',
+    image: null, imageLabel: '— pad kra pao, thai basil stir fry —',
+  },
+  {
+    date: '2026-06-29', dateDisplay: '29. Juni 2026',
+    href: 'rezepte/patatas-bravas.html',
+    title: 'Patatas <em>Bravas</em> mit Bravas-Sauce &amp; Chimichurri.',
+    plainTitle: 'Patatas Bravas',
+    time: '45 Min.',
+    desc: 'Knusprige Ofenkartoffeln mit einer feurigen Bravas-Sauce und frischem Chimichurri — zwei Saucen, eine Platte. Max schiebt die Kartoffeln in den Ofen, Minou rührt beide Saucen in aller Ruhe dazu.',
+    maxRole: 'Kartoffeln', minouRole: 'Bravas-Sauce &amp; Chimichurri',
+    image: null, imageLabel: '— patatas bravas, overhead —',
+  },
+  {
+    date: '2026-05-07', dateDisplay: '7. Mai 2026',
+    href: 'rezepte/carbonara.html',
+    title: 'Vegane Spaghetti <em>Carbonara</em> mit Räuchertofu.',
+    plainTitle: 'Spaghetti Carbonara',
+    time: '20 Min.',
+    desc: 'Cremig, rauchig, in 20 Minuten auf dem Tisch — unser bisher schnellstes Rezept. Max kümmert sich um Tofu und Pasta, Minou rührt eine seidige Carbonara-Sauce aus Cashews und Hefeflocken. Kein Ei, keine Sahne, kein Kompromiss.',
+    maxRole: '<em>Räuchertofu</em> &amp; Pasta', minouRole: 'Cremige <em>Carbonara-Sauce</em>',
+    image: 'assets/images/carbonara.jpg',
+    imageAlt: 'Vegane Spaghetti Carbonara mit Räuchertofu in weißem Teller',
+    imageStyle: 'object-fit:contain;padding:12px',
+  },
+  {
+    date: '2026-05-03', dateDisplay: '3. Mai 2026',
+    href: 'rezepte/kartoffelsalat.html',
+    title: 'Knuspriger <em>Kartoffelsalat</em> mit grünem Spargel.',
+    plainTitle: 'Knuspriger Kartoffelsalat',
+    time: '50 Min.',
+    desc: 'Knusprige Ofenkartoffeln treffen auf frischen Spargel und ein würziges Senf-Dressing. Max übernimmt den Ofen, Minou die Sauce.',
+    maxRole: 'Ofen-Kartoffeln', minouRole: 'Senf-Dressing',
+    image: null, imageLabel: '— smashed potatoes &amp; spargel —',
+  },
+  {
+    date: '2026-04-24', dateDisplay: '24. April 2026',
+    href: 'rezepte/primavera.html',
+    title: 'Cremige <em>Pasta Primavera</em> mit Zitronen-Cashew-Sauce.',
+    plainTitle: 'Pasta Primavera',
+    time: '30 Min.',
+    desc: 'Leichte Sommerpasta mit Zitronennote und cremiger Cashew-Sauce — Max kocht die Pasta, Minou macht die Sauce.',
+    maxRole: 'Pasta &amp; Gemüse', minouRole: 'Zitronen-Cashew',
+    image: null, imageLabel: '— pasta primavera —',
+  },
+  {
+    date: '2026-04-11', dateDisplay: '11. April 2026',
+    href: 'rezepte/buddha-bowl.html',
+    title: 'Buddha Bowl <em>mit Süßkartoffel</em> &amp; Tahini.',
+    plainTitle: 'Buddha Bowl',
+    time: '40 Min.',
+    desc: 'Eine Bowl, die satt macht und bunt aussieht. Max röstet die Süßkartoffel, Minou baut die Bowl und rührt das Tahini-Dressing.',
+    maxRole: 'Süßkartoffel', minouRole: 'Bowl &amp; Tahini',
+    image: null, imageLabel: '— buddha bowl, overhead —',
+  },
+  {
+    date: '2026-03-28', dateDisplay: '28. März 2026',
+    href: 'rezepte/tacos.html',
+    title: 'Blumenkohl-<em>Tacos</em> mit Tahini-Sauce.',
+    plainTitle: 'Blumenkohl-Tacos',
+    time: '35 Min.',
+    desc: 'Gerösteter Blumenkohl in Tortillas, mit einer nussigen Tahini-Sauce und frischen Toppings. Max übernimmt den Blumenkohl, Minou die Tacos.',
+    maxRole: 'Blumenkohl', minouRole: 'Tortillas &amp; Toppings',
+    image: null, imageLabel: '— blumenkohl tacos —',
+  },
+];
+
+(function () {
+  const sorted = RECIPES_DATA.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+  const r = sorted[0];
+
+  const photoInner = r.image
+    ? `<img src="${r.image}" alt="${r.imageAlt || ''}" style="${r.imageStyle || 'object-fit:cover'}" />`
+    : `<div class="stripes"></div><div class="label">${r.imageLabel}</div>`;
+
+  document.getElementById('featured-article').innerHTML = `
+    <div class="photo">
+      ${photoInner}
+      <div class="badge-new">Neu · ${r.dateDisplay}</div>
+    </div>
+    <div class="info">
+      <div class="feat-date">
+        <span>Veröffentlicht ${r.dateDisplay}</span>
+        <span>·</span>
+        <span>${r.time}</span>
+      </div>
+      <h3><a href="${r.href}">${r.title}</a></h3>
+      <p>${r.desc}</p>
+      <div class="role-split">
+        <div class="role-cell max"><div class="who">Max</div><div class="what">${r.maxRole}</div></div>
+        <div class="role-cell minou"><div class="who">Minou</div><div class="what">${r.minouRole}</div></div>
+      </div>
+      <a class="btn-pill" href="${r.href}">Rezept lesen <em>→</em></a>
+    </div>`;
+
+  const utilEl = document.getElementById('util-newest');
+  if (utilEl) utilEl.textContent = r.plainTitle;
+  const mobEl = document.getElementById('mob-newest');
+  if (mobEl) mobEl.textContent = r.plainTitle;
+  const countLink = document.getElementById('recipe-count-link');
+  if (countLink) countLink.querySelector('em').textContent = 'Alle ' + RECIPES_DATA.length + ' Rezepte ansehen';
+})();
 </script>
 
 </body>

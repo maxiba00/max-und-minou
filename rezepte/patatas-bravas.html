@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Pad Kra Pao vegan — Max &amp; Minou</title>
+<title>Patatas Bravas mit Chimichurri — Max &amp; Minou</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -58,19 +58,13 @@
   @media (max-width: 720px) { .ingredients { grid-template-columns: 1fr; } }
   .ingredients h3 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 28px; letter-spacing: -0.02em; }
   .ingredients h3 em { font-style: italic; }
-  .ingredients .for {
-    font-size: 11px; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--mid); margin-top: 8px;
-  }
+  .ingredients .for { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); margin-top: 8px; }
   .ingr-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; }
   @media (max-width: 540px) { .ingr-list { grid-template-columns: 1fr; } }
-  .ingr-row {
-    display: flex; justify-content: space-between;
-    padding: 8px 0; border-bottom: 1px dotted var(--rule);
-    font-size: 14px;
-  }
+  .ingr-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted var(--rule); font-size: 14px; }
   .ingr-row .name { color: var(--ink); }
   .ingr-row .qty { color: var(--mid); font-variant-numeric: tabular-nums; }
+  .ingr-section { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); padding: 14px 0 4px; grid-column: 1 / -1; font-weight: 600; }
   .steps-intro {
     text-align: center; padding: 56px 40px 0;
     font-size: 11px; letter-spacing: 0.22em;
@@ -94,16 +88,14 @@
     .recipe-meta {
       display: grid !important;
       grid-template-columns: repeat(4, 1fr) !important;
-      gap: 0 !important;
-      border-radius: 10px !important;
-      width: 100%;
+      gap: 0 !important; border-radius: 10px !important; width: 100%;
     }
     .recipe-meta .m { padding: 10px 4px !important; }
     .recipe-meta .v { font-size: 14px !important; margin-bottom: 2px !important; }
     .recipe-meta .l { font-size: 9px !important; letter-spacing: 0.12em !important; }
     .intro { padding: 32px 20px !important; font-size: 17px !important; }
     .recipe-photo { margin: 32px 20px !important; }
-    .steps-intro { padding: 36px 20px 0 !important; font-size: 22px !important; }
+    .steps-intro { padding: 36px 20px 0 !important; }
     .plating { margin: 56px 20px !important; padding: 28px 20px !important; }
   }
   .col.hidden { display: none !important; }
@@ -117,67 +109,35 @@
   .role-switch button.on.max   { background: var(--max);   color: var(--paper); border-color: var(--max); }
   .role-switch button.on.minou { background: var(--minou); color: var(--paper); border-color: var(--minou); }
   .role-switch button.on.both  { background: var(--ink);   color: var(--paper); border-color: var(--ink); }
-  .columns {
-    padding: 24px 40px 0;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
-  }
+  .columns { padding: 24px 40px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
   @media (max-width: 820px) { .columns { grid-template-columns: 1fr; } }
-  .col {
-    border-radius: 12px; padding: 28px 28px 32px;
-    transition: opacity 0.2s, filter 0.2s;
-  }
+  .col { border-radius: 12px; padding: 28px 28px 32px; transition: opacity 0.2s, filter 0.2s; }
   .col.max   { background: var(--max-bg); }
   .col.minou { background: var(--minou-bg); }
-  .col.dimmed { opacity: 0.25; filter: saturate(0.4); }
-  .col h2 {
-    font-family: 'Fraunces', serif; font-weight: 400;
-    font-size: 28px; line-height: 1.1;
-    letter-spacing: -0.02em; margin-bottom: 6px;
-  }
+  .col h2 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 28px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 6px; }
   .col h2 em { font-style: italic; }
-  .col .role {
-    font-size: 10px; letter-spacing: 0.22em;
-    text-transform: uppercase; font-weight: 700; margin-bottom: 18px;
-  }
+  .col .role { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 700; margin-bottom: 18px; }
   .col.max   .role { color: var(--max); }
   .col.minou .role { color: var(--minou); }
-  .step {
-    display: grid; grid-template-columns: 36px 1fr;
-    gap: 16px; padding: 16px 0;
-    border-top: 1px solid rgba(29,26,20,0.1);
-    align-items: start;
-  }
+  .step { display: grid; grid-template-columns: 36px 1fr; gap: 16px; padding: 16px 0; border-top: 1px solid rgba(29,26,20,0.1); align-items: start; }
   .step:first-of-type { border-top: none; }
-  .step .n {
-    font-family: 'Fraunces', serif; font-style: italic;
-    font-size: 28px; line-height: 1; color: var(--ink);
-  }
-  .step .body strong {
-    display: block; font-weight: 600;
-    font-size: 14px; margin-bottom: 4px; letter-spacing: 0.02em;
-  }
+  .step .n { font-family: 'Fraunces', serif; font-style: italic; font-size: 28px; line-height: 1; color: var(--ink); }
+  .step .body strong { display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px; letter-spacing: 0.02em; }
   .step .body { font-size: 14px; line-height: 1.6; color: var(--ink); }
   .step .body em { font-style: italic; color: var(--mid); }
   .finale {
     margin: 32px 40px 0; padding: 36px 40px 40px;
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 12px;
-    position: relative;
-    transition: opacity 0.2s, filter 0.2s;
-    overflow: hidden;
+    background: var(--paper); border: 1px solid var(--rule);
+    border-radius: 12px; position: relative;
+    transition: opacity 0.2s, filter 0.2s; overflow: hidden;
   }
   .finale::before {
     content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
     background: linear-gradient(to right, var(--max) 0%, var(--max) 50%, var(--minou) 50%, var(--minou) 100%);
   }
-  .finale.dimmed { opacity: 0.25; filter: saturate(0.4); }
   .finale .role {
-    font-size: 10px; letter-spacing: 0.22em;
-    text-transform: uppercase; font-weight: 700;
-    margin-bottom: 14px;
-    display: flex; gap: 14px; align-items: center;
-    color: var(--mid);
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 700;
+    margin-bottom: 14px; display: flex; gap: 14px; align-items: center; color: var(--mid);
   }
   .finale .role .max-c   { color: var(--max); }
   .finale .role .minou-c { color: var(--minou); }
@@ -185,8 +145,7 @@
   .finale h2 {
     font-family: 'Fraunces', serif; font-weight: 400;
     font-size: clamp(28px, 4vw, 40px); line-height: 1.05;
-    letter-spacing: -0.025em; margin-bottom: 20px;
-    color: var(--ink);
+    letter-spacing: -0.025em; margin-bottom: 20px; color: var(--ink);
   }
   .finale h2 em { font-style: italic; }
   .finale .step { border-top: 1px solid var(--rule); }
@@ -195,15 +154,13 @@
     margin: 48px 40px 0; padding: 32px 40px;
     border-left: 3px solid var(--minou);
     background: rgba(74,122,91,0.04);
-    font-family: 'Fraunces', serif;
-    font-size: 18px; font-style: italic;
+    font-family: 'Fraunces', serif; font-size: 18px; font-style: italic;
     line-height: 1.6; color: var(--ink);
   }
   .notes .head {
     font-family: 'Inter', sans-serif; font-style: normal;
-    font-size: 10px; letter-spacing: 0.22em;
-    text-transform: uppercase; color: var(--minou);
-    margin-bottom: 10px; font-weight: 700;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--minou); margin-bottom: 10px; font-weight: 700;
   }
   .nav-recipes {
     margin: 64px 40px 0; padding: 28px 0;
@@ -211,14 +168,8 @@
     display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
   }
   .nav-recipes a { text-decoration: none; color: var(--ink); display: block; padding: 8px 0; }
-  .nav-recipes a .direction {
-    font-size: 10px; letter-spacing: 0.22em;
-    text-transform: uppercase; color: var(--mid); margin-bottom: 6px;
-  }
-  .nav-recipes a .name {
-    font-family: 'Fraunces', serif; font-size: 22px;
-    line-height: 1.1; letter-spacing: -0.015em;
-  }
+  .nav-recipes a .direction { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); margin-bottom: 6px; }
+  .nav-recipes a .name { font-family: 'Fraunces', serif; font-size: 22px; line-height: 1.1; letter-spacing: -0.015em; }
   .nav-recipes a .name em { font-style: italic; }
   .nav-recipes .next { text-align: right; }
   .nav-recipes a:hover .name { color: var(--max); }
@@ -232,7 +183,7 @@
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <input placeholder="Suchen — z.B. Spargel, Pasta, 30 Min." />
   </div>
-  <div class="pulse"><span class="dot"></span>Veröffentlicht <b>8. Juli 2026</b> · 30 Min. · Ganzjährig</div>
+  <div class="pulse"><span class="dot"></span>Veröffentlicht <b>29. Juni 2026</b> · 45 Min. · Ganzjährig</div>
   <div class="right">
     <a href="#">Folgen</a>
     <a href="#">RSS</a>
@@ -251,7 +202,7 @@
   </nav>
   <label class="mob-burger" for="mob-toggle" aria-label="Menü öffnen"><span></span><span></span><span></span></label>
   <a class="logo" href="../index.html"><b class="max-c">Max</b><i>&amp;</i><b class="minou-c">Minou</b></a>
-  <div class="mob-pulse"><span class="dot"></span>Zuletzt aktualisiert · <b>Pad Kra Pao</b></div>
+  <div class="mob-pulse"><span class="dot"></span>Zuletzt aktualisiert · <b>Patatas Bravas</b></div>
   <label class="mob-search-btn" for="mob-search" aria-label="Suche öffnen"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></label>
   <nav class="nav-secondary">
     <a href="#">Frühling</a>
@@ -279,48 +230,54 @@
   <div class="hint">Beliebt diese Woche</div>
   <div class="sugg">
     <a href="pad-kra-pao.html">Pad Kra Pao</a>
+    <a href="patatas-bravas.html">Patatas Bravas</a>
     <a href="carbonara.html">Carbonara</a>
     <a href="primavera.html">Primavera</a>
     <a href="buddha-bowl.html">Buddha Bowl</a>
-    <a href="tacos.html">Tacos</a>
   </div>
 </div>
 
 <section class="recipe-hero">
-  <div class="kicker">Ganzjährig · <span class="max-c">Max</span> &amp; <span class="minou-c">Minou</span> · Thai aus dem Wok</div>
-  <h1>Pad <em>Kra Pao</em></h1>
-  <div class="sub">veganes Thai-Basilikum-Gericht mit Naturtofu</div>
+  <div class="kicker">Ganzjährig · <span class="max-c">Max</span> &amp; <span class="minou-c">Minou</span> · spanisch inspiriert</div>
+  <h1>Patatas <em>Bravas</em></h1>
+  <div class="sub">mit Bravas-Sauce &amp; Chimichurri</div>
   <div class="recipe-meta">
-    <div class="m"><div class="v"><em>30 Min.</em></div><div class="l">Gesamtzeit</div></div>
+    <div class="m"><div class="v"><em>45 Min.</em></div><div class="l">Gesamtzeit</div></div>
     <div class="m"><div class="v"><em>2</em></div><div class="l">Köche</div></div>
-    <div class="m"><div class="v"><em>2</em></div><div class="l">Portionen</div></div>
+    <div class="m"><div class="v"><em>4–6</em></div><div class="l">Portionen</div></div>
     <div class="m"><div class="v"><em>Ganzjährig</em></div><div class="l">Saison</div></div>
   </div>
 </section>
 
 <div class="recipe-photo">
-  <div class="label">— pad kra pao, thai basil stir fry —</div>
+  <div class="label">— patatas bravas, overhead —</div>
 </div>
 
-<p class="intro">Scharf, würzig, in 30 Minuten fertig — Thai Street Food für zu Hause. Während Max den Tofu vorbereitet und den Reis kocht, stellt Minou die Aromaten und die Soßenmischung bereit. Im Wok geht dann alles blitzschnell.</p>
+<p class="intro">Knusprige Ofenkartoffeln mit einer feurigen Bravas-Sauce und frischem Chimichurri — zwei Saucen, eine Platte, viel Applaus. Max schiebt die Kartoffeln in den Ofen, Minou rührt beide Saucen in aller Ruhe dazu.</p>
 
 <section class="ingredients">
   <div>
     <h3><em>Zutaten</em></h3>
-    <div class="for">für 2 Portionen</div>
+    <div class="for">für 4–6 Personen</div>
   </div>
   <div class="ingr-list">
-    <div class="ingr-row"><span class="name">Naturtofu</span><span class="qty">400 g</span></div>
-    <div class="ingr-row"><span class="name">Jasminreis</span><span class="qty">300 g</span></div>
-    <div class="ingr-row"><span class="name">Knoblauch</span><span class="qty">4 Zehen</span></div>
-    <div class="ingr-row"><span class="name">Thai-Chilis</span><span class="qty">1–3 Stück</span></div>
-    <div class="ingr-row"><span class="name">Schalotte</span><span class="qty">1 kleine</span></div>
-    <div class="ingr-row"><span class="name">Thai Holy Basil</span><span class="qty">15 g</span></div>
-    <div class="ingr-row"><span class="name">Helle Sojasoße</span><span class="qty">2 EL</span></div>
-    <div class="ingr-row"><span class="name">Dunkle Sojasoße</span><span class="qty">1 EL</span></div>
-    <div class="ingr-row"><span class="name">Vegane Pilzsoße</span><span class="qty">1 EL</span></div>
-    <div class="ingr-row"><span class="name">Palmzucker (gerieben)</span><span class="qty">1 TL</span></div>
-    <div class="ingr-row"><span class="name">Neutrales Öl</span><span class="qty">3 EL</span></div>
+    <div class="ingr-section">Kartoffeln</div>
+    <div class="ingr-row"><span class="name">Mehligkochende Kartoffeln</span><span class="qty">1 kg</span></div>
+    <div class="ingr-row"><span class="name">Olivenöl</span><span class="qty">großzügig</span></div>
+    <div class="ingr-row"><span class="name">Salz &amp; Pfeffer</span><span class="qty">—</span></div>
+    <div class="ingr-section">Bravas-Sauce</div>
+    <div class="ingr-row"><span class="name">Knoblauch</span><span class="qty">2 Zehen</span></div>
+    <div class="ingr-row"><span class="name">Tomatenmark</span><span class="qty">2 EL</span></div>
+    <div class="ingr-row"><span class="name">Geräuchertes Paprikapulver</span><span class="qty">1 TL</span></div>
+    <div class="ingr-row"><span class="name">Chiliflocken</span><span class="qty">1 TL</span></div>
+    <div class="ingr-row"><span class="name">Rotweinessig</span><span class="qty">1 EL</span></div>
+    <div class="ingr-row"><span class="name">Olivenöl</span><span class="qty">1 EL</span></div>
+    <div class="ingr-section">Chimichurri</div>
+    <div class="ingr-row"><span class="name">Petersilie</span><span class="qty">große Handvoll</span></div>
+    <div class="ingr-row"><span class="name">Knoblauch</span><span class="qty">1 Zehe</span></div>
+    <div class="ingr-row"><span class="name">Rote Chili</span><span class="qty">½ Stück</span></div>
+    <div class="ingr-row"><span class="name">Rotweinessig</span><span class="qty">2 EL</span></div>
+    <div class="ingr-row"><span class="name">Olivenöl</span><span class="qty">6–8 EL</span></div>
   </div>
 </section>
 
@@ -334,43 +291,46 @@
 <div class="columns">
   <div class="col max" id="colMax">
     <div class="role">Max</div>
-    <h2>Tofu <em>&amp; Reis</em></h2>
-    <div class="step"><div class="n">1</div><div class="body"><strong>Reis aufsetzen</strong>300 g Jasminreis waschen und nach Packungsanweisung kochen. Topf abseits stellen und warmhalten.</div></div>
-    <div class="step"><div class="n">2</div><div class="body"><strong>Tofu auspressen</strong>400 g Naturtofu in ein sauberes Küchentuch einwickeln, mit einem Schneidebrett und Gewicht beschweren. <em>Mindestens 15 Min. — je trockener, desto besser bräunt er.</em></div></div>
-    <div class="step"><div class="n">3</div><div class="body"><strong>Tofu krümeln</strong>Tofu mit den Händen grob und unregelmäßig zerpflücken — er soll Hackfleisch ähneln, mit größeren und kleineren Stücken.</div></div>
-    <div class="step"><div class="n">4</div><div class="body"><strong>Bereitstellen</strong>Tofu griffbereit neben dem Wok platzieren. Sobald Minou fertig ist, Bescheid geben — dann geht die Wok-Action los.</div></div>
+    <h2><em>Kartoffeln</em> backen</h2>
+    <div class="step"><div class="n">1</div><div class="body"><strong>Ofen vorheizen</strong>Ofen auf 190 °C Umluft vorheizen. Backblech mit Backpapier auslegen.</div></div>
+    <div class="step"><div class="n">2</div><div class="body"><strong>Kartoffeln schneiden</strong>1 kg Kartoffeln schälen und in ca. 1 cm große Würfel schneiden — möglichst gleichmäßig, damit sie gleichzeitig fertig sind.</div></div>
+    <div class="step"><div class="n">3</div><div class="body"><strong>Stärke auswaschen</strong>Kartoffelwürfel in eine Schüssel geben, mit kaltem Wasser bedecken und so lange spülen bis das Wasser klar bleibt. <em>Das entfernt Stärke und macht sie nachher richtig knusprig.</em></div></div>
+    <div class="step"><div class="n">4</div><div class="body"><strong>Würzen &amp; backen</strong>Gut abtrocknen, zurück in die Schüssel. Mit Salz, Pfeffer und einem großzügigen Schuss Olivenöl mischen. Auf dem Blech in einer Lage verteilen — nicht übereinanderschichten.</div></div>
+    <div class="step"><div class="n">5</div><div class="body"><strong>15–20 Min. backen</strong>In den heißen Ofen schieben. Nach 15–20 Min. einmal durchschütteln, dann nochmals 15 Min. backen bis sie goldbraun und an den Rändern knusprig sind.</div></div>
   </div>
   <div class="col minou" id="colMinou">
     <div class="role">Minou</div>
-    <h2>Aromen <em>&amp; Basilikum</em></h2>
-    <div class="step"><div class="n">1</div><div class="body"><strong>Aromaten vorbereiten</strong>4 Knoblauchzehen und 1–3 Thai-Chilis fein hacken oder im Mörser zerstoßen. 1 kleine Schalotte fein würfeln.</div></div>
-    <div class="step"><div class="n">2</div><div class="body"><strong>Soßen mischen</strong>2 EL helle Sojasoße, 1 EL dunkle Sojasoße, 1 EL Pilzsoße und 1 TL geriebenen Palmzucker in einer kleinen Schale verrühren. <em>Alles bereitstellen — im Wok geht's dann schnell.</em></div></div>
-    <div class="step"><div class="n">3</div><div class="body"><strong>Basilikum zupfen</strong>15 g Thai Holy Basil von den Stielen zupfen. Erst ganz am Ende in den Wok — jetzt noch beiseitelegen.</div></div>
-    <div class="step"><div class="n">4</div><div class="body"><strong>Signal geben</strong>Wenn alles parat liegt, Max Bescheid geben. Ab jetzt gehört der Wok beiden.</div></div>
+    <h2>Bravas-Sauce <em>&amp; Chimichurri</em></h2>
+    <div class="step"><div class="n">1</div><div class="body"><strong>Knoblauch anschwitzen</strong>1 EL Olivenöl in einer kleinen Pfanne bei mittlerer Hitze erwärmen. 2 gehackte Knoblauchzehen hineingeben, 1 Min. anschwitzen — er soll duften, nicht bräunen.</div></div>
+    <div class="step"><div class="n">2</div><div class="body"><strong>Tomatenmark &amp; Gewürze</strong>2 EL Tomatenmark einrühren, 2 Min. mitrösten. Dann 1 TL geräuchertes Paprikapulver + 1 TL Chiliflocken dazu, weitere Minute mitrösten.</div></div>
+    <div class="step"><div class="n">3</div><div class="body"><strong>Ablöschen &amp; abschmecken</strong>Mit 1 EL Rotweinessig ablöschen, kurz köcheln lassen. Mit 1–2 EL Wasser auf eine sämige Konsistenz bringen. <em>Mit Salz und Pfeffer abschmecken. Warmhalten.</em></div></div>
+    <div class="step"><div class="n">4</div><div class="body"><strong>Chimichurri</strong>Großzügige Handvoll Petersilie fein hacken. Mit 1 gehackten Knoblauchzehe, ½ fein geschnittener roter Chili, 2 EL Rotweinessig und 6–8 EL Olivenöl in einer Schüssel verrühren. Abschmecken.</div></div>
+    <div class="step"><div class="n">5</div><div class="body"><strong>Bereitstellen</strong>Beide Saucen in kleinen Schüsseln griffbereit stellen. Sobald Max die Kartoffeln aus dem Ofen holt, geht's ans Anrichten.</div></div>
   </div>
 </div>
 
 <section class="finale" id="finale">
   <div class="role"><span class="max-c">Max</span><span class="sep">+</span><span class="minou-c">Minou</span><span class="sep">·</span><span>gemeinsam</span></div>
-  <h2><em>Wok-Action</em> — gemeinsam</h2>
-  <div class="step"><div class="n">1</div><div class="body"><strong>Wok extrem heiß</strong>Wok oder große Pfanne auf höchster Stufe leer erhitzen, bis er zu rauchen beginnt. Erst dann 3 EL Öl rein.</div></div>
-  <div class="step"><div class="n">2</div><div class="body"><strong>Aromaten anrösten</strong>Knoblauch, Schalotte und Chili ins heiße Öl geben — nur 5–10 Sekunden unter ständigem Bewegen. Nicht verbrennen lassen.</div></div>
-  <div class="step"><div class="n">3</div><div class="body"><strong>Tofu braten</strong>Tofu sofort dazu, Hitze auf Maximum lassen. 3–4 Min. braten ohne dauernd zu rühren — der Tofu muss goldbraun und leicht trocken werden.</div></div>
-  <div class="step"><div class="n">4</div><div class="body"><strong>Ablöschen &amp; karamellisieren</strong>Soßenmischung direkt über den Tofu gießen. Bei hoher Hitze 1–2 Min. karamellisieren lassen. <em>Die Masse soll relativ trocken bleiben, nicht suppig.</em></div></div>
-  <div class="step"><div class="n">5</div><div class="body"><strong>Basilikum unterheben</strong>Herd ausschalten. Basilikum unterrühren bis die Blätter welk sind. Sofort auf warmem Jasminreis servieren.</div></div>
+  <h2><em>Anrichten</em> — gemeinsam</h2>
+  <div class="step"><div class="n">1</div><div class="body"><strong>Kartoffeln auf Platte</strong>Die heißen Kartoffeln auf eine große Platte oder in eine flache Schüssel geben.</div></div>
+  <div class="step"><div class="n">2</div><div class="body"><strong>Bravas-Sauce drüber</strong>Bravas-Sauce gleichmäßig über die Kartoffeln löffeln oder gießen.</div></div>
+  <div class="step"><div class="n">3</div><div class="body"><strong>Chimichurri obenauf</strong>Großzügig Chimichurri darüber geben. Sofort servieren — noch heiß essen.</div></div>
 </section>
 
 <aside class="notes">
   <div class="head">Notiz aus der Testküche</div>
-  Thai Holy Basil ist nicht dasselbe wie normaler Basilikum — er schmeckt würziger und leicht pfeffrig. Im Asialaden zu finden, oft tiefgefroren. Normaler Basilikum geht zur Not, das Ergebnis wird aber milder. Der Wok muss wirklich sehr heiß sein — das ist das Geheimnis jedes guten Pad Kra Pao.
+  Das Auswaschen der Stärke klingt nach unnötigem Aufwand — ist es aber nicht. Es macht den Unterschied zwischen weichen und wirklich knusprigen Kartoffeln. Und keine Angst vor Öl: mehligkochende Kartoffeln wie Maris Piper brauchen davon mehr als man denkt.
 </aside>
 
 <nav class="nav-recipes">
-  <a class="prev" href="patatas-bravas.html">
+  <a class="prev" href="carbonara.html">
     <div class="direction">← Vorher</div>
-    <div class="name">Patatas <em>Bravas</em></div>
+    <div class="name">Vegane Spaghetti <em>Carbonara</em></div>
   </a>
-  <div></div>
+  <a class="next" href="pad-kra-pao.html">
+    <div class="direction">Nächstes →</div>
+    <div class="name">Pad <em>Kra Pao</em></div>
+  </a>
 </nav>
 
 <section class="closing">
@@ -413,12 +373,11 @@
       const r = b.dataset.role;
       const max = document.getElementById('colMax');
       const min = document.getElementById('colMinou');
-      const fin = document.getElementById('finale');
       const cols = document.querySelector('.columns');
       max.classList.toggle('hidden', r === 'minou');
       min.classList.toggle('hidden', r === 'max');
       cols.classList.toggle('single', r !== 'both');
-      fin.classList.remove('hidden');
+      document.getElementById('finale').classList.remove('hidden');
     });
   });
 </script>
